@@ -19,4 +19,4 @@ def get_rank(scale, device, train_loader):
           value_rk:rk_max_value,
           value_Rk_index_max_rk:Rk_value_max_rk_index,
           r_0:rk[0]}
-  return rank_dict
+  return rk_max_index,rk_max_value, Rk_value_max_rk_index, rk[0]
