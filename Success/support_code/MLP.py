@@ -5,6 +5,7 @@ import torch.nn.functional as F
 class MLP(nn.Module):
     def __init__(self, channel=3, num_classes=10, im_size=(32, 32)):
         super(MLP, self).__init__()
+        # print(im_size)
         self.fc_1 = nn.Linear(im_size[0] * im_size[1]*channel, 512)
         self.fc_2 = nn.Linear(512, 256)
         self.fc_3 = nn.Linear(256, num_classes)

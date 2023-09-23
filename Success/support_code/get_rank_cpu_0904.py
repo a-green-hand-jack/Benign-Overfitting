@@ -80,10 +80,11 @@ class get_Effective_Ranks:
             images = images.view(images.size(0), -1)
             train_vectors.append(images[0])
         self.train_matrix = np.stack(train_vectors)
-        self.train_matrix = torch.tensor(self.train_matrix, dtype=torch.float32).to(self.device)  # 移动到指定设备
+        # self.train_matrix = torch.tensor(self.train_matrix, dtype=torch.float32).to(self.device)  # 移动到指定设备
 
     def convert_to_rank(self):
-        self.train_effective_rank = Effective_Ranks(self.train_matrix.to('cpu').numpy())  # 注意要先将 Tensor 移回 CPU
+        # self.train_effective_rank = Effective_Ranks(self.train_matrix.to('cpu').numpy())  # 注意要先将 Tensor 移回 CPU
+        self.train_effective_rank = Effective_Ranks(self.train_matrix)
         self.train_rk = self.train_effective_rank.get_rk()
         self.train_Rk = self.train_effective_rank.get_Rk()
 
