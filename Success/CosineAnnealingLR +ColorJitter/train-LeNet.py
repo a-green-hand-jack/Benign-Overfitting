@@ -29,7 +29,7 @@ if __name__ == '__main__':
     min_value = 0.1
     max_value = 1.0
     num_columns = 4
-    num_repetitions = 10
+    num_repetitions = 5
 
 
     # 创建一个4x10的矩阵，每一行的内容都是相同的数字序列
@@ -50,7 +50,7 @@ if __name__ == '__main__':
                 train_loader=train_loader, 
                 test_loader=test_loader,
                 path = "LeNet", 
-                num_epochs=50,
+                num_epochs=20,
                 net=LeNet(),
                 bright_scale=bright_scale,
                 contrast_scale=contrast_scale,

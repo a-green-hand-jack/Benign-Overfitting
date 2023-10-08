@@ -37,17 +37,22 @@ def get_data_loader(
       只要按顺序接收就好
   '''
 
-  brightness_factor = random.uniform(bright_scale-0.01, bright_scale)  
-  contrast_factor = random.uniform(contrast_scale-0.01,contrast_scale)
-  saturation_factor = random.uniform(saturation_scale-0.01, saturation_scale)
-  hue_factor = random.uniform(hue_scale/2-0.01, hue_scale/2)
-  print("*****************         这里考察的是:\n brightness_factor={}\n contrast_factor={}\n saturation_factor={} \n hue_factor={}".format(brightness_factor, contrast_factor, saturation_factor, hue_factor))
+  # brightness_factor = random.uniform(bright_scale-0.01, bright_scale)  
+  # contrast_factor = random.uniform(contrast_scale-0.01,contrast_scale)
+  # saturation_factor = random.uniform(saturation_scale-0.01, saturation_scale)
+  # hue_factor = random.uniform(hue_scale/2-0.01, hue_scale/2)
+  # brightness_factor = [bright_scale-0.01, bright_scale]
+  # contrast_factor = [contrast_scale-0.01,contrast_scale]
+  # saturation_factor = [saturation_scale-0.01, saturation_scale]
+  # hue_factor = [hue_scale/2-0.01, hue_scale/2]
+
+  print("*****************         这里考察的是:\n brightness_scale={}\n contrast_scale={}\n saturation_scale={} \n hue_scale={}\n**********************".format(bright_scale, contrast_scale, saturation_scale, hue_scale))
 
   train_loader = torch.utils.data.DataLoader(
     torchvision.datasets.CIFAR10(root, train=True, download=True,
                                transform=torchvision.transforms.Compose([
                                   #  transforms.RandomResizedCrop(size=(32,32), scale=(scale, scale)),
-                                   transforms.ColorJitter(brightness=brightness_factor,contrast=contrast_factor, saturation=saturation_factor, hue=hue_factor),  #亮度、对比度、饱和度和色相的抖动强度
+                                   transforms.ColorJitter(brightness=bright_scale,contrast=contrast_scale, saturation=saturation_scale, hue=hue_scale/2),  #亮度、对比度、饱和度和色相的抖动强度
                                    torchvision.transforms.ToTensor(),
                                    torchvision.transforms.Normalize(CIFAR_MEAN, CIFAR_STD)])),
     batch_size=batch_size_train, shuffle=True)
