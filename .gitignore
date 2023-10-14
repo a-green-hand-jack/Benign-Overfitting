@@ -14002,3 +14002,467 @@ Success/CosineAnnealingLR +ColorJitter/Ranks/img/mean/range(50, 80).png
 Success/CosineAnnealingLR +ColorJitter/Ranks/img/mean/range(250, 280).png
 Success/CosineAnnealingLR +ColorJitter/Ranks/img/mean/range(500, 530).png
 Success/CosineAnnealingLR +ColorJitter/Ranks/img/mean/range(550, 580).png
+Success/Rotation/data/cifar-10-python.tar.gz
+Success/Rotation/data/cifar-10-batches-py/batches.meta
+Success/Rotation/data/cifar-10-batches-py/data_batch_1
+Success/Rotation/data/cifar-10-batches-py/data_batch_2
+Success/Rotation/data/cifar-10-batches-py/data_batch_3
+Success/Rotation/data/cifar-10-batches-py/data_batch_4
+Success/Rotation/data/cifar-10-batches-py/data_batch_5
+Success/Rotation/data/cifar-10-batches-py/readme.html
+Success/Rotation/data/cifar-10-batches-py/test_batch
+Success/Rotation/Ranks/csv/-10.0000, -9.0000.csv
+Success/Rotation/Ranks/csv/-20.0000, -19.0000.csv
+Success/Rotation/Ranks/csv/-30.0000, -29.0000.csv
+Success/Rotation/Ranks/csv/-40.0000, -39.0000.csv
+Success/Rotation/Ranks/csv/-50.0000, -49.0000.csv
+Success/Rotation/Ranks/csv/-60.0000, -59.0000.csv
+Success/Rotation/Ranks/csv/-70.0000, -69.0000.csv
+Success/Rotation/Ranks/csv/-80.0000, -79.0000.csv
+Success/Rotation/Ranks/csv/-90.0000, -89.0000.csv
+Success/Rotation/Ranks/csv/-100.0000, -99.0000.csv
+Success/Rotation/Ranks/csv/-110.0000, -109.0000.csv
+Success/Rotation/Ranks/csv/-120.0000, -119.0000.csv
+Success/Rotation/Ranks/csv/-130.0000, -129.0000.csv
+Success/Rotation/Ranks/csv/-140.0000, -139.0000.csv
+Success/Rotation/Ranks/csv/-150.0000, -149.0000.csv
+Success/Rotation/Ranks/csv/-160.0000, -159.0000.csv
+Success/Rotation/Ranks/csv/-170.0000, -169.0000.csv
+Success/Rotation/Ranks/csv/-180.0000, -179.0000.csv
+Success/Rotation/Ranks/csv/0.0000, 1.0000.csv
+Success/Rotation/Ranks/csv/10.0000, 11.0000.csv
+Success/Rotation/Ranks/csv/20.0000, 21.0000.csv
+Success/Rotation/Ranks/csv/30.0000, 31.0000.csv
+Success/Rotation/Ranks/csv/40.0000, 41.0000.csv
+Success/Rotation/Ranks/csv/50.0000, 51.0000.csv
+Success/Rotation/Ranks/csv/60.0000, 61.0000.csv
+Success/Rotation/Ranks/csv/70.0000, 71.0000.csv
+Success/Rotation/Ranks/csv/80.0000, 81.0000.csv
+Success/Rotation/Ranks/csv/90.0000, 91.0000.csv
+Success/Rotation/Ranks/csv/100.0000, 101.0000.csv
+Success/Rotation/Ranks/csv/110.0000, 111.0000.csv
+Success/Rotation/Ranks/csv/120.0000, 121.0000.csv
+Success/Rotation/Ranks/csv/130.0000, 131.0000.csv
+Success/Rotation/Ranks/csv/140.0000, 141.0000.csv
+Success/Rotation/Ranks/csv/150.0000, 151.0000.csv
+Success/Rotation/Ranks/csv/160.0000, 161.0000.csv
+Success/Rotation/Ranks/csv/170.0000, 171.0000.csv
+Success/Rotation/Ranks/img/bar/r0.png
+Success/Rotation/Ranks/img/bar/rk_max_index.png
+Success/Rotation/Ranks/img/bar/rk_max_value.png
+Success/Rotation/Ranks/img/bar/value_Rk_index_max_rk.png
+Success/Rotation/Ranks/img/mean/range(0, 36).png
+Success/Rotation/__pycache__/draw_accuracy.cpython-311.pyc
+Success/CosineAnnealingLR +ColorJitter/MLP/img/new/range(0, 625).png
+Success/CosineAnnealingLR +ColorJitter/LeNet/img/整体/range(0, 625).png
+Success/Rotation/Ranks-new/csv/1-0.0000, 10.0000.csv
+Success/Rotation/Ranks-new/csv/2-10.0000, 20.0000.csv
+Success/Rotation/Ranks-new/csv/3-20.0000, 30.0000.csv
+Success/Rotation/Ranks-new/csv/4-30.0000, 40.0000.csv
+Success/Rotation/Ranks-new/csv/5-40.0000, 50.0000.csv
+Success/Rotation/Ranks-new/csv/6-50.0000, 60.0000.csv
+Success/Rotation/Ranks-new/csv/7-60.0000, 70.0000.csv
+Success/Rotation/Ranks-new/csv/8-70.0000, 80.0000.csv
+Success/Rotation/Ranks-new/csv/9-80.0000, 90.0000.csv
+Success/Rotation/Ranks-new/csv/10-90.0000, 100.0000.csv
+Success/Rotation/Ranks-new/csv/11-100.0000, 110.0000.csv
+Success/Rotation/Ranks-new/csv/12-110.0000, 120.0000.csv
+Success/Rotation/Ranks-new/csv/13-120.0000, 130.0000.csv
+Success/Rotation/Ranks-new/csv/14-130.0000, 140.0000.csv
+Success/Rotation/Ranks-new/csv/15-140.0000, 150.0000.csv
+Success/Rotation/Ranks-new/csv/16-150.0000, 160.0000.csv
+Success/Rotation/Ranks-new/csv/17-160.0000, 170.0000.csv
+Success/Rotation/Ranks-new/csv/18-170.0000, 180.0000.csv
+Success/Rotation/Ranks-new/img/bar/r0.png
+Success/Rotation/Ranks-new/img/bar/rk_max_index.png
+Success/Rotation/Ranks-new/img/bar/rk_max_value.png
+Success/Rotation/Ranks-new/img/bar/value_Rk_index_max_rk.png
+Success/Rotation/Ranks-new/img/mean/range(0, 3).png
+Success/Rotation/Ranks-new/img/mean/range(0, 18).png
+Success/Rotation/LeNet/csv/1-180.0000, -170.0000.csv
+Success/Rotation/LeNet/csv/2-170.0000, -160.0000.csv
+Success/Rotation/LeNet/csv/3-160.0000, -150.0000.csv
+Success/Rotation/LeNet/csv/4-150.0000, -140.0000.csv
+Success/Rotation/LeNet/csv/5-140.0000, -130.0000.csv
+Success/Rotation/LeNet/csv/6-130.0000, -120.0000.csv
+Success/Rotation/LeNet/csv/7-120.0000, -110.0000.csv
+Success/Rotation/LeNet/csv/8-110.0000, -100.0000.csv
+Success/Rotation/LeNet/csv/9-100.0000, -90.0000.csv
+Success/Rotation/LeNet/csv/10-90.0000, -80.0000.csv
+Success/Rotation/LeNet/csv/11-80.0000, -70.0000.csv
+Success/Rotation/LeNet/csv/12-70.0000, -60.0000.csv
+Success/Rotation/LeNet/csv/13-60.0000, -50.0000.csv
+Success/Rotation/LeNet/csv/14-50.0000, -40.0000.csv
+Success/Rotation/LeNet/csv/15-40.0000, -30.0000.csv
+Success/Rotation/LeNet/csv/16-30.0000, -20.0000.csv
+Success/Rotation/LeNet/csv/17-20.0000, -10.0000.csv
+Success/Rotation/LeNet/csv/18-10.0000, 0.0000.csv
+Success/Rotation/LeNet/csv/19-0.0000, 10.0000.csv
+Success/Rotation/LeNet/csv/20-10.0000, 20.0000.csv
+Success/Rotation/LeNet/csv/21-20.0000, 30.0000.csv
+Success/Rotation/LeNet/csv/22-30.0000, 40.0000.csv
+Success/Rotation/LeNet/csv/23-40.0000, 50.0000.csv
+Success/Rotation/LeNet/csv/24-50.0000, 60.0000.csv
+Success/Rotation/LeNet/csv/25-60.0000, 70.0000.csv
+Success/Rotation/LeNet/csv/26-70.0000, 80.0000.csv
+Success/Rotation/LeNet/csv/27-80.0000, 90.0000.csv
+Success/Rotation/LeNet/csv/28-90.0000, 100.0000.csv
+Success/Rotation/LeNet/csv/29-100.0000, 110.0000.csv
+Success/Rotation/LeNet/csv/30-110.0000, 120.0000.csv
+Success/Rotation/LeNet/csv/31-120.0000, 130.0000.csv
+Success/Rotation/LeNet/csv/32-130.0000, 140.0000.csv
+Success/Rotation/LeNet/csv/33-140.0000, 150.0000.csv
+Success/Rotation/LeNet/csv/34-150.0000, 160.0000.csv
+Success/Rotation/LeNet/csv/35-160.0000, 170.0000.csv
+Success/Rotation/LeNet/csv/36-170.0000, 180.0000.csv
+Success/Rotation/LeNet/img/低维/Group1_index1.png
+Success/Rotation/LeNet/img/整体/观察valid中最大准确率的变化.png
+Success/Rotation/LeNet/img/高维/(0.1, 0.1, 0.1, 0.1)-(1.0, 0.1, 0.1, 0.1).png
+Success/Rotation/LeNet/img/高维/(0.1, 0.55, 0.55, 0.55)-(1.0, 0.55, 0.55, 0.55).png
+Success/Rotation/LeNet/img/高维/(0.1, 0.325, 0.325, 0.325)-(1.0, 0.325, 0.325, 0.325).png
+Success/Rotation/LeNet/img/高维/(0.1, 0.775, 0.775, 0.775)-(1.0, 0.775, 0.775, 0.775).png
+Success/Rotation/LeNet/img/高维/(0.1, 1.0, 1.0, 1.0)-(1.0, 1.0, 1.0, 1.0).png
+Success/Rotation/LeNet-360/csv/1-0.0000, 10.0000.csv
+Success/Rotation/LeNet-360/csv/2-10.0000, 20.0000.csv
+Success/Rotation/LeNet-360/csv/3-20.0000, 30.0000.csv
+Success/Rotation/LeNet-360/csv/4-30.0000, 40.0000.csv
+Success/Rotation/LeNet-360/csv/5-40.0000, 50.0000.csv
+Success/Rotation/LeNet-360/csv/6-50.0000, 60.0000.csv
+Success/Rotation/LeNet-360/csv/7-60.0000, 70.0000.csv
+Success/Rotation/LeNet-360/csv/8-70.0000, 80.0000.csv
+Success/Rotation/LeNet-360/csv/9-80.0000, 90.0000.csv
+Success/Rotation/LeNet-360/csv/10-90.0000, 100.0000.csv
+Success/Rotation/LeNet-360/csv/11-100.0000, 110.0000.csv
+Success/Rotation/MLP/csv/1-180.0000, -170.0000.csv
+Success/Rotation/MLP/csv/2-170.0000, -160.0000.csv
+Success/Rotation/MLP/csv/3-160.0000, -150.0000.csv
+Success/Rotation/MLP/csv/4-150.0000, -140.0000.csv
+Success/Rotation/MLP/csv/5-140.0000, -130.0000.csv
+Success/Rotation/MLP/csv/6-130.0000, -120.0000.csv
+Success/Rotation/MLP/csv/7-120.0000, -110.0000.csv
+Success/Rotation/MLP/csv/8-110.0000, -100.0000.csv
+Success/Rotation/MLP/csv/9-100.0000, -90.0000.csv
+Success/Rotation/MLP/csv/10-90.0000, -80.0000.csv
+Success/Rotation/MLP/csv/11-80.0000, -70.0000.csv
+Success/Rotation/MLP/csv/12-70.0000, -60.0000.csv
+Success/Rotation/MLP/csv/13-60.0000, -50.0000.csv
+Success/Rotation/MLP/csv/14-50.0000, -40.0000.csv
+Success/Rotation/MLP/csv/15-40.0000, -30.0000.csv
+Success/Rotation/MLP/csv/16-30.0000, -20.0000.csv
+Success/Rotation/MLP/csv/17-20.0000, -10.0000.csv
+Success/Rotation/MLP/csv/18-10.0000, 0.0000.csv
+Success/Rotation/MLP/csv/19-0.0000, 10.0000.csv
+Success/Rotation/MLP/csv/20-10.0000, 20.0000.csv
+Success/Rotation/MLP/csv/21-20.0000, 30.0000.csv
+Success/Rotation/MLP/csv/22-30.0000, 40.0000.csv
+Success/Rotation/MLP/csv/23-40.0000, 50.0000.csv
+Success/Rotation/MLP/csv/24-50.0000, 60.0000.csv
+Success/Rotation/MLP/csv/25-60.0000, 70.0000.csv
+Success/Rotation/MLP/csv/26-70.0000, 80.0000.csv
+Success/Rotation/MLP/csv/27-80.0000, 90.0000.csv
+Success/Rotation/MLP/csv/28-90.0000, 100.0000.csv
+Success/Rotation/MLP/csv/29-100.0000, 110.0000.csv
+Success/Rotation/MLP/csv/30-110.0000, 120.0000.csv
+Success/Rotation/MLP/csv/31-120.0000, 130.0000.csv
+Success/Rotation/MLP/csv/32-130.0000, 140.0000.csv
+Success/Rotation/MLP/csv/33-140.0000, 150.0000.csv
+Success/Rotation/MLP/csv/34-150.0000, 160.0000.csv
+Success/Rotation/MLP/csv/35-160.0000, 170.0000.csv
+Success/Rotation/MLP/csv/36-170.0000, 180.0000.csv
+Success/Rotation/MLP/img/观察valid中最大准确率的变化.png
+Success/Rotation/MLP/img/整体/观察valid中最大准确率的变化.png
+Success/Rotation/LeNet-new/csv/1-0.0000, 10.0000.csv
+Success/Rotation/LeNet-new/csv/2-10.0000, 20.0000.csv
+Success/Rotation/LeNet-new/csv/3-20.0000, 30.0000.csv
+Success/Rotation/LeNet-new/csv/4-30.0000, 40.0000.csv
+Success/Rotation/LeNet-new/csv/5-40.0000, 50.0000.csv
+Success/Rotation/LeNet-new/csv/6-50.0000, 60.0000.csv
+Success/Rotation/LeNet-new/csv/7-60.0000, 70.0000.csv
+Success/Rotation/LeNet-new/csv/8-70.0000, 80.0000.csv
+Success/Rotation/LeNet-new/csv/9-80.0000, 90.0000.csv
+Success/Rotation/LeNet-new/csv/10-90.0000, 100.0000.csv
+Success/Rotation/LeNet-new/csv/11-100.0000, 110.0000.csv
+Success/Rotation/LeNet-new/csv/12-110.0000, 120.0000.csv
+Success/Rotation/LeNet-new/csv/13-120.0000, 130.0000.csv
+Success/Rotation/LeNet-new/csv/14-130.0000, 140.0000.csv
+Success/Rotation/LeNet-new/csv/15-140.0000, 150.0000.csv
+Success/Rotation/LeNet-new/csv/16-150.0000, 160.0000.csv
+Success/Rotation/LeNet-new/csv/17-160.0000, 170.0000.csv
+Success/Rotation/LeNet-new/csv/18-170.0000, 180.0000.csv
+Success/Rotation/LeNet-new/img/整体/观察valid中最大准确率的变化.png
+Success/Rotation/MLP-360/csv/1-0.0000, 10.0000.csv
+Success/Rotation/MLP-360/csv/2-10.0000, 20.0000.csv
+Success/Rotation/MLP-360/csv/3-20.0000, 30.0000.csv
+Success/Rotation/MLP-360/csv/4-30.0000, 40.0000.csv
+Success/Rotation/MLP-360/csv/5-40.0000, 50.0000.csv
+Success/Rotation/MLP-360/csv/6-50.0000, 60.0000.csv
+Success/Rotation/MLP-360/csv/7-60.0000, 70.0000.csv
+Success/Rotation/MLP-360/csv/8-70.0000, 80.0000.csv
+Success/Rotation/MLP-360/csv/9-80.0000, 90.0000.csv
+Success/Rotation/MLP-360/csv/10-90.0000, 100.0000.csv
+Success/Rotation/MLP-360/csv/11-100.0000, 110.0000.csv
+Success/Rotation/Ranks/csv/1-180.0000, -170.0000.csv
+Success/Rotation/Ranks/csv/2-170.0000, -160.0000.csv
+Success/Rotation/Ranks/csv/3-160.0000, -150.0000.csv
+Success/Rotation/Ranks/csv/4-150.0000, -140.0000.csv
+Success/Rotation/Ranks/csv/5-140.0000, -130.0000.csv
+Success/Rotation/Ranks/csv/6-130.0000, -120.0000.csv
+Success/Rotation/Ranks/csv/7-120.0000, -110.0000.csv
+Success/Rotation/Ranks/csv/8-110.0000, -100.0000.csv
+Success/Rotation/Ranks/csv/9-100.0000, -90.0000.csv
+Success/Rotation/Ranks/csv/10-90.0000, -80.0000.csv
+Success/Rotation/Ranks/csv/11-80.0000, -70.0000.csv
+Success/Rotation/Ranks/csv/12-70.0000, -60.0000.csv
+Success/Rotation/Ranks/csv/13-60.0000, -50.0000.csv
+Success/Rotation/Ranks/csv/14-50.0000, -40.0000.csv
+Success/Rotation/Ranks/csv/15-40.0000, -30.0000.csv
+Success/Rotation/Ranks/csv/16-30.0000, -20.0000.csv
+Success/Rotation/Ranks/csv/17-20.0000, -10.0000.csv
+Success/Rotation/Ranks/csv/18-10.0000, 0.0000.csv
+Success/Rotation/Ranks/csv/19-0.0000, 10.0000.csv
+Success/Rotation/Ranks/csv/20-10.0000, 20.0000.csv
+Success/Rotation/Ranks/csv/21-20.0000, 30.0000.csv
+Success/Rotation/Ranks/csv/22-30.0000, 40.0000.csv
+Success/Rotation/Ranks/csv/23-40.0000, 50.0000.csv
+Success/Rotation/Ranks/csv/24-50.0000, 60.0000.csv
+Success/Rotation/Ranks/csv/25-60.0000, 70.0000.csv
+Success/Rotation/Ranks/csv/26-70.0000, 80.0000.csv
+Success/Rotation/Ranks/csv/27-80.0000, 90.0000.csv
+Success/Rotation/Ranks/csv/28-90.0000, 100.0000.csv
+Success/Rotation/Ranks/csv/29-100.0000, 110.0000.csv
+Success/Rotation/Ranks/csv/30-110.0000, 120.0000.csv
+Success/Rotation/Ranks/csv/31-120.0000, 130.0000.csv
+Success/Rotation/Ranks/csv/32-130.0000, 140.0000.csv
+Success/Rotation/Ranks/csv/33-140.0000, 150.0000.csv
+Success/Rotation/Ranks/csv/34-150.0000, 160.0000.csv
+Success/Rotation/Ranks/csv/35-160.0000, 170.0000.csv
+Success/Rotation/Ranks/csv/36-170.0000, 180.0000.csv
+Success/Rotation/Ranks/img/mean/range(0, 18).png
+Success/Rotation/MLP-new/csv/1-0.0000, 10.0000.csv
+Success/Rotation/MLP-new/csv/2-10.0000, 20.0000.csv
+Success/Rotation/MLP-new/csv/3-20.0000, 30.0000.csv
+Success/Rotation/MLP-new/csv/4-30.0000, 40.0000.csv
+Success/Rotation/MLP-new/csv/5-40.0000, 50.0000.csv
+Success/Rotation/MLP-new/csv/6-50.0000, 60.0000.csv
+Success/Rotation/MLP-new/csv/7-60.0000, 70.0000.csv
+Success/Rotation/MLP-new/csv/8-70.0000, 80.0000.csv
+Success/Rotation/MLP-new/csv/9-80.0000, 90.0000.csv
+Success/Rotation/MLP-new/csv/10-90.0000, 100.0000.csv
+Success/Rotation/MLP-new/csv/11-100.0000, 110.0000.csv
+Success/Rotation/MLP-new/csv/12-110.0000, 120.0000.csv
+Success/Rotation/MLP-new/csv/13-120.0000, 130.0000.csv
+Success/Rotation/MLP-new/csv/14-130.0000, 140.0000.csv
+Success/Rotation/MLP-new/csv/15-140.0000, 150.0000.csv
+Success/Rotation/MLP-new/csv/16-150.0000, 160.0000.csv
+Success/Rotation/MLP-new/csv/17-160.0000, 170.0000.csv
+Success/Rotation/MLP-new/csv/18-170.0000, 180.0000.csv
+Success/Rotation/MLP-new/img/观察valid中最大准确率的变化.png
+Success/Rotation/Ranks-0-360/csv/1-0.0000, 10.0000.csv
+Success/Rotation/Ranks-0-360/csv/2-0.0000, 20.0000.csv
+Success/Rotation/Ranks-0-360/csv/3-0.0000, 30.0000.csv
+Success/Rotation/Ranks-0-360/csv/4-0.0000, 40.0000.csv
+Success/Rotation/Ranks-0-360/csv/5-0.0000, 50.0000.csv
+Success/Rotation/Ranks-0-360/csv/6-0.0000, 60.0000.csv
+Success/Rotation/Ranks-0-360/csv/7-0.0000, 70.0000.csv
+Success/Rotation/Ranks-0-360/csv/8-0.0000, 80.0000.csv
+Success/Rotation/Ranks-0-360/csv/9-0.0000, 90.0000.csv
+Success/Rotation/Ranks-0-360/csv/10-0.0000, 100.0000.csv
+Success/Rotation/Ranks-0-360/csv/11-0.0000, 110.0000.csv
+Success/Rotation/Ranks-0-360/csv/12-0.0000, 120.0000.csv
+Success/Rotation/Ranks-0-360/csv/13-0.0000, 130.0000.csv
+Success/Rotation/Ranks-0-360/csv/14-0.0000, 140.0000.csv
+Success/Rotation/Ranks-0-360/csv/15-0.0000, 150.0000.csv
+Success/Rotation/Ranks-0-360/csv/16-0.0000, 160.0000.csv
+Success/Rotation/Ranks-0-360/csv/17-0.0000, 170.0000.csv
+Success/Rotation/Ranks-0-360/csv/18-0.0000, 180.0000.csv
+Success/Rotation/Ranks-0-360/csv/19-0.0000, 190.0000.csv
+Success/Rotation/Ranks-0-360/csv/20-0.0000, 200.0000.csv
+Success/Rotation/Ranks-0-360/csv/21-0.0000, 210.0000.csv
+Success/Rotation/Ranks-0-360/csv/22-0.0000, 220.0000.csv
+Success/Rotation/Ranks-0-360/csv/23-0.0000, 230.0000.csv
+Success/Rotation/Ranks-0-360/csv/24-0.0000, 240.0000.csv
+Success/Rotation/Ranks-0-360/csv/25-0.0000, 250.0000.csv
+Success/Rotation/Ranks-0-360/csv/26-0.0000, 260.0000.csv
+Success/Rotation/Ranks-0-360/csv/27-0.0000, 270.0000.csv
+Success/Rotation/Ranks-0-360/csv/28-0.0000, 280.0000.csv
+Success/Rotation/Ranks-0-360/csv/29-0.0000, 290.0000.csv
+Success/Rotation/Ranks-0-360/csv/30-0.0000, 300.0000.csv
+Success/Rotation/Ranks-0-360/csv/31-0.0000, 310.0000.csv
+Success/Rotation/Ranks-0-360/csv/32-0.0000, 320.0000.csv
+Success/Rotation/Ranks-0-360/csv/33-0.0000, 330.0000.csv
+Success/Rotation/Ranks-0-360/csv/34-0.0000, 340.0000.csv
+Success/Rotation/Ranks-0-360/csv/35-0.0000, 350.0000.csv
+Success/Rotation/Ranks-0-360/csv/36-0.0000, 360.0000.csv
+Success/Rotation/Ranks-0-360/img/bar/r0.png
+Success/Rotation/Ranks-0-360/img/bar/rk_max_index.png
+Success/Rotation/Ranks-0-360/img/bar/rk_max_value.png
+Success/Rotation/Ranks-0-360/img/bar/value_Rk_index_max_rk.png
+Success/Rotation/Ranks-0-360/img/mean/range(0, 36).png
+Success/Rotation/Ranks-360/csv/1-0.0000, 10.0000.csv
+Success/Rotation/Ranks-360/csv/2-10.0000, 20.0000.csv
+Success/Rotation/Ranks-360/csv/3-20.0000, 30.0000.csv
+Success/Rotation/Ranks-360/csv/4-30.0000, 40.0000.csv
+Success/Rotation/Ranks-360/csv/5-40.0000, 50.0000.csv
+Success/Rotation/Ranks-360/csv/6-50.0000, 60.0000.csv
+Success/Rotation/Ranks-360/csv/7-60.0000, 70.0000.csv
+Success/Rotation/Ranks-360/csv/8-70.0000, 80.0000.csv
+Success/Rotation/Ranks-360/csv/9-80.0000, 90.0000.csv
+Success/Rotation/Ranks-360/csv/10-90.0000, 100.0000.csv
+Success/Rotation/Ranks-360/csv/11-100.0000, 110.0000.csv
+Success/Rotation/Ranks-360/csv/12-110.0000, 120.0000.csv
+Success/Rotation/Ranks-360/csv/13-120.0000, 130.0000.csv
+Success/Rotation/Ranks-360/csv/14-130.0000, 140.0000.csv
+Success/Rotation/Ranks-360/csv/15-140.0000, 150.0000.csv
+Success/Rotation/Ranks-360/csv/16-150.0000, 160.0000.csv
+Success/Rotation/Ranks-360/csv/17-160.0000, 170.0000.csv
+Success/Rotation/Ranks-360/csv/18-170.0000, 180.0000.csv
+Success/Rotation/Ranks-360/csv/19-180.0000, 190.0000.csv
+Success/Rotation/Ranks-360/csv/20-190.0000, 200.0000.csv
+Success/Rotation/Ranks-360/csv/21-200.0000, 210.0000.csv
+Success/Rotation/Ranks-360/csv/22-210.0000, 220.0000.csv
+Success/Rotation/Ranks-360/csv/23-220.0000, 230.0000.csv
+Success/Rotation/Ranks-360/csv/24-230.0000, 240.0000.csv
+Success/Rotation/Ranks-360/csv/25-240.0000, 250.0000.csv
+Success/Rotation/Ranks-360/csv/26-250.0000, 260.0000.csv
+Success/Rotation/Ranks-360/csv/27-260.0000, 270.0000.csv
+Success/Rotation/Ranks-360/csv/28-270.0000, 280.0000.csv
+Success/Rotation/Ranks-360/csv/29-280.0000, 290.0000.csv
+Success/Rotation/Ranks-360/csv/30-290.0000, 300.0000.csv
+Success/Rotation/Ranks-360/csv/31-300.0000, 310.0000.csv
+Success/Rotation/Ranks-360/csv/32-310.0000, 320.0000.csv
+Success/Rotation/Ranks-360/csv/33-320.0000, 330.0000.csv
+Success/Rotation/Ranks-360/csv/34-330.0000, 340.0000.csv
+Success/Rotation/Ranks-360/csv/35-340.0000, 350.0000.csv
+Success/Rotation/Ranks-360/csv/36-350.0000, 360.0000.csv
+Success/Rotation/Ranks-360/img/mean/range(0, 36).png
+Success/Rotation/MLP-360/csv/12-110.0000, 120.0000.csv
+Success/Rotation/MLP-360/csv/13-120.0000, 130.0000.csv
+Success/Rotation/MLP-360/csv/14-130.0000, 140.0000.csv
+Success/Rotation/MLP-360/csv/15-140.0000, 150.0000.csv
+Success/Rotation/MLP-360/csv/16-150.0000, 160.0000.csv
+Success/Rotation/MLP-360/csv/17-160.0000, 170.0000.csv
+Success/Rotation/MLP-360/csv/18-170.0000, 180.0000.csv
+Success/Rotation/MLP-360/csv/19-180.0000, 190.0000.csv
+Success/Rotation/MLP-360/csv/20-190.0000, 200.0000.csv
+Success/Rotation/MLP-360/csv/21-200.0000, 210.0000.csv
+Success/Rotation/MLP-360/csv/22-210.0000, 220.0000.csv
+Success/Rotation/MLP-360/csv/23-220.0000, 230.0000.csv
+Success/Rotation/MLP-360/csv/24-230.0000, 240.0000.csv
+Success/Rotation/MLP-360/csv/25-240.0000, 250.0000.csv
+Success/Rotation/MLP-360/csv/26-250.0000, 260.0000.csv
+Success/Rotation/MLP-360/csv/27-260.0000, 270.0000.csv
+Success/Rotation/MLP-360/csv/28-270.0000, 280.0000.csv
+Success/Rotation/MLP-360/csv/29-280.0000, 290.0000.csv
+Success/Rotation/MLP-360/csv/30-290.0000, 300.0000.csv
+Success/Rotation/MLP-360/csv/31-300.0000, 310.0000.csv
+Success/Rotation/MLP-360/csv/32-310.0000, 320.0000.csv
+Success/Rotation/MLP-360/csv/33-320.0000, 330.0000.csv
+Success/Rotation/MLP-360/csv/34-330.0000, 340.0000.csv
+Success/Rotation/MLP-360/csv/35-340.0000, 350.0000.csv
+Success/Rotation/MLP-360/csv/36-350.0000, 360.0000.csv
+Success/Rotation/MLP-360/img/观察valid中最大准确率的变化.png
+.gitignore
+Success/Rotation/LeNet-360/csv/12-110.0000, 120.0000.csv
+Success/Rotation/LeNet-360/csv/13-120.0000, 130.0000.csv
+Success/Rotation/LeNet-360/csv/14-130.0000, 140.0000.csv
+Success/Rotation/LeNet-360/csv/15-140.0000, 150.0000.csv
+Success/Rotation/LeNet-360/csv/16-150.0000, 160.0000.csv
+Success/Rotation/LeNet-360/csv/17-160.0000, 170.0000.csv
+Success/Rotation/LeNet-360/csv/18-170.0000, 180.0000.csv
+Success/Rotation/LeNet-360/csv/19-180.0000, 190.0000.csv
+Success/Rotation/LeNet-360/csv/20-190.0000, 200.0000.csv
+Success/Rotation/LeNet-360/csv/21-200.0000, 210.0000.csv
+Success/Rotation/LeNet-360/csv/22-210.0000, 220.0000.csv
+Success/Rotation/LeNet-360/csv/23-220.0000, 230.0000.csv
+Success/Rotation/LeNet-360/csv/24-230.0000, 240.0000.csv
+Success/Rotation/LeNet-360/csv/25-240.0000, 250.0000.csv
+Success/Rotation/LeNet-360/csv/26-250.0000, 260.0000.csv
+Success/Rotation/LeNet-360/csv/27-260.0000, 270.0000.csv
+Success/Rotation/LeNet-360/csv/28-270.0000, 280.0000.csv
+Success/Rotation/LeNet-360/csv/29-280.0000, 290.0000.csv
+Success/Rotation/LeNet-360/csv/30-290.0000, 300.0000.csv
+Success/Rotation/LeNet-360/csv/31-300.0000, 310.0000.csv
+Success/Rotation/LeNet-360/csv/32-310.0000, 320.0000.csv
+Success/Rotation/LeNet-360/csv/33-320.0000, 330.0000.csv
+Success/Rotation/LeNet-360/csv/34-330.0000, 340.0000.csv
+Success/Rotation/LeNet-360/csv/35-340.0000, 350.0000.csv
+Success/Rotation/LeNet-360/csv/36-350.0000, 360.0000.csv
+Success/Rotation/LeNet-360/img/整体/观察valid中最大准确率的变化.png
+Success/Rotation/报告/报告231014.pptx
+Success/Rotation/报告/data_loader.png
+Success/Rotation/报告/main.png
+Success/Rotation/报告/scale.png
+Success/Rotation/LeNet-0-360/csv/1-0.0000, 10.0000.csv
+Success/Rotation/LeNet-0-360/csv/2-0.0000, 20.0000.csv
+Success/Rotation/LeNet-0-360/csv/3-0.0000, 30.0000.csv
+Success/Rotation/LeNet-0-360/csv/4-0.0000, 40.0000.csv
+Success/Rotation/LeNet-0-360/csv/5-0.0000, 50.0000.csv
+Success/Rotation/LeNet-0-360/csv/6-0.0000, 60.0000.csv
+Success/Rotation/LeNet-0-360/csv/7-0.0000, 70.0000.csv
+Success/Rotation/LeNet-0-360/csv/8-0.0000, 80.0000.csv
+Success/Rotation/LeNet-0-360/csv/9-0.0000, 90.0000.csv
+Success/Rotation/LeNet-0-360/csv/10-0.0000, 100.0000.csv
+Success/Rotation/LeNet-0-360/csv/11-0.0000, 110.0000.csv
+Success/Rotation/LeNet-0-360/csv/12-0.0000, 120.0000.csv
+Success/Rotation/LeNet-0-360/csv/13-0.0000, 130.0000.csv
+Success/Rotation/LeNet-0-360/csv/14-0.0000, 140.0000.csv
+Success/Rotation/LeNet-0-360/csv/15-0.0000, 150.0000.csv
+Success/Rotation/LeNet-0-360/csv/16-0.0000, 160.0000.csv
+Success/Rotation/LeNet-0-360/csv/17-0.0000, 170.0000.csv
+Success/Rotation/LeNet-0-360/csv/18-0.0000, 180.0000.csv
+Success/Rotation/LeNet-0-360/csv/19-0.0000, 190.0000.csv
+Success/Rotation/LeNet-0-360/csv/20-0.0000, 200.0000.csv
+Success/Rotation/LeNet-0-360/csv/21-0.0000, 210.0000.csv
+Success/Rotation/LeNet-0-360/csv/22-0.0000, 220.0000.csv
+Success/Rotation/LeNet-0-360/csv/23-0.0000, 230.0000.csv
+Success/Rotation/LeNet-0-360/csv/24-0.0000, 240.0000.csv
+Success/Rotation/LeNet-0-360/csv/25-0.0000, 250.0000.csv
+Success/Rotation/LeNet-0-360/csv/26-0.0000, 260.0000.csv
+Success/Rotation/LeNet-0-360/csv/27-0.0000, 270.0000.csv
+Success/Rotation/LeNet-0-360/csv/28-0.0000, 280.0000.csv
+Success/Rotation/LeNet-0-360/csv/29-0.0000, 290.0000.csv
+Success/Rotation/LeNet-0-360/csv/30-0.0000, 300.0000.csv
+Success/Rotation/LeNet-0-360/csv/31-0.0000, 310.0000.csv
+Success/Rotation/LeNet-0-360/csv/32-0.0000, 320.0000.csv
+Success/Rotation/LeNet-0-360/csv/33-0.0000, 330.0000.csv
+Success/Rotation/LeNet-0-360/csv/34-0.0000, 340.0000.csv
+Success/Rotation/LeNet-0-360/csv/35-0.0000, 350.0000.csv
+Success/Rotation/LeNet-0-360/csv/36-0.0000, 360.0000.csv
+Success/Rotation/LeNet-0-360/img/整体/观察valid中最大准确率的变化.png
+Success/Rotation/MLP-0-360/csv/1-0.0000, 10.0000.csv
+Success/Rotation/MLP-0-360/csv/2-0.0000, 20.0000.csv
+Success/Rotation/MLP-0-360/csv/3-0.0000, 30.0000.csv
+Success/Rotation/MLP-0-360/csv/4-0.0000, 40.0000.csv
+Success/Rotation/MLP-0-360/csv/5-0.0000, 50.0000.csv
+Success/Rotation/MLP-0-360/csv/6-0.0000, 60.0000.csv
+Success/Rotation/MLP-0-360/csv/7-0.0000, 70.0000.csv
+Success/Rotation/MLP-0-360/csv/8-0.0000, 80.0000.csv
+Success/Rotation/MLP-0-360/csv/9-0.0000, 90.0000.csv
+Success/Rotation/MLP-0-360/csv/10-0.0000, 100.0000.csv
+Success/Rotation/MLP-0-360/csv/11-0.0000, 110.0000.csv
+Success/Rotation/MLP-0-360/csv/12-0.0000, 120.0000.csv
+Success/Rotation/MLP-0-360/csv/13-0.0000, 130.0000.csv
+Success/Rotation/MLP-0-360/csv/14-0.0000, 140.0000.csv
+Success/Rotation/MLP-0-360/csv/15-0.0000, 150.0000.csv
+Success/Rotation/MLP-0-360/csv/16-0.0000, 160.0000.csv
+Success/Rotation/MLP-0-360/csv/17-0.0000, 170.0000.csv
+Success/Rotation/MLP-0-360/csv/18-0.0000, 180.0000.csv
+Success/Rotation/MLP-0-360/csv/19-0.0000, 190.0000.csv
+Success/Rotation/MLP-0-360/csv/20-0.0000, 200.0000.csv
+Success/Rotation/MLP-0-360/csv/21-0.0000, 210.0000.csv
+Success/Rotation/MLP-0-360/csv/22-0.0000, 220.0000.csv
+Success/Rotation/MLP-0-360/csv/23-0.0000, 230.0000.csv
+Success/Rotation/MLP-0-360/csv/24-0.0000, 240.0000.csv
+Success/Rotation/MLP-0-360/csv/25-0.0000, 250.0000.csv
+Success/Rotation/MLP-0-360/csv/26-0.0000, 260.0000.csv
+Success/Rotation/MLP-0-360/csv/27-0.0000, 270.0000.csv
+Success/Rotation/MLP-0-360/csv/28-0.0000, 280.0000.csv
+Success/Rotation/MLP-0-360/csv/29-0.0000, 290.0000.csv
+Success/Rotation/MLP-0-360/csv/30-0.0000, 300.0000.csv
+Success/Rotation/MLP-0-360/csv/31-0.0000, 310.0000.csv
+Success/Rotation/MLP-0-360/csv/32-0.0000, 320.0000.csv
+Success/Rotation/MLP-0-360/csv/33-0.0000, 330.0000.csv
+Success/Rotation/MLP-0-360/csv/34-0.0000, 340.0000.csv
+Success/Rotation/MLP-0-360/csv/35-0.0000, 350.0000.csv
+Success/Rotation/MLP-0-360/csv/36-0.0000, 360.0000.csv
+Success/Rotation/MLP-0-360/img/观察valid中最大准确率的变化.png
