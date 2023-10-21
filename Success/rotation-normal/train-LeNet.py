@@ -28,20 +28,22 @@ device_cuda = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 if __name__ == '__main__':
   i = 1
-  min_angle_list = range(0,360,10)
+  min_angle_list = range(-30,1,1)
   # for min_angle in tqdm(min_angle_list, unit="degree", desc="min_angle"):
   for min_angle in min_angle_list:
-    max_angle = min_angle + 10
+    max_angle = -min_angle
 
     # print("------------------开始新的循环-----------\nmin_angle={},max_angle={}".format(min_angle, max_angle))
-    train_loader, test_loader = get_data_loader(min_angle=0, max_angle=max_angle)
+    augment = transforms.RandomRotation(degrees=(min_angle, max_angle))
+    # augment = None
+    train_loader, test_loader = get_data_loader(min_angle=min_angle, max_angle=max_angle, RandAugment=augment)
     get_scale(
       train_loader=train_loader, 
       test_loader=test_loader,
-      path = "LeNet-0-360", 
+      path = "LeNet-30-30", 
       num_epochs=80,
       net=LeNet(),
-      min_angle=0,
+      min_angle=min_angle,
       max_angle=max_angle,
       batch_size_train=64,
       batch_size_test=64,
