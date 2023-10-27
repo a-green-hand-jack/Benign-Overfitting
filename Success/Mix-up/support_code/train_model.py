@@ -9,11 +9,12 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 from torch.autograd import Variable
+import random
 
 def mixup_data(x, y, alpha=1.0, use_cuda=True):
     '''Returns mixed inputs, pairs of targets, and lambda'''
     if alpha > 0:
-        lam = np.random.beta(alpha, alpha)
+        lam = alpha + random.uniform(0.01, 0.40)
     else:
         lam = 1
 
@@ -154,6 +155,7 @@ def get_train(
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
+            scheduler.step()
 
         # 计算平均训练损失和准确度
         train_loss = train_loss / len(train_loader)  # 平均损失

@@ -95,7 +95,7 @@ def draw_acc_change(input_dir="csv文件所在位置",  output_dir="png文件输
         # print(f"Plot saved as '{input_filename}'")
 
 
-def best_valid_acc(input_dir="csv文件所在位置",  output_dir="png文件输出的位置", plot=False):
+def best_valid_acc(input_dir="csv文件所在位置",  output_dir="png文件输出的位置", plot=False, use_text=True):
 
     # 创建字典用于保存最大值
     max_values = {}
@@ -137,6 +137,10 @@ def best_valid_acc(input_dir="csv文件所在位置",  output_dir="png文件输�
         plt.plot(range(len(max_values.keys())), max_values.values(), marker="*")
     else:
         plt.scatter(range(len(max_values.keys())), max_values.values() )
+
+    if use_text:
+        for i, j in zip(range(len(max_values.keys())), max_values.values()):
+            plt.text(i, j, f'({j})', fontsize=8, ha='center', va='bottom')
     plt.title("观察valid中最大准确率的变化")  # 使用文件名作为子图标题
     plt.ylabel("max_valid_accuracy")  #为横坐标轴标签
     plt.xlabel("scale")  # 使用第三列列名作为纵坐标轴标签
@@ -391,3 +395,70 @@ def plot_values_of_interest(max_values_matrix, indices_of_interest, output_dir="
     plt.savefig(input_filename)
     plt.show()
     plt.close()  # 关闭图形以便下次绘制
+
+
+def compare_best_valid_acc(input_dir1="csv文件所在位置",input_dir2="第二个csv文件所在的位置",  output_dir="png文件输出的位置", plot=False, use_text=True):
+
+    def get_best_acc_from_csv(input_dir):
+        # 创建字典用于保存最大值
+        max_values = {}
+
+        if not os.path.exists(input_dir):
+            os.makedirs(input_dir)
+
+        # 列出包含数据的CSV文件
+        path_list = os.listdir(input_dir)
+        path_list.sort(key=lambda x:int(x.split('-')[0]) )
+        csv_files = [file for file in path_list if file.endswith('.csv')]
+        
+        # 循环处理每个CSV文件
+        for i, csv_file in enumerate(csv_files):
+            print(f"{csv_file}")
+            scale_key = csv_file.split(".csv")[0]
+            # 构建CSV文件的完整路径
+            csv_path = os.path.join(input_dir, csv_file)
+
+            # 读取CSV文件为DataFrame
+            df = pd.read_csv(csv_path)
+
+            # 获取横坐标和纵坐标数据
+            # x_data = df.iloc[:, 4]  # 第二列作为横坐标
+            x_data = range(len(df.iloc[:,4]))
+            y_data = df.iloc[:, 4]  # 第三列作为纵坐标
+            # 计算最大值并保存到字典
+            max_value = y_data.max()
+            # key = f"scale=0.{scale_index}"
+            max_values[scale_key] = max_value
+
+        # 打印保存的最大值字典
+        print("最大值字典:")
+        for key, value in max_values.items():
+            print(f"{key}: {value}")
+
+        return max_values
+
+    difference_dict = {}
+    max_values1 = get_best_acc_from_csv(input_dir1)
+    max_values2 = get_best_acc_from_csv(input_dir2)
+    # max_values = max_values1 - max_values2
+    for key in max_values1:
+        if key in max_values2:
+            difference_dict[key] = max_values1[key] - max_values2[key]
+    # 绘制子图
+    if plot:
+        plt.plot(range(len(difference_dict.keys())), difference_dict.values(), marker="*")
+    else:
+        plt.scatter(range(len(difference_dict.keys())), difference_dict.values() )
+
+    if use_text:
+        for i, j in zip(range(len(difference_dict.keys())), difference_dict.values()):
+            plt.text(i, j, f'({j})', fontsize=8, ha='center', va='bottom')
+    plt.title(f"{input_dir1.split('-')[0]}-{input_dir2.split('-')[0]}做差比较准确率")  # 使用文件名作为子图标题
+    plt.ylabel("max_valid_accuracy")  #为横坐标轴标签
+    plt.xlabel("scale")  # 使用第三列列名作为纵坐标轴标签
+    plt.grid()
+
+    # 保存子图
+    input_filename = os.path.join(output_dir, "比较重方法的优劣.png")  # 文件名与题目一致，去除扩展名并添加.png后缀
+    plt.savefig(input_filename)
+    # print(f"Plot saved as '{input_filename}'")

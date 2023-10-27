@@ -32,8 +32,8 @@ device_cuda = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 if __name__ == '__main__':
 
-  i = 1
-  my_list = np.arange(0, 1.1, 0.1)
+  i = 10
+  my_list = np.arange(0.9, 1.1, 0.1)
   aplpha_list = [round(x, 2) for x in my_list]
   for alpha in aplpha_list:
     # max_angle = -min_angle
@@ -44,13 +44,14 @@ if __name__ == '__main__':
     get_train(
       train_loader=train_loader, 
       test_loader=test_loader,
-      path = "MLP-alpha", 
-      num_epochs=50,
+      path = "MLP-alpha-uniform-Cos", 
+      num_epochs=100,
       net=MLP(),
       file_name= alpha,
       batch_size_train=64,
       batch_size_test=64,
       number=i,
       mixup_transform=alpha)
+    # break
     i += 1
     

@@ -32,8 +32,8 @@ device_cuda = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 if __name__ == '__main__':
 
-  i = 1
-  my_list = np.arange(0, 1.1, 0.05)
+  i = 3
+  my_list = np.arange(0.2, 1.1, 0.1)
   aplpha_list = [round(x, 2) for x in my_list]
   for alpha in aplpha_list:
     # max_angle = -min_angle
@@ -44,8 +44,8 @@ if __name__ == '__main__':
     get_train(
       train_loader=train_loader, 
       test_loader=test_loader,
-      path = "LeNet-alpha", 
-      num_epochs=50,
+      path = "LeNet-alpha-uniform-Cos", 
+      num_epochs=100,
       net=LeNet(),
       file_name= alpha,
       batch_size_train=64,
