@@ -2,11 +2,12 @@ import torch
 import matplotlib.pyplot as plt
 import numpy as np
 from torch.autograd import Variable
+import random
 
 def mixup_data(x, y, alpha=1.0, use_cuda=True):
     '''Returns mixed inputs, pairs of targets, and lambda'''
     if alpha > 0:
-        lam = np.random.beta(alpha, alpha)
+        lam = alpha + random.uniform(alpha/100, alpha/10)
     else:
         lam = 1
 
@@ -23,6 +24,7 @@ def mixup_data(x, y, alpha=1.0, use_cuda=True):
 
 def mixup_criterion(criterion, pred, y_a, y_b, lam):
     return lam * criterion(pred, y_a) + (1 - lam) * criterion(pred, y_b)
+
 
 class Effective_Ranks:
     

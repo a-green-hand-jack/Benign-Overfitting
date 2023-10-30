@@ -32,10 +32,10 @@ device_cuda = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 if __name__ == '__main__':
 
-  i = 3
-  my_list = np.arange(0.2, 1.1, 0.1)
-  aplpha_list = [round(x, 2) for x in my_list]
-  for alpha in aplpha_list:
+  i = 0
+  alpha_list = np.arange(0.0, 0.99, 0.03)
+  # aplpha_list = [round(x, 2) for x in my_list]
+  for alpha in alpha_list:
     # max_angle = -min_angle
 
     # print("------------------开始新的循环-----------\nmin_angle={},max_angle={}".format(min_angle, max_angle))
@@ -44,8 +44,8 @@ if __name__ == '__main__':
     get_train(
       train_loader=train_loader, 
       test_loader=test_loader,
-      path = "LeNet-alpha-uniform-Cos", 
-      num_epochs=100,
+      path = "LeNet-alpha-uniform-Cos-big", 
+      num_epochs=60,
       net=LeNet(),
       file_name= alpha,
       batch_size_train=64,

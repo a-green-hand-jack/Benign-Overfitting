@@ -14,7 +14,7 @@ import random
 def mixup_data(x, y, alpha=1.0, use_cuda=True):
     '''Returns mixed inputs, pairs of targets, and lambda'''
     if alpha > 0:
-        lam = alpha + random.uniform(0.01, 0.40)
+        lam = alpha + random.uniform(alpha/100, alpha/10)
     else:
         lam = 1
 

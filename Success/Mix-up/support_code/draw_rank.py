@@ -93,7 +93,7 @@ def scatter_plot_with_error_bars(data, x_labels=None, y_label=None, title=None, 
 
     plt.show()
 
-def scatter_plot_mean(data,plot=False, x_labels=None, y_label=None, img_folder = 'img',x_data=None):
+def scatter_plot_mean(data,plot=False, x_labels=None, y_label=None, img_folder = 'img',x_data=None,title=None):
     """
     绘制带有误差棒的散点图。
 
@@ -128,7 +128,8 @@ def scatter_plot_mean(data,plot=False, x_labels=None, y_label=None, img_folder =
 
     # if title is None:
     #     title = 'Scatter Plot with Error Bars'
-    title = f"{x_data}"
+    if title is None:
+        title = 'Scatter Plot with Mean'
 
     plt.title(title)
 
