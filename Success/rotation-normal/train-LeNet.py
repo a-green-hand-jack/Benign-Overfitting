@@ -28,7 +28,7 @@ device_cuda = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 if __name__ == '__main__':
   i = 1
-  min_angle_list = range(-30,1,1)
+  min_angle_list = range(-60,1,1)
   # for min_angle in tqdm(min_angle_list, unit="degree", desc="min_angle"):
   for min_angle in min_angle_list:
     max_angle = -min_angle
@@ -40,7 +40,7 @@ if __name__ == '__main__':
     get_scale(
       train_loader=train_loader, 
       test_loader=test_loader,
-      path = "LeNet-30-30", 
+      path = "LeNet-30-30-big", 
       num_epochs=80,
       net=LeNet(),
       min_angle=min_angle,
