@@ -15342,3 +15342,14 @@ Success/rotation-normal/MLP-30-30-big/csv/59--3.0000, 3.0000.csv
 Success/rotation-normal/MLP-30-30-big/csv/60--2.0000, 2.0000.csv
 Success/rotation-normal/MLP-30-30-big/csv/61--1.0000, 1.0000.csv
 Success/rotation-normal/MLP-30-30-big/csv/62-0.0000, 0.0000.csv
+topological_data_analysis/data/cifar-10-python.tar.gz
+topological_data_analysis/data/cifar-10-batches-py/batches.meta
+topological_data_analysis/data/cifar-10-batches-py/data_batch_1
+topological_data_analysis/data/cifar-10-batches-py/data_batch_2
+topological_data_analysis/data/cifar-10-batches-py/data_batch_3
+topological_data_analysis/data/cifar-10-batches-py/data_batch_4
+topological_data_analysis/data/cifar-10-batches-py/data_batch_5
+topological_data_analysis/data/cifar-10-batches-py/readme.html
+topological_data_analysis/data/cifar-10-batches-py/test_batch
+topological_data_analysis/l1_distances.npy
+topological_data_analysis/l2_distances.npy
