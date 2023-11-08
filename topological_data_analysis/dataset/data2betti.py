@@ -32,9 +32,21 @@ def distance_betti_ripser(distances=None):
 
 
 
-import matplotlib.pyplot as plt
 
 def plt_betti_number(betti_number,plot=False,plt_title=None,root=None):
+    ''' 
+    Function: plt_betti_number
+
+    Description: This function plots the Betti numbers using matplotlib. It can either plot the points as a line graph or as scattered points depending on the input parameters.
+
+    Parameters: - betti_number: A list of numpy arrays where each array contains the x and y coordinates of the Betti numbers. - plot (optional): A boolean value indicating whether to plot the points as a line graph (default is False). - plt_title (optional): A string representing the title of the plot. - root (optional): A string representing the root directory where the plot image will be saved.
+
+    Returns: None
+
+    Save Path: The plot image will be saved at the specified root directory with the file name "{plt_title}_scatter.png".
+
+    Example Usage: betti_number = [array([[0.5, 1.5], [1, 2.5], [1.5, 2]])] plt_betti_number(betti_number, plot=True, plt_title="Betti Numbers") 
+    '''
     # 创建一个新图表
     plt.figure()
     save_path = f"{root}\\{plt_title}_scatter.png"
@@ -63,8 +75,6 @@ def plt_betti_number(betti_number,plot=False,plt_title=None,root=None):
     # 显示图表
     plt.show()
 
-
-import matplotlib.pyplot as plt
 
 def plot_stacked_horizontal_bars(bar_data, index_title,plt_title,root=None):
     """

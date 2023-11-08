@@ -119,7 +119,6 @@ def get_cifar10_debug_dataloader(batch_size=64,
 
 
 
-import torch
 
 def loader2vec(train_loader=None):
     """
@@ -155,7 +154,7 @@ def loader2vec(train_loader=None):
     return flattened_images
 
 
-import torch
+
 
 def vec_dis(data_matrix=None, distance=None, root="./distance", save_flag=None):
     """
@@ -190,12 +189,12 @@ def vec_dis(data_matrix=None, distance=None, root="./distance", save_flag=None):
         if not os.path.exists(root):
             # 如果文件夹不存在，则创建它
             os.makedirs(root)
-        np.save(dis_root, l_distances.to('cpu').numpy())  # 保存到CPU上并转换为NumPy数组
+        np.save(dis_root, l_distances.to('cpu').detach().numpy())  # 保存到CPU上并转换为NumPy数组
     else:
         pass
 
     if use_cuda:
         l_distances = l_distances.to('cpu')  # 将结果移回CPU
 
-    return l_distances.cpu().numpy()  # 转换为NumPy数组并返回
+    return l_distances.cpu().detach().numpy()  # 转换为NumPy数组并返回
 
