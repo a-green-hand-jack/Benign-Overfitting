@@ -8,6 +8,7 @@ import sys
 from ripser import ripser
 import time
 import matplotlib.pyplot as plt
+import os
 
 
 def distance_betti(distances=None):
@@ -48,6 +49,9 @@ def plt_betti_number(betti_number,plot=False,plt_title=None,root=None):
     Example Usage: betti_number = [array([[0.5, 1.5], [1, 2.5], [1.5, 2]])] plt_betti_number(betti_number, plot=True, plt_title="Betti Numbers") 
     '''
     # 创建一个新图表
+    if not os.path.exists(root):
+            # 如果文件夹不存在，则创建它
+            os.makedirs(root)
     plt.figure()
     save_path = f"{root}\\{plt_title}_scatter.png"
 
@@ -73,7 +77,7 @@ def plt_betti_number(betti_number,plot=False,plt_title=None,root=None):
 
     plt.savefig(save_path)
     # 显示图表
-    plt.show()
+    # plt.show()
 
 
 def plot_stacked_horizontal_bars(bar_data, index_title,plt_title,root=None):
@@ -86,11 +90,14 @@ def plot_stacked_horizontal_bars(bar_data, index_title,plt_title,root=None):
 
     返回: 无返回值，但会显示绘制的水平条形图。
     """
+    if not os.path.exists(root):
+            # 如果文件夹不存在，则创建它
+            os.makedirs(root)
     plt.figure()
     save_path = f"{root}\\H{index_title}_{plt_title}_bar.png"
 
     # 初始化y坐标位置
-    y_positions = list(range(len(bar_data)))
+    # y_positions = list(range(len(bar_data)))
 
     for index, bar in enumerate(bar_data):
         # print(bar)
@@ -98,7 +105,7 @@ def plot_stacked_horizontal_bars(bar_data, index_title,plt_title,root=None):
         end = bar[1]    # 结束位置
 
         # 绘制水平条形图
-        plt.barh(y_positions[index], end - start, left=start, height=0.5)
+        plt.barh(index, end - start, left=start, height=0.5)
 
     # 添加图例
     # plt.legend()
@@ -110,7 +117,7 @@ def plot_stacked_horizontal_bars(bar_data, index_title,plt_title,root=None):
     plt.savefig(save_path)
 
     # 显示图表
-    plt.show()
+    # plt.show()
 
 def plot_betti_number_bars(betti_number, bar_spacing=0.2,plt_title=None,root=None):
     """

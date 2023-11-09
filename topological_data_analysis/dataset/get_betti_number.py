@@ -6,6 +6,21 @@ from dataset.get_dataloader import get_dataloader,loader2vec, vec_dis
 from dataset.data2betti import distance_betti, distance_betti_ripser, plt_betti_number,plot_betti_number_bars
 from ripser import Rips, ripser
 from net.custome_net import MLP,LeNet,ModelInitializer
+import os
+import pickle
+
+
+def save_dict(dictionary, file_path):
+    '''
+    将字典保存到文件中。
+
+    参数：
+    - dictionary：要保存的字典。
+    - file_path：文件路径。
+    '''
+    with open(file_path, 'wb') as file:
+        pickle.dump(dictionary, file)
+
 
 def betti_4_net(model=None,seed=None,
                 save_root="./distance/Net-test/",
@@ -27,7 +42,7 @@ def betti_4_net(model=None,seed=None,
     '''
 
     model_initializer = ModelInitializer(model, seed)
-    train_loader, test_loader = get_dataloader(chose,debug_size,transform=transform)
+    train_loader, test_loader = get_dataloader(chose=chose,debug_size=debug_size,transform=transform)
 
     model.eval()
     out_list = []
@@ -40,16 +55,16 @@ def betti_4_net(model=None,seed=None,
 
     flattened_images = torch.cat(out_list, dim=0)
     # flattened_images现在包含整个训练集中的图像向量，形状为(N, 3 * 224 * 224)，其中N是训练集的大小
-    l2_distances = vec_dis(data_matrix=flattened_images, distance="l2",save_flag=True,root=save_root)
-    l1_distances = vec_dis(data_matrix=flattened_images, distance="l1",save_flag=True,root=save_root)
+    l2_distances = vec_dis(data_matrix=flattened_images, distance="l2",root=save_root)
+    l1_distances = vec_dis(data_matrix=flattened_images, distance="l1",root=save_root)
 
     # 读取 L2 范数距离矩阵
-    l2_floor = f"{save_root}l2_distance.npy"
-    loaded_l2_distances = np.load(l2_floor)
+    # l2_floor = f"{save_root}l2_distance.npy"
+    # loaded_l2_distances = np.load(l2_floor)
 
     # 读取 L1 范数距离矩阵
-    l1_floor = f"{save_root}l1_distance.npy"
-    loaded_l1_distances = np.load(l1_floor)
+    # l1_floor = f"{save_root}l1_distance.npy"
+    # loaded_l1_distances = np.load(l1_floor)
 
     d1= ripser(l1_distances, maxdim=1, distance_matrix=True)
     plt_betti_number(d1["dgms"],plt_title="L1",root=save_root)
@@ -65,7 +80,20 @@ def betti_4_net(model=None,seed=None,
     
     d1_key = f"{name}-birth-death-l1_distance"
     d2_key = f"{name}-birth-death-l2_distance"
-    return {d1_key:d1["dgms"],d2_key:d2["dgms"]} 
+
+    if not os.path.exists(save_root):
+        # 如果文件夹不存在，则创建它
+        os.makedirs(save_root)
+
+    root = f"{save_root}/betti_number.pkl"
+    # np.save(root, {d1_key:d1["dgms"],d2_key:d2["dgms"]}) # 注意带上后缀名
+    
+    # 保存字典到文件
+    dict_my =  {"BD-L1":d1['dgms'],"BD-L2":d2['dgms']}
+
+    save_dict(dict_my, root)
+    
+    return {d1_key:d1['dgms'],d2_key:d2['dgms']}
 
 
 def betti_4_data(seed=None,
@@ -87,24 +115,25 @@ def betti_4_data(seed=None,
     Example Usage: betti_4_data(seed, save_root, chose, debug_size, device, name, transform) 
     '''
 
-    train_loader, test_loader = get_dataloader(chose,debug_size,transform=transform)
+    # train_loader, test_loader = get_dataloader(chose,debug_size,transform=transform)
+    train_loader, test_loader = get_dataloader(chose=chose,debug_size=debug_size,transform=transform)
     flattened_images = loader2vec(train_loader=train_loader)
 
     # flattened_images现在包含整个训练集中的图像向量，形状为(N, 3 * 224 * 224)，其中N是训练集的大小
-    l2_distances = vec_dis(data_matrix=flattened_images, distance="l2",save_flag=True,root=save_root)
-    l1_distances = vec_dis(data_matrix=flattened_images, distance="l1",save_flag=True,root=save_root)
+    l2_distances = vec_dis(data_matrix=flattened_images, distance="l2",root=save_root)
+    l1_distances = vec_dis(data_matrix=flattened_images, distance="l1",root=save_root)
 
     # 读取 L2 范数距离矩阵
-    l2_floor = f"{save_root}l2_distance.npy"
-    loaded_l2_distances = np.load(l2_floor)
+    # l2_floor = f"{save_root}l2_distance.npy"
+    # loaded_l2_distances = np.load(l2_floor)
 
     # 读取 L1 范数距离矩阵
-    l1_floor = f"{save_root}l1_distance.npy"
-    loaded_l1_distances = np.load(l1_floor)
+    # l1_floor = f"{save_root}l1_distance.npy"
+    # loaded_l1_distances = np.load(l1_floor)
 
     d1= ripser(l1_distances, maxdim=1, distance_matrix=True)
     plt_betti_number(d1["dgms"],plt_title="L1",root=save_root)
-    # print(len(d["dgms"][0]))
+    # print(d1["dgms"])
 
     plot_betti_number_bars(d1["dgms"],plt_title="L1",root=save_root)
 
@@ -116,7 +145,20 @@ def betti_4_data(seed=None,
     
     d1_key = f"{name}-birth-death-l1_distance"
     d2_key = f"{name}-birth-death-l2_distance"
-    return {d1_key:d1["dgms"],d2_key:d2["dgms"]} 
+
+    if not os.path.exists(save_root):
+        # 如果文件夹不存在，则创建它
+        os.makedirs(save_root)
+
+    root = f"{save_root}/betti_number.pkl"
+    # np.save(root, {d1_key:d1["dgms"],d2_key:d2["dgms"]}) # 注意带上后缀名
+    
+    # 保存字典到文件
+    dict_my =  {"BD-L1":d1['dgms'],"BD-L2":d2['dgms']}
+
+    save_dict(dict_my, root)
+    
+    return {d1_key:d1['dgms'],d2_key:d2['dgms']}
 
 
 if __name__ == '__main__':
