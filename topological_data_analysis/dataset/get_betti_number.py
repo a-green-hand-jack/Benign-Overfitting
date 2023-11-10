@@ -102,7 +102,8 @@ def betti_4_data(seed=None,
                 debug_size=100,
                 device=torch.device("cuda" if torch.cuda.is_available() else "cpu"),
                 name="Net",
-                transform=None):
+                transform=None,
+                alpha=0.0):
     ''' 
     Function: betti_4_data
 
@@ -117,7 +118,7 @@ def betti_4_data(seed=None,
 
     # train_loader, test_loader = get_dataloader(chose,debug_size,transform=transform)
     train_loader, test_loader = get_dataloader(chose=chose,debug_size=debug_size,transform=transform)
-    flattened_images = loader2vec(train_loader=train_loader)
+    flattened_images = loader2vec(train_loader=train_loader, alpha=alpha)
 
     # flattened_images现在包含整个训练集中的图像向量，形状为(N, 3 * 224 * 224)，其中N是训练集的大小
     l2_distances = vec_dis(data_matrix=flattened_images, distance="l2",root=save_root)

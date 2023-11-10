@@ -3,6 +3,7 @@ import torchvision
 import torchvision.transforms as transforms
 import numpy as np
 import os
+import torch.nn.functional as F
 
 def get_dataloader(chose,batch_size=64, 
                            root='./data', 
@@ -120,12 +121,31 @@ def get_cifar10_debug_dataloader(batch_size=64,
 
 
 
-def loader2vec(train_loader=None):
+
+def mixup_data(x, alpha=1.0):
     """
-    将训练数据加载器中的图像批量转换为一维向量并合并成一个大矩阵。
+    MixUp数据。将输入数据进行MixUp处理。
+
+    参数：
+    - x (PyTorch Tensor): 输入数据。
+    - alpha (float): MixUp参数，控制混合的程度。默认为1.0，表示完全使用MixUp。
+
+    返回：
+    - mixed_x (PyTorch Tensor): MixUp处理后的数据。
+    """
+    lam = np.random.beta(alpha, alpha)
+    batch_size = x.size(0)
+    index = torch.randperm(batch_size)
+    mixed_x = lam * x + (1 - lam) * x[index, :]
+    return mixed_x
+
+def loader2vec(train_loader=None, alpha=0.0):
+    """
+    将训练数据加载器中的图像批量转换为一维向量并合并成一个大矩阵，根据alpha的值是否使用MixUp。
 
     参数:
     - train_loader (PyTorch 数据加载器): 用于加载训练数据的数据加载器。
+    - alpha (float): MixUp参数，控制混合的程度。默认为0.0，表示不使用MixUp。
 
     返回:
     - flattened_images (PyTorch Tensor): 一个包含所有训练图像的一维向量矩阵。
@@ -141,10 +161,16 @@ def loader2vec(train_loader=None):
         if use_cuda:
             images = images.to('cuda')
 
-        # images是一个批量的图像，形状为(batch_size, 3, 224, 224)
+        # 根据alpha的值判断是否应用MixUp
+        if 0.0 < alpha <= 0.5:
+            mixed_images = mixup_data(images, alpha)
+        else:
+            mixed_images = images
+
+        # mixed_images是经过MixUp处理的图像，形状为(batch_size, 3, 224, 224)
         
         # 将图像批量转换为一维向量
-        batch_flattened = images.view(images.size(0), -1)
+        batch_flattened = mixed_images.view(mixed_images.size(0), -1)
         
         if flattened_images is None:
             flattened_images = batch_flattened
@@ -152,6 +178,7 @@ def loader2vec(train_loader=None):
             flattened_images = torch.cat((flattened_images, batch_flattened), dim=0)
 
     return flattened_images
+
 
 
 
