@@ -22,6 +22,7 @@ def distance_betti(distances=None):
 
     return d
 
+
 def distance_betti_ripser(distances=None):
     start = time.time()
 
@@ -30,8 +31,6 @@ def distance_betti_ripser(distances=None):
     end = time.time()
     # print("ripser.py total time", end-start)
     return d
-
-
 
 
 def plt_betti_number(betti_number,plot=False,plt_title=None,root=None):

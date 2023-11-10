@@ -64,8 +64,10 @@ def convert_encoding(folder_path, name):
     '''
     file_path = os.path.join(folder_path, name)  
     f_read = open(file_path, "rb") 
-    betti_data = pickle.load(f_read)     
+    betti_data = pickle.load(f_read)   
+    # print(betti_data)  
     my_dict = {"L1-B0":betti_data["BD-L1"][0], "L1-B1":betti_data["BD-L1"][1], "L2-B0":betti_data["BD-L2"][0],"L2-B1":betti_data["BD-L2"][1]}
+    # print(my_dict)
     return my_dict
 
 
@@ -178,7 +180,7 @@ def get_all_for_betti(bar_dict=None, save_root=None):
     birth_len_dict = {}
     death_len_dict = {}
     for key, value in bar_dict.items():
-
+        # print(key, value)
         if value[-1, -1] == float("inf"):
 
             matrix = value[:-1, :]

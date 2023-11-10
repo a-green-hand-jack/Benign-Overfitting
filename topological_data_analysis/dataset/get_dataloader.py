@@ -139,6 +139,7 @@ def mixup_data(x, alpha=1.0):
     mixed_x = lam * x + (1 - lam) * x[index, :]
     return mixed_x
 
+
 def loader2vec(train_loader=None, alpha=0.0):
     """
     将训练数据加载器中的图像批量转换为一维向量并合并成一个大矩阵，根据alpha的值是否使用MixUp。
