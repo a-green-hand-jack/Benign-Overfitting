@@ -154,8 +154,8 @@ def betti_4_data(seed=None,
 
     # 判断是否安装了 ripser++，如果安装了就使用 ripserplusplus，否则使用 ripser
     if 'rpp_py' in globals():
-        d1 = rpp_py("--format distance --dim 1", l1_distances)
-        d2 = rpp_py("--format distance --dim 1", l2_distances)
+        d1 = rpp_py.run("--format distance --dim 1", l1_distances)
+        d2 = rpp_py.run("--format distance --dim 1", l2_distances)
     else:
 
         d1 = ripser(l1_distances, maxdim=1, distance_matrix=True)
