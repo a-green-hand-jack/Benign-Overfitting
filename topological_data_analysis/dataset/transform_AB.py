@@ -1,9 +1,12 @@
 import pickle
-import pandas as pd
-from pprint import pprint
 import os
 from dataset.after_betti import custom_sort
 from collections import OrderedDict
+import matplotlib.pyplot as plt
+plt.rcParams['font.sans-serif'] = ['SimHei'] # 设置字体，中文显示
+plt.rcParams['axes.unicode_minus'] = False   # 坐标轴负数的负号显示
+
+
 
 """_summary_
 
@@ -77,8 +80,12 @@ def process_betti_pickle(path):
     """
     # 读取 Pickle 文件
     # if os.path.isdir(path):
-    with open(path, 'rb') as file:
-        betti_data = pickle.load(file)
+    try:
+        with open(path, 'rb') as file:
+            betti_data = pickle.load(file)
+        # 处理第一层键
+    except FileNotFoundError:
+        pass
 
     # 处理第一层键
     modified_keys = {}
@@ -202,6 +209,78 @@ def get_all_cabs(base_path):
                     # print(grandchild_path)
 
     return None
+
+def show_intraspecific_differences(grandchild_path):
+    """
+    Visualize intraspecific differences and save the plots.
+
+    Parameters:
+    - grandchild_path (str): The path to the folder containing data.
+
+    Returns:
+    None
+    """
+
+    # Create 'intraspecific_differences' folder if not exists
+    save_folder = os.path.join(grandchild_path, "intraspecific_differences")
+    os.makedirs(save_folder, exist_ok=True)
+
+    after_betti_data_path = os.path.join(grandchild_path, "compare_different_bitte_norm_in_same_augmentation.pkl")
+    with open(after_betti_data_path, 'rb') as file:
+        your_dict = pickle.load(file)
+
+        # 遍历第一层
+        for l1_key, l1_value in your_dict.items():
+            # 遍历第二层
+            for l2_key, l2_value in l1_value.items():
+                # 设置图表标题
+                plt.title(f'采用的距离种类和betti阶数是{l1_key}')
+
+                # 遍历第三层并绘制散点图
+                for l3_key, l3_value in l2_value.items():
+                    x_value = float(l3_key.split('\\')[-1])  # 提取横坐标的值
+                    if isinstance(l3_value, tuple):
+                        # 如果值是元组，分别提取两个值
+                        epsilon, betti_number = l3_value
+                        plt.scatter(x_value, epsilon, label=f'{l3_key} - ε', color='blue')
+                        plt.scatter(x_value, betti_number, label=f'{l3_key} - betti number', color='red')
+                    else:
+                        # 否则，正常绘制
+                        y_value = l3_value  # 提取纵坐标的值
+                        plt.scatter(x_value, y_value, label=l3_key)
+
+                # 设置图表标签
+                plt.xlabel(f'{grandchild_path}下的增强的强度')
+                plt.ylabel(f'{l2_key}')
+
+                # 显示图例
+                # plt.legend()
+
+                # 保存图表
+                save_filename = f'{l1_key}_{l2_key}.png'
+                save_path = os.path.join(save_folder, save_filename)
+                plt.savefig(save_path)
+
+                # 显示图表
+                plt.show()
+
+def show_all_different(base_path):
+    # 这里的目的是对种内差异实现可视化
+    parent_files = os.listdir(base_path)
+    parent_files.sort(key=custom_sort)
+    result_3d_dfs = {}
+    for child in parent_files:
+        child_path = os.path.join(base_path, child)
+        # 判断路径是否是一个文件夹
+        if os.path.isdir(child_path):
+            # print(child_path)
+            child_files = os.listdir(child_path)
+            child_files.sort(key=custom_sort)
+            for grandchild in child_files:
+                grandchild_path = os.path.join(child_path, grandchild)
+                if os.path.isdir(grandchild_path):
+                    show_intraspecific_differences(grandchild_path)
+                #    print(grandchild_path)
 
 if __name__ == '__main__':
     
