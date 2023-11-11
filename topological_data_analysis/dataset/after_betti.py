@@ -2,6 +2,7 @@ import numpy as np
 import pickle
 import os
 import re
+from dataset.get_betti_number import check_folder_integrity
 
 
 def try_parse_float(s):
@@ -45,9 +46,16 @@ def after_get_bars(base_path="distance/angle/LeNet/"):
     files = os.listdir(base_path)
     files.sort(key=custom_sort)
     for path in files:
+        # print(path)
         full_path = os.path.join(base_path, path)
-        test_dict = convert_encoding(full_path, "betti_number.pkl")
-        get_all_for_betti(test_dict, full_path)
+        print(full_path)
+        check_result,_,_ = check_folder_integrity(full_path, min_png=6, min_pkl=1)
+        if check_result:
+            # full_path = os.path.join(base_path, path)
+            test_dict = convert_encoding(full_path, "betti_number.pkl")
+            get_all_for_betti(test_dict, full_path)
+        else:
+            pass
 
 
 

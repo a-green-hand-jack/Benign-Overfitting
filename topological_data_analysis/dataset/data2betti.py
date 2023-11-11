@@ -77,6 +77,7 @@ def plt_betti_number(betti_number,plot=False,plt_title=None,root=None):
     plt.savefig(save_path)
     # 显示图表
     # plt.show()
+    plt.close()
 
 
 def plot_stacked_horizontal_bars(bar_data, index_title,plt_title,root=None):
@@ -117,6 +118,7 @@ def plot_stacked_horizontal_bars(bar_data, index_title,plt_title,root=None):
 
     # 显示图表
     # plt.show()
+    plt.close()
 
 def plot_betti_number_bars(betti_number, bar_spacing=0.2,plt_title=None,root=None):
     """

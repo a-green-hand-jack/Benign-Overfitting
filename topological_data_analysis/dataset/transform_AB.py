@@ -3,6 +3,7 @@ import os
 from dataset.after_betti import custom_sort
 from collections import OrderedDict
 import matplotlib.pyplot as plt
+from dataset.get_betti_number import check_folder_integrity
 plt.rcParams['font.sans-serif'] = ['SimHei'] # 设置字体，中文显示
 plt.rcParams['axes.unicode_minus'] = False   # 坐标轴负数的负号显示
 
@@ -156,8 +157,9 @@ def compare_after_betti_in_same_augmentation(base_path="distance/angle/LeNet/"):
         full_path = os.path.join(base_path, path)
         # print(full_path)
         
-        # 判断路径是否是一个文件夹
-        if os.path.isdir(full_path):
+        # 判断路径是否是满足要求的文件夹
+        check_result, _, _ = check_folder_integrity(folder_path=full_path, min_png=6, min_pkl=2)
+        if check_result:
             file_path = os.path.join(full_path, "after_betti_number.pkl")  
             # print(file_path)
             file_name = file_path.split("\\", 1)[1].split("\\after_betti_number.pkl")[0]
@@ -204,7 +206,7 @@ def get_all_cabs(base_path):
             for grandchild in child_files:
                 grandchild_path = os.path.join(child_path, grandchild)
                 if os.path.isdir(grandchild_path):
-                   
+                    print(grandchild_path)
                     _ = compare_after_betti_in_same_augmentation(grandchild_path)
                     # print(grandchild_path)
 
@@ -262,7 +264,8 @@ def show_intraspecific_differences(grandchild_path):
                 plt.savefig(save_path)
 
                 # 显示图表
-                plt.show()
+                # plt.show()
+                plt.close()
 
 def show_all_different(base_path):
     # 这里的目的是对种内差异实现可视化
@@ -279,6 +282,7 @@ def show_all_different(base_path):
             for grandchild in child_files:
                 grandchild_path = os.path.join(child_path, grandchild)
                 if os.path.isdir(grandchild_path):
+                    print(grandchild_path)
                     show_intraspecific_differences(grandchild_path)
                 #    print(grandchild_path)
 

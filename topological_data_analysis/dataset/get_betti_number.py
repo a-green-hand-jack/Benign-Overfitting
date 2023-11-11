@@ -1,14 +1,14 @@
 import torch
-
 import numpy as np
+import os
+import pickle
+import torch.nn.functional as F
 
 from dataset.get_dataloader import get_dataloader,loader2vec, vec_dis
 from dataset.data2betti import distance_betti, distance_betti_ripser, plt_betti_number,plot_betti_number_bars
 from ripser import Rips, ripser
 from net.custome_net import MLP,LeNet,ModelInitializer
-import os
-import pickle
-import torch.nn.functional as F
+
 
 # 判断是否安装了 ripser++，如果安装了就使用 ripserplusplus，否则使用 ripser
 try:
@@ -185,6 +185,79 @@ def betti_4_data(seed=None,
     return {d1_key: d1, d2_key: d2}
 
 
+import os
+
+def check_folder_integrity(folder_path: str, min_png: int, min_pkl: int) -> tuple:
+    """
+    检查指定文件夹的完整性。
+
+    参数:
+    - folder_path (str): 要检查的文件夹路径。
+    - min_png (int): 要求的最小 .png 文件数量。
+    - min_pkl (int): 要求的最小 .pkl 文件数量。
+
+    返回:
+    - tuple: 一个包含三个值的元组。
+      1. is_integrity (bool): 是否符合完整性要求。
+      2. num_png (int): 文件夹中 .png 文件的数量。
+      3. num_pkl (int): 文件夹中 .pkl 文件的数量。
+
+    示例:
+    >>> folder_path = '.\\distance\\scale\\data\\0.3'
+    >>> min_png = 8
+    >>> min_pkl = 1
+    >>> result = check_folder_integrity(folder_path, min_png, min_pkl)
+    >>> print(result)
+    (False, 5, 0)
+    
+    注意事项:
+    - 该函数只考虑直接位于指定文件夹下的 .png 和 .pkl 文件，不会遍历子文件夹。
+    - 文件夹路径应为字符串类型，最小 .png 和 .pkl 文件数量应为整数。
+    """
+    # 检查输入路径是否为文件夹
+    if not os.path.isdir(folder_path):
+        return False, 0, 0
+
+    # 初始化计数器
+    num_png = 0
+    num_pkl = 0
+
+    # 遍历文件夹
+    for file_name in os.listdir(folder_path):
+        file_path = os.path.join(folder_path, file_name)
+
+        # 判断是否为 .png 文件
+        if file_name.endswith('.png') and os.path.isfile(file_path):
+            num_png += 1
+
+        # 判断是否为 .pkl 文件
+        elif file_name.endswith('.pkl') and os.path.isfile(file_path):
+            num_pkl += 1
+
+    # 检查是否符合条件
+    is_integrity = num_png >= min_png and num_pkl >= min_pkl
+
+    return is_integrity, num_png, num_pkl
+
+def check_and_do(save_floor: str, min_png: int, min_pkl: int, betti_4_data) -> None:
+    # 检查文件夹是否已经存在
+    if os.path.exists(save_floor):
+        # print(f"已经存在文件夹: {save_floor}")
+        check_result, true_png, true_pkl = check_folder_integrity(save_floor, min_png, min_pkl)
+        # print(check_result)
+    else:
+        # 如果文件夹不存在，创建它
+        os.makedirs(save_floor)
+        print(f"创建文件夹: {save_floor}")
+        check_result = False
+        true_png = 0
+        true_pkl = 0
+
+    if check_result:
+        print(f"{save_floor}满足条件，预期最少有{min_png}张图片最少{min_pkl}个betti数据，实际上有{true_png}张图片{true_pkl}份数据，不需要重新计算")        
+    else:
+        print(f"{save_floor}不满足条件，预期最少有{min_png}张图片最少{min_pkl}个betti数据，但是只有{true_png}张图片{true_pkl}份数据，需要重新计算")
+        betti_4_data()
 
 if __name__ == '__main__':
 
