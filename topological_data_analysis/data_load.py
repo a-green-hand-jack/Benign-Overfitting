@@ -32,7 +32,7 @@ CIFAR_MEAN = [0.49139968, 0.48215827, 0.44653124]
 CIFAR_STD = [0.2023, 0.1994, 0.2010]
 
 # 为了实现比较而设置的图片加载量和随机数种子
-debug_number = 50000
+debug_number = 500
 random_seed = 15
 
 # %% [markdown]
@@ -63,7 +63,7 @@ for min_angle in min_angle_list:
 
     save_floor = f"{angle_path}{max_angle}/"
 
-    check_and_do(save_floor=save_floor, min_pkl=min_pkl, min_png=min_png, betti_4_data= betti_4_data(seed=random_seed, save_root=save_floor, debug_size=debug_number,name="data", transform=data_transform["train"]))
+    check_and_do(save_floor=save_floor, min_pkl=min_pkl, min_png=min_png, betti_4_data=lambda: betti_4_data(seed=random_seed, save_root=save_floor, debug_size=debug_number,name="data", transform=data_transform["train"]))
 
 
 
@@ -95,7 +95,7 @@ for scale in scale_list:
                                 torchvision.transforms.Normalize(CIFAR_MEAN, CIFAR_STD)])
     save_floor = f"{scale_path}{scale}/"
     
-    check_and_do(save_floor=save_floor, min_pkl=min_pkl, min_png=min_png, betti_4_data= betti_4_data(seed=random_seed, save_root=save_floor, debug_size=debug_number,name="data", transform=data_transform["train"]))
+    check_and_do(save_floor=save_floor, min_pkl=min_pkl, min_png=min_png, betti_4_data=lambda: betti_4_data(seed=random_seed, save_root=save_floor, debug_size=debug_number,name="data", transform=data_transform["train"]))
        
 
 
@@ -123,7 +123,7 @@ for alpha in alpha_list:
 
     save_floor = f"{mixup_path}{alpha}/"
 
-    check_and_do(save_floor=save_floor, min_pkl=min_pkl, min_png=min_png, betti_4_data=betti_4_data(seed=random_seed, save_root=save_floor, debug_size=debug_number,name="data", transform=data_transform["train"], alpha=alpha))
+    check_and_do(save_floor=save_floor, min_pkl=min_pkl, min_png=min_png, betti_4_data=lambda: betti_4_data(seed=random_seed, save_root=save_floor, debug_size=debug_number,name="data", transform=data_transform["train"], alpha=alpha))
 
 
 
@@ -156,7 +156,7 @@ for min_angle in min_angle_list:
                         ])}
     # print(f"\n 现在的最小角度是{min_angle}，最大角度是{max_angle}.\n")
     save_floor = f"{angle_path}{max_angle}/"
-    check_and_do(save_floor=save_floor, min_png=min_png, min_pkl=min_pkl, betti_4_data=betti_4_net(model=LeNet(),seed=random_seed, save_root=save_floor, debug_size=debug_number,name="LeNet", transform=data_transform["train"]))
+    check_and_do(save_floor=save_floor, min_png=min_png, min_pkl=min_pkl, betti_4_data=lambda: betti_4_net(model=LeNet(),seed=random_seed, save_root=save_floor, debug_size=debug_number,name="LeNet", transform=data_transform["train"]))
 
 # %% [markdown]
 # ### 对betti_bars后处理
@@ -183,7 +183,7 @@ for scale in scale_list:
                                 torchvision.transforms.Normalize(CIFAR_MEAN, CIFAR_STD)])
     save_floor = f"{scale_path}{scale}/"
 
-    check_and_do(save_floor=save_floor, min_png=min_png, min_pkl=min_pkl, betti_4_data= betti_4_net(model=LeNet(),seed=random_seed, save_root=save_floor, debug_size=debug_number, name="LeNet", transform=transform, alpha=0.0))
+    check_and_do(save_floor=save_floor, min_png=min_png, min_pkl=min_pkl, betti_4_data=lambda: betti_4_net(model=LeNet(),seed=random_seed, save_root=save_floor, debug_size=debug_number, name="LeNet", transform=transform, alpha=0.0))
 
 # %% [markdown]
 # ### betti_number后处理
@@ -205,7 +205,7 @@ alpha_list = np.arange(0.0, 0.55, 0.05)
 for alpha in alpha_list:
 
     save_floor = f"{mixup_path}{alpha}/"
-    check_and_do(save_floor=save_floor, min_png=min_png, min_pkl=min_pkl, betti_4_data=betti_4_net(model=LeNet(),seed=random_seed, save_root=save_floor, debug_size=debug_number, name="LeNet", transform=transform, alpha=alpha))
+    check_and_do(save_floor=save_floor, min_png=min_png, min_pkl=min_pkl, betti_4_data=lambda: betti_4_net(model=LeNet(),seed=random_seed, save_root=save_floor, debug_size=debug_number, name="LeNet", transform=transform, alpha=alpha))
     
 
 # %% [markdown]
@@ -240,7 +240,7 @@ for min_angle in min_angle_list:
                         ])}
     # print(f"\n 现在的最小角度是{min_angle}，最大角度是{max_angle}.\n")
     save_floor = f"{angle_path}{max_angle}/"
-    check_and_do(save_floor=save_floor, min_png=6, min_pkl=1, betti_4_data=betti_4_net(model=MLP(),seed=random_seed, save_root=save_floor, debug_size=debug_number,name="MLP", transform=data_transform["train"]))
+    check_and_do(save_floor=save_floor, min_png=6, min_pkl=1, betti_4_data=lambda: betti_4_net(model=MLP(),seed=random_seed, save_root=save_floor, debug_size=debug_number,name="MLP", transform=data_transform["train"]))
     
 
 # %% [markdown]
@@ -267,7 +267,7 @@ for scale in scale_list:
                                 torchvision.transforms.ToTensor(),
                                 torchvision.transforms.Normalize(CIFAR_MEAN, CIFAR_STD)])
     save_floor = f"{scale_path}{scale}/"
-    check_and_do(save_floor=save_floor, min_png=6, min_pkl=1, betti_4_data=betti_4_net(model=MLP(),seed=random_seed, save_root=save_floor, debug_size=debug_number, name="MLP", transform=transform, alpha=0.0))
+    check_and_do(save_floor=save_floor, min_png=6, min_pkl=1, betti_4_data=lambda: betti_4_net(model=MLP(),seed=random_seed, save_root=save_floor, debug_size=debug_number, name="MLP", transform=transform, alpha=0.0))
     
     
 
@@ -291,7 +291,7 @@ alpha_list = np.arange(0.0, 0.55, 0.05)
 for alpha in alpha_list:
 
     save_floor = f"{mixup_path}{alpha}/"
-    check_and_do(save_floor=save_floor, min_png=6, min_pkl=1, betti_4_data=betti_4_net(model=MLP(),seed=random_seed, save_root=save_floor, debug_size=debug_number, name="MLP", transform=transform, alpha=alpha))
+    check_and_do(save_floor=save_floor, min_png=6, min_pkl=1, betti_4_data=lambda: betti_4_net(model=MLP(),seed=random_seed, save_root=save_floor, debug_size=debug_number, name="MLP", transform=transform, alpha=alpha))
     
     
 

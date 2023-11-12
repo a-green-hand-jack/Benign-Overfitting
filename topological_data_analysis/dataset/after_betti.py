@@ -49,12 +49,14 @@ def after_get_bars(base_path="distance/angle/LeNet/"):
         # print(path)
         full_path = os.path.join(base_path, path)
         print(full_path)
-        check_result,_,_ = check_folder_integrity(full_path, min_png=6, min_pkl=1)
+        check_result,true_png,true_pkl = check_folder_integrity(full_path, min_png=6, min_pkl=1)
         if check_result:
+            print(f"观察{full_path}文件夹,里面有{true_png}张图片、{true_pkl}份betti_number.pkl数据。可以计算after_betti。")
             # full_path = os.path.join(base_path, path)
             test_dict = convert_encoding(full_path, "betti_number.pkl")
             get_all_for_betti(test_dict, full_path)
         else:
+            print(f"观察{full_path}文件夹,里面有{true_png}张图片、{true_pkl}份betti_number.pkl数据。期望有6张图片，1份betti_number.pkl文件")
             pass
 
 
