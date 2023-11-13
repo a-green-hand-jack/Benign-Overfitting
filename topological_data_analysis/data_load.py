@@ -32,7 +32,7 @@ CIFAR_MEAN = [0.49139968, 0.48215827, 0.44653124]
 CIFAR_STD = [0.2023, 0.1994, 0.2010]
 
 # 为了实现比较而设置的图片加载量和随机数种子
-debug_number = 50000
+debug_number = 5000
 random_seed = 15
 
 # %% [markdown]

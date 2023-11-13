@@ -103,6 +103,7 @@ def count_samples(matrix, number):
     return count
 
 
+
 def get_min_max_columns(matrix):
     '''
     获取矩阵的第一列的最小值和第二列的最大值。
@@ -114,13 +115,16 @@ def get_min_max_columns(matrix):
     - min_first_column：第一列的最小值。
     - max_second_column：第二列的最大值。
     '''
+    # 将无穷大值替换为最大实数
+    finite_matrix = np.where(np.isfinite(matrix), matrix, np.max(matrix[np.isfinite(matrix)]))
+
     # 计算第一列的最小值
-    min_first_column = np.min(matrix[:, 0])
+    min_first_column = np.min(finite_matrix[:, 0])
 
     # 计算第二列的最大值
-    max_second_column = np.max(matrix[:, 1])
+    max_second_column = np.max(finite_matrix[:, 1])
 
-    return min_first_column, max_second_column
+    return min_first_column, max_second_column, finite_matrix
 
 
 def calculate_edge_length(matrix):
@@ -192,11 +196,12 @@ def get_all_for_betti(bar_dict=None, save_root=None):
     death_len_dict = {}
     for key, value in bar_dict.items():
         # print(key, value)
-        if value[-1, -1] == float("inf"):
+        min_first_colum, max_second_column,matrix = get_min_max_columns(value)
+        # if value[-1, -1] == float("inf"):
 
-            matrix = value[:-1, :]
-        else:
-            matrix = value
+        #     matrix = value[:-1, :]
+        # else:
+        #     matrix = value
 
         # 第一，计算bar的数目
         bar_number_key = f"bar_number_{key}"
@@ -211,7 +216,7 @@ def get_all_for_betti(bar_dict=None, save_root=None):
         max_cont = 0
         max_epsilon = 0
 
-        min_first_colum, max_second_column = get_min_max_columns(matrix)
+        # min_first_colum, max_second_column = get_min_max_columns(matrix)
         min_first_colum, max_second_column = int(min_first_colum), int(max_second_column)
 
         for epsilon in range(min_first_colum, 1+max_second_column):
