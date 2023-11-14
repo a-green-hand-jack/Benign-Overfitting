@@ -4,6 +4,7 @@ import torchvision.transforms as transforms
 import numpy as np
 import os
 import torch.nn.functional as F
+import random
 
 def get_dataloader(chose,batch_size=64, 
                            root='./data', 
@@ -72,10 +73,11 @@ def get_cifar10_dataloader(batch_size=64,
 
     return train_loader, test_loader
 
+
 def get_cifar10_debug_dataloader(batch_size=64, 
                                 root='./data', 
-                                CIFAR_MEAN = [0.49139968, 0.48215827, 0.44653124], 
-                                CIFAR_STD = [0.2023, 0.1994, 0.2010],
+                                CIFAR_MEAN=[0.49139968, 0.48215827, 0.44653124], 
+                                CIFAR_STD=[0.2023, 0.1994, 0.2010],
                                 custom_transform=None,
                                 debug_size=20):
     """
@@ -103,14 +105,14 @@ def get_cifar10_debug_dataloader(batch_size=64,
     else:
         transform = custom_transform
 
-    # 加载部分训练集和测试集，仅加载 debug_size 个样本
+    # 加载部分训练集和测试集，随机选择 debug_size 个样本
     train_dataset = torchvision.datasets.CIFAR10(root=root, train=True, transform=transform, download=False)
-    train_dataset.data = train_dataset.data[:debug_size]
-    train_dataset.targets = train_dataset.targets[:debug_size]
+    indices = random.sample(range(len(train_dataset)), debug_size)
+    train_dataset = torch.utils.data.Subset(train_dataset, indices)
 
     test_dataset = torchvision.datasets.CIFAR10(root=root, train=False, transform=transform, download=False)
-    test_dataset.data = test_dataset.data[:debug_size]
-    test_dataset.targets = test_dataset.targets[:debug_size]
+    indices = random.sample(range(len(test_dataset)), debug_size)
+    test_dataset = torch.utils.data.Subset(test_dataset, indices)
 
     # 创建数据加载器
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
@@ -140,20 +142,24 @@ def mixup_data(x, alpha=1.0):
     return mixed_x
 
 
-def loader2vec(train_loader=None, alpha=0.0):
+from typing import Optional
+import torch
+
+def loader2vec(train_loader: torch.utils.data.DataLoader, alpha: float = 0.0, gpu_flag: bool = False) -> torch.Tensor:
     """
     将训练数据加载器中的图像批量转换为一维向量并合并成一个大矩阵，根据alpha的值是否使用MixUp。
 
     参数:
     - train_loader (PyTorch 数据加载器): 用于加载训练数据的数据加载器。
     - alpha (float): MixUp参数，控制混合的程度。默认为0.0，表示不使用MixUp。
+    - gpu_flag (bool): 是否使用 GPU 进行计算，如果为 True，则使用 GPU，否则使用 CPU。
 
     返回:
     - flattened_images (PyTorch Tensor): 一个包含所有训练图像的一维向量矩阵。
     """
 
     # 检查是否有可用的CUDA设备
-    use_cuda = torch.cuda.is_available()
+    use_cuda = gpu_flag and torch.cuda.is_available()
     
     flattened_images = None
 
@@ -178,13 +184,14 @@ def loader2vec(train_loader=None, alpha=0.0):
         else:
             flattened_images = torch.cat((flattened_images, batch_flattened), dim=0)
 
+    print(f"这里是得到图片数值矩阵，是否使用cuda={use_cuda}")
     return flattened_images
 
 
 
+from typing import Optional
 
-
-def vec_dis(data_matrix=None, distance=None, root="./distance", save_flag=None):
+def vec_dis(data_matrix: torch.Tensor, distance: str, root: str = "./distance", save_flag: Optional[bool] = None, gpu_flag: bool = False):
     """
     计算给定数据矩阵中样本之间的距离矩阵，支持欧氏距离（L2范数）和曼哈顿距离（L1范数）。
 
@@ -193,23 +200,24 @@ def vec_dis(data_matrix=None, distance=None, root="./distance", save_flag=None):
     - distance (字符串): 距离度量，可选值为 "l2" 或 "l1"，分别表示欧氏距离和曼哈顿距离。
     - root (字符串): 距离矩阵保存的根目录。
     - save_flag (布尔值): 是否将距离矩阵保存为文件，如果为 True，则保存。
+    - gpu_flag (布尔值): 是否使用 GPU 进行计算，如果为 True，则使用 GPU，否则使用 CPU。
 
     返回:
     - l_distances (NumPy 数组): 样本之间的距离矩阵。
     """
 
-    # 检查是否有可用的CUDA设备
-    use_cuda = torch.cuda.is_available()
+    # 检查是否有可用的 CUDA 设备
+    use_cuda = gpu_flag and torch.cuda.is_available()
 
     if use_cuda:
         data_matrix = data_matrix.to('cuda')
 
     if distance == "l2":
-        # 计算L2范数（欧氏距离）距离矩阵
+        # 计算 L2 范数（欧氏距离）距离矩阵
         l_distances = torch.cdist(data_matrix, data_matrix, p=2)
         
     elif distance == "l1":
-        # 计算L1范数（曼哈顿距离）距离矩阵
+        # 计算 L1 范数（曼哈顿距离）距离矩阵
         l_distances = torch.cdist(data_matrix, data_matrix, p=1)
 
     dis_root = os.path.join(root, f"{distance}_distance.npy")
@@ -217,12 +225,14 @@ def vec_dis(data_matrix=None, distance=None, root="./distance", save_flag=None):
         if not os.path.exists(root):
             # 如果文件夹不存在，则创建它
             os.makedirs(root)
-        np.save(dis_root, l_distances.to('cpu').detach().numpy())  # 保存到CPU上并转换为NumPy数组
+        np.save(dis_root, l_distances.to('cpu').detach().numpy())  # 保存到 CPU 上并转换为 NumPy 数组
     else:
         pass
 
     if use_cuda:
-        l_distances = l_distances.to('cpu')  # 将结果移回CPU
+        l_distances = l_distances.to('cpu')  # 将结果移回 CPU
 
-    return l_distances.cpu().detach().numpy()  # 转换为NumPy数组并返回
+    print(f"这里是得到距离矩阵，是否使用cuda={use_cuda}")
+    return l_distances.cpu().detach().numpy()  # 转换为 NumPy 数组并返回
+
 

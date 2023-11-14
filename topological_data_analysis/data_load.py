@@ -65,13 +65,15 @@ for min_angle in min_angle_list:
 
     check_and_do(save_floor=save_floor, min_pkl=min_pkl, min_png=min_png, betti_4_data=lambda: betti_4_data(seed=random_seed, save_root=save_floor, debug_size=debug_number,name="data", transform=data_transform["train"]))
 
-
+# print("\n, 第一次50K数据观察成功，这发生在cpu上！！")
 
 # %% [markdown]
 # ### 对betti_bar后处理
 
 # %%
 after_get_bars(base_path = angle_path)
+
+# print("\n 第一次50K的数据后处理成功，这发生在cpu上！！")
 
 # %% [markdown]
 # ## 考察不同的裁切尺寸

@@ -54,7 +54,8 @@ def betti_4_net(model=None, seed=None,
                 device=torch.device("cuda" if torch.cuda.is_available() else "cpu"),
                 name="Net",
                 transform=None,
-                alpha=0.0):
+                alpha=0.0,
+                gpu_flog=True):
     ''' 
     Function: betti_4_net
 
@@ -88,8 +89,8 @@ def betti_4_net(model=None, seed=None,
     flattened_images = torch.cat(out_list, dim=0)
     # flattened_images现在是经过网络处理的最后的output层，没有经过softmax，形状为(N,210)，其中N是训练集的大小
 
-    l2_distances = vec_dis(data_matrix=flattened_images, distance="l2", root=save_root)
-    l1_distances = vec_dis(data_matrix=flattened_images, distance="l1", root=save_root)
+    l2_distances = vec_dis(data_matrix=flattened_images, distance="l2", root=save_root,gpu_flag=gpu_flog)
+    l1_distances = vec_dis(data_matrix=flattened_images, distance="l1", root=save_root, gpu_flag=gpu_flog)
 
     # 判断是否安装了 ripser++，如果安装了就使用 ripserplusplus，否则使用 ripser
     if 'rpp_py' in globals():
@@ -131,7 +132,8 @@ def betti_4_data(seed=None,
                 device=torch.device("cuda" if torch.cuda.is_available() else "cpu"),
                 name="Net",
                 transform=None,
-                alpha=0.0):
+                alpha=0.0,
+                gpu_flag = True):
     ''' 
     Function: betti_4_data
 
@@ -146,11 +148,12 @@ def betti_4_data(seed=None,
 
     # train_loader, test_loader = get_dataloader(chose,debug_size,transform=transform)
     train_loader, test_loader = get_dataloader(chose=chose, debug_size=debug_size, transform=transform)
-    flattened_images = loader2vec(train_loader=train_loader, alpha=alpha)
+    # print("888888888888888")
+    flattened_images = loader2vec(train_loader=train_loader, alpha=alpha, gpu_flag=gpu_flag)
 
     # flattened_images现在包含整个训练集中的图像向量，形状为(N, 3 * 224 * 224)，其中N是训练集的大小
-    l2_distances = vec_dis(data_matrix=flattened_images, distance="l2", root=save_root)
-    l1_distances = vec_dis(data_matrix=flattened_images, distance="l1", root=save_root)
+    l2_distances = vec_dis(data_matrix=flattened_images, distance="l2", root=save_root, gpu_flag=gpu_flag)
+    l1_distances = vec_dis(data_matrix=flattened_images, distance="l1", root=save_root, gpu_flag=gpu_flag)
 
     # 判断是否安装了 ripser++，如果安装了就使用 ripserplusplus，否则使用 ripser
     if 'rpp_py' in globals():
@@ -184,8 +187,15 @@ def betti_4_data(seed=None,
     
     return {d1_key: d1, d2_key: d2}
 
-
 import os
+import pickle
+import numpy as np
+
+def is_empty_matrix(matrix):
+    return matrix.size == 0
+
+def is_nonempty_dict(obj):
+    return isinstance(obj, dict) and bool(obj)
 
 def check_folder_integrity(folder_path: str, min_png: int, min_pkl: int) -> tuple:
     """
@@ -234,10 +244,22 @@ def check_folder_integrity(folder_path: str, min_png: int, min_pkl: int) -> tupl
         elif file_name.endswith('.pkl') and os.path.isfile(file_path):
             num_pkl += 1
 
+            # 检查 .pkl 文件中包含的内容类型
+            with open(file_path, 'rb') as pkl_file:
+                try:
+                    obj = pickle.load(pkl_file)
+                    if not is_nonempty_dict(obj) and not is_empty_matrix(obj):
+                        num_pkl -= 1  # 不满足条件，减少计数
+                except Exception as e:
+                    print(f"Error loading {file_name}: {e}")
+                    num_pkl -= 1  # 不满足条件，减少计数
+
     # 检查是否符合条件
     is_integrity = num_png >= min_png and num_pkl >= min_pkl
 
     return is_integrity, num_png, num_pkl
+
+
 
 def check_and_do(save_floor: str, min_png: int, min_pkl: int, betti_4_data) -> None:
     # 检查文件夹是否已经存在
