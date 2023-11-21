@@ -2,6 +2,8 @@ import numpy as np
 import pickle
 import os
 import re
+from typing import Tuple
+
 from dataset.get_betti_number import check_folder_integrity
 
 
@@ -127,9 +129,13 @@ def get_min_max_columns(matrix):
     return min_first_column, max_second_column, finite_matrix
 
 
-def calculate_edge_length(matrix):
+
+
+def calculate_edge_length(matrix: np.ndarray) -> Tuple[float, float]:
     '''
     计算曲线的近似长度。
+    使用离散曲线的长度计算方法：通过对相邻顶点之间的距离进行累加来计算曲线的长度。
+    这种方法可以适用于任意数量的顶点，而不需要人为规定任意两个顶点之间的距离。
 
     参数：
     - matrix：包含曲线顶点的矩阵，每一行表示一个顶点，包含左边界和右边界。
@@ -143,18 +149,15 @@ def calculate_edge_length(matrix):
     right_vector = matrix[:, 1]
 
     # 计算左边界的顶点长度
-    left_length = np.arange(0, left_vector.shape[0]) / 100
-    left_matrix = np.column_stack((left_length, left_vector))
-    left_distance = np.sqrt(np.sum(np.diff(left_matrix, axis=0)**2, axis=1))
+    left_distance = np.sqrt(np.sum(np.diff(left_vector, axis=0) ** 2, axis=1))
     left_line = np.sum(left_distance)
 
     # 计算右边界的顶点长度
-    right_length = np.arange(0, right_vector.shape[0]) / 100
-    right_matrix = np.column_stack((right_length, right_vector))
-    right_distance = np.sqrt(np.sum(np.diff(right_matrix, axis=0)**2, axis=1))
+    right_distance = np.sqrt(np.sum(np.diff(right_vector, axis=0) ** 2, axis=1))
     right_line = np.sum(right_distance)
 
     return left_line, right_line
+
 
 
 def save_dict(dictionary, file_path):

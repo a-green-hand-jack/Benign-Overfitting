@@ -204,6 +204,7 @@ def vec_dis(data_matrix: torch.Tensor, distance: str, root: str = "./distance", 
 
     返回:
     - l_distances (NumPy 数组): 样本之间的距离矩阵。
+        同时，这个距离矩阵经过了归一化处理，这样可以在一定程度上保证output得到的betti number 和data直接得到的betti number的具有可比性的。
     """
 
     # 检查是否有可用的 CUDA 设备
@@ -228,6 +229,12 @@ def vec_dis(data_matrix: torch.Tensor, distance: str, root: str = "./distance", 
         np.save(dis_root, l_distances.to('cpu').detach().numpy())  # 保存到 CPU 上并转换为 NumPy 数组
     else:
         pass
+    
+    # 计算矩阵中每个元素的均值和标准差
+    mean = torch.mean(l_distances, dim=0)
+    std = torch.std(l_distances, dim=0)
+
+    l_distances = (l_distances - mean) / std
 
     if use_cuda:
         l_distances = l_distances.to('cpu')  # 将结果移回 CPU

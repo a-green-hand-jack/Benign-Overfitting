@@ -218,7 +218,7 @@ def show_intraspecific_differences(grandchild_path):
 
     Parameters:
     - grandchild_path (str): The path to the folder containing data.
-
+    debug:2023-11-21;这里取消了对ε的绘制，因为它似乎没有一开始想象的那么重要。
     Returns:
     None
     """
@@ -244,7 +244,7 @@ def show_intraspecific_differences(grandchild_path):
                     if isinstance(l3_value, tuple):
                         # 如果值是元组，分别提取两个值
                         epsilon, betti_number = l3_value
-                        plt.scatter(x_value, epsilon, label=f'{l3_key} - ε', color='blue')
+                        # plt.scatter(x_value, epsilon, label=f'{l3_key} - ε', color='blue')    # 这里取消了对ε的绘制，因为我其实不是很关心它的变化情况
                         plt.scatter(x_value, betti_number, label=f'{l3_key} - betti number', color='red')
                     else:
                         # 否则，正常绘制
