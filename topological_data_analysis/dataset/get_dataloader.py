@@ -115,8 +115,8 @@ def get_cifar10_debug_dataloader(batch_size=64,
     test_dataset = torch.utils.data.Subset(test_dataset, indices)
 
     # 创建数据加载器
-    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-    test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
+    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True,drop_last=True)
+    test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=batch_size, shuffle=False, drop_last=True)
 
     return train_loader, test_loader
 
@@ -209,6 +209,12 @@ def vec_dis(data_matrix: torch.Tensor, distance: str, root: str = "./distance", 
 
     # 检查是否有可用的 CUDA 设备
     use_cuda = gpu_flag and torch.cuda.is_available()
+    
+    # 计算矩阵中每个元素的均值和标准差
+    mean = torch.mean(data_matrix, dim=0)
+    std = torch.std(data_matrix, dim=0)
+    data_matrix = (data_matrix - mean) / std
+
 
     if use_cuda:
         data_matrix = data_matrix.to('cuda')
@@ -230,14 +236,7 @@ def vec_dis(data_matrix: torch.Tensor, distance: str, root: str = "./distance", 
     else:
         pass
     
-    # 计算矩阵中每个元素的均值和标准差
-    mean = torch.mean(l_distances, dim=0)
-    std = torch.std(l_distances, dim=0)
 
-    l_distances = (l_distances - mean) / std
-
-    if use_cuda:
-        l_distances = l_distances.to('cpu')  # 将结果移回 CPU
 
     print(f"这里是得到距离矩阵，是否使用cuda={use_cuda}")
     return l_distances.cpu().detach().numpy()  # 转换为 NumPy 数组并返回

@@ -52,7 +52,7 @@ def plt_betti_number(betti_number,plot=False,plt_title=None,root=None):
             # 如果文件夹不存在，则创建它
             os.makedirs(root)
     plt.figure()
-    save_path = f"{root}\\{plt_title}_scatter.png"
+    save_path = f"{root}_{plt_title}_scatter.png"
 
     if plot:
         for index, value in enumerate(betti_number):
@@ -94,7 +94,7 @@ def plot_stacked_horizontal_bars(bar_data, index_title,plt_title,root=None):
             # 如果文件夹不存在，则创建它
             os.makedirs(root)
     plt.figure()
-    save_path = f"{root}\\H{index_title}_{plt_title}_bar.png"
+    save_path = f"{root}_H{index_title}_{plt_title}_bar.png"
 
     # 初始化y坐标位置
     # y_positions = list(range(len(bar_data)))

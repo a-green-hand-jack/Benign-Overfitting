@@ -16,14 +16,30 @@ class LeNet(nn.Module):
     def forward(self, x):
         out = F.relu(self.conv1(x))
         out = F.max_pool2d(out, 2)
+        out1 = out
+
         out = F.relu(self.conv2(out))
         out = F.max_pool2d(out, 2)
+        out2 = out
+        
         out = out.view(out.size(0), -1)
-        out = F.relu(self.fc1(out))
-        out = F.relu(self.fc2(out))
+        out = self.fc1(out)
+        out3 = out
+        out = F.relu(out)
+        
+        out = self.fc2(out)
+        out4 = out
+        out = F.relu(out)
+        
         out = self.fc3(out)
-        return out
+        out5 = out
+        return [x, out1, out2, out3, out4, out5]
     
+    def children(self):
+        # Return an iterator over child modules
+        return iter([self.conv1, self.conv2, self.fc1, self.fc2, self.fc3])
+    
+
 ''' MLP '''
 class MLP(nn.Module):
     def __init__(self, channel=3, num_classes=10, im_size=(32, 32)):
@@ -35,11 +51,21 @@ class MLP(nn.Module):
 
 
     def forward(self, x):
+        outs = []
         out = x.view(x.size(0), -1)
+        
         out = F.relu(self.fc_1(out))
+        out1 = out
+        
         out = F.relu(self.fc_2(out))
+        out2 = out
         out = self.fc_3(out)
-        return out
+        out3 = out
+        return [x, out1, out2, out3]
+    
+    def children(self):
+        # Return an iterator over child modules
+        return iter([self.fc_1, self.fc_2, self.fc_3])
     
 
 class ModelInitializer:

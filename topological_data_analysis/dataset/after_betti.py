@@ -149,11 +149,11 @@ def calculate_edge_length(matrix: np.ndarray) -> Tuple[float, float]:
     right_vector = matrix[:, 1]
 
     # 计算左边界的顶点长度
-    left_distance = np.sqrt(np.sum(np.diff(left_vector, axis=0) ** 2, axis=1))
+    left_distance = np.sqrt(np.sum(np.diff(left_vector) ** 2))
     left_line = np.sum(left_distance)
 
     # 计算右边界的顶点长度
-    right_distance = np.sqrt(np.sum(np.diff(right_vector, axis=0) ** 2, axis=1))
+    right_distance = np.sqrt(np.sum(np.diff(right_vector) ** 2))
     right_line = np.sum(right_distance)
 
     return left_line, right_line
