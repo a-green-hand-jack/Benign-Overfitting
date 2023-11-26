@@ -9,7 +9,7 @@ import torch.nn.functional as F
 from dataset.get_dataloader import get_dataloader,loader2vec, vec_dis
 from dataset.data2betti import distance_betti, distance_betti_ripser, plt_betti_number,plot_betti_number_bars
 from ripser import Rips, ripser
-from net.custome_net import MLP,LeNet,ModelInitializer
+from net.custome_net import MLP,LeNet,ModelInitializer, init_weights
 
 
 # 判断是否安装了 ripser++，如果安装了就使用 ripserplusplus，否则使用 ripser
@@ -53,7 +53,7 @@ def get_layer_output_betti(model: Any = None,
                 seed: Union[None, int] = None,
                 save_root: str = "./distance/Net-test/",
                 chose: str = "cifar10_debug",
-                debug_size: int = 100,
+                debug_size: int = 1000,
                 device: torch.device = torch.device("cuda" if torch.cuda.is_available() else "cpu"),
                 name: str = "Net",
                 transform: Any = None,
@@ -72,13 +72,18 @@ def get_layer_output_betti(model: Any = None,
     Example Usage: betti_4_net(model, seed, save_root, chose, debug_size, device, name, transform) 
     '''
 
-    model_initializer = ModelInitializer(model, seed)
-    train_loader, test_loader = get_dataloader(chose=chose, debug_size=debug_size, transform=transform)
-
-
-    model.eval()
+    # model_initializer = ModelInitializer(model, seed)
+    model_name = type(model).__name__
+    print(f"This is {model_name}!!!")
     model.to(device)
+    model.apply(init_weights)
+    model.eval()
+    # 检查每个参数的设备位置并将未在目标设备上的参数移动到目标设备上
+    # for name, param in model.named_parameters():
+    #     if not param.is_cuda:  # 检查参数是否在目标设备上
+    #         param.data = param.data.to(device)s
     # 遍历10遍或者若干遍数据集
+    train_loader, test_loader = get_dataloader(chose=chose, debug_size=debug_size, transform=transform)
     
     all_layers_output = []
 
@@ -97,7 +102,15 @@ def get_layer_output_betti(model: Any = None,
                 mixed_data, target = mixed_data.to(device), target.to(device)
 
                 # 获取模型输出
+                # print(mixed_data.shape, mixed_data.device)
+                # # print(model.device)
+                # # 打印模型参数
+                # for name, param in model.named_parameters():
+                #     # print(name, param.data)
+                #     print(f"Parameter '{name}' device: {param.device}")
+
                 outputs = model(mixed_data)
+                # print(outputs)
 
                 # 将每一层的输出追加到对应的张量中
                 for i, layer_output in enumerate(outputs):
@@ -116,6 +129,7 @@ def get_layer_output_betti(model: Any = None,
 
     # 遍历每一列，对每列的张量进行平均值计算
     for column in all_layers_output_df.columns:
+        
         # 将 DataFrame 中的张量转换为 PyTorch 张量
         tensors_in_column = all_layers_output_df[column].values.tolist()
         # tensors_in_column = [torch.tensor(tensor) for tensor in tensors_in_column]
@@ -123,13 +137,13 @@ def get_layer_output_betti(model: Any = None,
         # 计算每列张量的平均值
         averaged_tensor = torch.stack(tensors_in_column).mean(dim=0)
         averaged_tensors_list.append(averaged_tensor)
-
+    # print(averaged_tensors_list)
     all_l2_distances = []
     all_l1_distances = []
     # print(len(layer_outputs))
     for layer_number, layer_output in enumerate(averaged_tensors_list):
-        print(layer_number,"\n",len(layer_output),type(layer_output))
-        print(layer_output[0].shape)
+        # print(layer_number,"\n",len(layer_output),type(layer_output))
+        # print(layer_output[0].shape)
         # concatenated_outputs = torch.cat(layer_output, dim=0)
         # print(concatenated_outputs.shape)
         concatenated_outputs = layer_output.view(layer_output.shape[0], -1)
@@ -154,7 +168,7 @@ def get_layer_output_betti(model: Any = None,
             d2 = ripser(l2_distances, maxdim=1, distance_matrix=True)
             d2 = d2["dgms"]
 
-        save_path =  f"{save_root}/{name}/{layer_number}/"
+        save_path =  f"{save_root}/{layer_number}/"
         plt_betti_number(d1, plt_title=f"{layer_number}L1", root=save_path)
         plot_betti_number_bars(d1, plt_title=f"{layer_number}L1", root=save_path)
         plt_betti_number(d2, plt_title=f"{layer_number}L2", root=save_path)
@@ -175,4 +189,4 @@ def get_layer_output_betti(model: Any = None,
         save_dict(dict_my, root)
     
 
-    return {f"{name}-birth-death-l1_distance": all_l1_distances, f"{name}-birth-death-l2_distance": all_l2_distances}
+    return f"{save_root}/{name}"

@@ -259,13 +259,57 @@ def check_folder_integrity(folder_path: str, min_png: int, min_pkl: int) -> tupl
 
     return is_integrity, num_png, num_pkl
 
+import os
+import pickle
+
+def is_nonempty_dict(obj):
+    return isinstance(obj, dict) and bool(obj)
+
+def is_empty_matrix(obj):
+    return isinstance(obj, list) and all(isinstance(row, list) and not row for row in obj)
+
+def check_folder_integrity2(folder_path: str, min_png: int, min_pkl: int) -> bool:
+    if not os.path.isdir(folder_path):
+        return False
+
+    subfolders = [subfolder for subfolder in os.listdir(folder_path) if os.path.isdir(os.path.join(folder_path, subfolder)) and subfolder.isdigit()]
+
+    for subfolder in subfolders:
+        subfolder_path = os.path.join(folder_path, subfolder)
+        num_png = 0
+        num_pkl = 0
+
+        for file_name in os.listdir(subfolder_path):
+            file_path = os.path.join(subfolder_path, file_name)
+
+            if file_name.endswith('.png') and os.path.isfile(file_path):
+                num_png += 1
+
+            elif file_name.endswith('.pkl') and os.path.isfile(file_path):
+                num_pkl += 1
+
+                with open(file_path, 'rb') as pkl_file:
+                    try:
+                        obj = pickle.load(pkl_file)
+                        if not is_nonempty_dict(obj) and not is_empty_matrix(obj):
+                            num_pkl -= 1
+                    except Exception as e:
+                        print(f"Error loading {file_name}: {e}")
+                        num_pkl -= 1
+
+        if num_png < min_png or num_pkl < min_pkl:
+            return False, num_png, num_pkl
+
+    return True, num_png, num_pkl
+
+
 
 
 def check_and_do(save_floor: str, min_png: int, min_pkl: int, betti_4_data) -> None:
     # 检查文件夹是否已经存在
     if os.path.exists(save_floor):
         # print(f"已经存在文件夹: {save_floor}")
-        check_result, true_png, true_pkl = check_folder_integrity(save_floor, min_png, min_pkl)
+        check_result, true_png, true_pkl = check_folder_integrity2(save_floor, min_png, min_pkl)
         # print(check_result)
     else:
         # 如果文件夹不存在，创建它
@@ -279,7 +323,7 @@ def check_and_do(save_floor: str, min_png: int, min_pkl: int, betti_4_data) -> N
         print(f"{save_floor}满足条件，预期最少有{min_png}张图片最少{min_pkl}个betti数据，实际上有{true_png}张图片{true_pkl}份数据，不需要重新计算")        
     else:
         print(f"{save_floor}不满足条件，预期最少有{min_png}张图片最少{min_pkl}个betti数据，但是只有{true_png}张图片{true_pkl}份数据，需要重新计算")
-        betti_4_data()
+        return betti_4_data()
 
 if __name__ == '__main__':
 

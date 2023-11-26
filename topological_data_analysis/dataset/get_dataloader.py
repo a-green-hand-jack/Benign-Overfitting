@@ -211,9 +211,10 @@ def vec_dis(data_matrix: torch.Tensor, distance: str, root: str = "./distance", 
     use_cuda = gpu_flag and torch.cuda.is_available()
     
     # 计算矩阵中每个元素的均值和标准差
-    mean = torch.mean(data_matrix, dim=0)
-    std = torch.std(data_matrix, dim=0)
-    data_matrix = (data_matrix - mean) / std
+    # mean = torch.mean(data_matrix, dim=0)
+    # std = torch.std(data_matrix, dim=0)
+    # data_matrix = (data_matrix - mean) / std
+    data_matrix = data_matrix / torch.norm(data_matrix, p=2, dim=1, keepdim=True)
 
 
     if use_cuda:

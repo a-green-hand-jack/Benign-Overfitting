@@ -11,25 +11,84 @@
 
 # %%
 from dataset.check_betti4net import get_layer_output_betti
-from net.custome_net import LeNet, MLP
-
-
-model_LeNet = LeNet()
-get_layer_output_betti(model=model_LeNet, seed=15, save_root="./care_layers_output/with_input", debug_size=5000, name="LeNet")
-
-model_MLP = MLP()
-get_layer_output_betti(model=model_MLP, seed=15, save_root="./care_layers_output/with_input", debug_size=5000, name="MLP")
-
-# %%
+from net.custome_net import LeNet, MLP, ResNet18,ResNet34, ResNet50, ResNet101, ResNet152
 from dataset.after_betti import get_all_for_betti, after_get_bars
 
-MLP_path = r".\care_layers_output\with_input\MLP"
-after_get_bars(base_path = MLP_path)
-# %%
-from dataset.after_betti import get_all_for_betti, after_get_bars
+import torchvision.transforms as transforms
 
-LeNet_path = r".\care_layers_output\with_input\LeNet"
-after_get_bars(base_path = LeNet_path)
+# %%
+angle_path = "./angle_layer_out/"
+image_size = 32
+CIFAR_MEAN = [0.49139968, 0.48215827, 0.44653124]
+CIFAR_STD = [0.2023, 0.1994, 0.2010]
+min_angle_list = range(0,31,1)
+# for min_angle in tqdm(min_angle_list, unit="degree", desc="min_angle"):
+for max_angle in min_angle_list:
+    min_angle = -max_angle
+    print(f"\n 现在的最小角度是{min_angle}，最大角度是{max_angle}.\n")
+
+    data_transform={'train':transforms.Compose([
+                            transforms.RandomRotation(degrees=(min_angle, max_angle)),
+                            transforms.ToTensor(),
+                            transforms.Normalize(CIFAR_MEAN, CIFAR_STD)
+                            ])}
+    save_floor = f"{angle_path}{max_angle}/"
+    model_LeNet = LeNet()
+    LeNet_path = get_layer_output_betti(model=model_LeNet, seed=15, save_root=save_floor, name="LeNet")
+
+    model_MLP = MLP()
+    MLP_path = get_layer_output_betti(model=model_MLP, seed=15, save_root=save_floor, name="MLP")
+
+    model_ResNet18 = ResNet18()
+    ResNet18_path = get_layer_output_betti(model=model_ResNet18, seed=15, save_root=save_floor, name="ResNet18")
+
+    model_ResNet34 = ResNet34()
+    ResNet34_path = get_layer_output_betti(model=model_ResNet34, seed=15, save_root=save_floor, name="ResNet34")
+
+    model_ResNet50 = ResNet50()
+    ResNet50_path = get_layer_output_betti(model=model_ResNet50, seed=15, save_root=save_floor, name="ResNet50")
+
+    model_ResNet101 = ResNet101()
+    ResNet101_path = get_layer_output_betti(model=model_ResNet101, seed=15, save_root=save_floor, name="ResNet101")
+
+    model_ResNet152 = ResNet152()
+    ResNet152_path = get_layer_output_betti(model=model_ResNet152, seed=15, save_root=save_floor, name="ResNet152")
+
+    after_get_bars(base_path = MLP_path)
+
+    after_get_bars(base_path = LeNet_path)
+
+    after_get_bars(base_path = ResNet18_path)
+
+    after_get_bars(base_path = ResNet34_path)
+
+    after_get_bars(base_path = ResNet50_path)
+
+    after_get_bars(base_path = ResNet101_path)
+
+    after_get_bars(base_path = ResNet152_path)
+# %% 
+
+# # MLP_path = r".\care_layers_output\with_input\MLP"
+# after_get_bars(base_path = MLP_path)
+
+# # LeNet_path = r".\care_layers_output\with_input\LeNet"
+# after_get_bars(base_path = LeNet_path)
+
+# # ResNet18_path = r".\care_layers_output\with_input\ResNet18"
+# after_get_bars(base_path = ResNet18_path)
+
+# # ResNet34_path = r".\care_layers_output\with_input\ResNet34"
+# after_get_bars(base_path = ResNet34_path)
+
+# # ResNet50_path = r".\care_layers_output\with_input\ResNet50"
+# after_get_bars(base_path = ResNet50_path)
+
+# # ResNet101_path = r".\care_layers_output\with_input\ResNet101"
+# after_get_bars(base_path = ResNet101_path)
+
+# # ResNet152_path = r".\care_layers_output\with_input\ResNet152"
+# after_get_bars(base_path = ResNet152_path)
 
 # %%
 from dataset.transform_AB import compare_after_betti_in_same_augmentation as cabsa
@@ -40,11 +99,11 @@ plt.rcParams['axes.unicode_minus'] = False   # 坐标轴负数的负号显示
 import os
 import pickle
 
-parent_path = r".\care_layers_output"
+parent_path = angle_path
 get_all_cabs(parent_path)
 
 # %%
 from dataset.transform_AB import show_all_different
-parent_path = r".\care_layers_output"
+parent_path = angle_path
 show_all_different(parent_path)
 # %%
