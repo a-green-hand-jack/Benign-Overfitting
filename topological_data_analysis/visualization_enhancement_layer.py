@@ -100,7 +100,7 @@ def split_ordered_dict(input_dict: Dict[str, Dict[str, Any]]) -> List[Dict[str, 
 
 
 
-
+import re
 
 def convert_dict_to_3d_array(input_dict: Dict[str, Dict[str, Any]]) -> Dict[str, List[Tuple[int, int, int]]]:
     """
@@ -115,9 +115,14 @@ def convert_dict_to_3d_array(input_dict: Dict[str, Dict[str, Any]]) -> Dict[str,
     result_dict: Dict[str, List[Tuple[int, int, int]]] = {}
 
     for main_key, inner_dict in input_dict.items():
-        result: List[Tuple[int, int, int]] = []
+        result = []
         for key, value in inner_dict.items():
-            new_key = tuple(map(int, key.split('\\')[1:])) + (value,)
+            # print(key.split('\\'), value)
+            # digits = [x for x in key.split('\\') if x.isdigit()]
+            # result = '\\'.join(digits)
+            list4tuple = [x for x in key.split('\\') if re.match(r'^[+-]?\d+(?:\.\d+)?$', x)]
+            # print(list4tuple, value,"\n")
+            new_key = tuple(list4tuple) + (value,)
             result.append(new_key)
         result_dict[main_key] = result
 
@@ -143,11 +148,27 @@ def plot_3d_interactive(input_dict: Dict[str, List[Tuple[int, int, int]]], file_
         os.makedirs(file_path)
 
     fig = go.Figure()
+    colors_list = [
+    'aliceblue', 'antiquewhite', 'aqua', 'aquamarine', 'azure',
+    'beige', 'bisque', 'black', 'blanchedalmond', 'blue',
+    'blueviolet', 'brown', 'burlywood', 'cadetblue', 'chartreuse',
+    'chocolate', 'coral', 'cornflowerblue', 'cornsilk', 'crimson',
+    'cyan', 'darkblue', 'darkcyan', 'darkgoldenrod', 'darkgray',
+    'darkgreen', 'darkkhaki', 'darkmagenta', 'darkolivegreen', 'darkorange',
+    'darkorchid', 'darkred', 'darksalmon', 'darkseagreen', 'darkslateblue',
+    'darkslategray', 'darkturquoise', 'darkviolet', 'deeppink', 'deepskyblue'
+]
+    shapes_list = ['circle','circle-open','cross','diamond', 'diamond-open', 'square', 'square-open']
 
     for key, data in input_dict.items():
+        # print(data)
         x, y, z = zip(*data)
+        colors = tuple(colors_list[int(float(idx))] for idx in x)
+        # colors = tuple(colors_list[int(float(idx)*10)] for idx in x)   # 这里懒得折腾了，如果是angle就手动选择上一个好了
+        symbols = tuple(shapes_list[int(float(idx))] for idx in y)
+
         fig.add_trace(go.Scatter3d(x=x, y=y, z=z, mode='markers', name=key, 
-                                   marker=dict(size=5, color=z, colorscale='Viridis', opacity=0.7)))
+                                   marker=dict(symbol=symbols, size=5, color=colors,colorscale='Viridis', opacity=0.7)))
 
     fig.update_layout(scene=dict(
                         xaxis=dict(title='Enhancement Intensity'),
@@ -157,7 +178,6 @@ def plot_3d_interactive(input_dict: Dict[str, List[Tuple[int, int, int]]], file_
 
     file_name = os.path.join(file_path, list(input_dict.keys())[0] + ".html")
     fig.write_html(file_name)
-
 
 
 def visualize_aug_layers(path: str) -> None:

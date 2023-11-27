@@ -37133,3 +37133,5 @@ topological_data_analysis/angle_layer_out/30/ResNet50/intraspecific_differences/
 topological_data_analysis/angle_layer_out/30/ResNet50/intraspecific_differences/L2-B1_max_betti_number_epsilon.png
 topological_data_analysis/angle_layer_out/
 topological_data_analysis/baseline/
+topological_data_analysis/scale_layer_out/
+topological_data_analysis/mixup_layer_out/
