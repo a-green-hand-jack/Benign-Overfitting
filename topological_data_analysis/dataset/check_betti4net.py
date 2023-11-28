@@ -151,8 +151,34 @@ def get_layer_output_betti(model: Any = None,
 
         l2_distances = vec_dis(data_matrix=concatenated_outputs, distance="l2", root=save_root, gpu_flag=gpu_flag)
         # print(l2_distances)
+        # 计算上三角的平均值和方差
+        l2_distance_upper_triangle = np.triu(l2_distances)  # 获取上三角
+        l2_distance_average = np.mean(l2_distance_upper_triangle)  # 计算平均值
+        l2_distance_variance = np.var(l2_distance_upper_triangle)  # 计算方差
+        l2_distance_max_value = np.max(l2_distances)
+        l2_distance_standard_deviation = np.std(l2_distance_upper_triangle) # 计算标准差
+        print(f"这里是L2距离定义下的，第{layer_number}层的输出的距离矩阵的上三角的平均值：", l2_distance_average)
+        print(f"这里是L2距离定义下的，第{layer_number}层的输出的距离矩阵的上三角的方差：", l2_distance_variance)
+        print(f"这里是L2距离定义下的，第{layer_number}层的输出的距离矩阵的上三角的标准差：", l2_distance_standard_deviation)
+        print(f"这里是L2距离定义下的，第{layer_number}层的输出的距离矩阵的形状：", l2_distances.shape)
+        print(f"这里是L2距离定义下的，第{layer_number}层的输出的距离矩阵的最大值，也就是两张图片之间的最远距离：", l2_distance_max_value)
+
         l1_distances = vec_dis(data_matrix=concatenated_outputs, distance="l1", root=save_root, gpu_flag=gpu_flag)
         # print(l1_distances.shape,"\n", l2_distances.shape)
+        # 计算上三角的平均值和方差
+        l1_distance_upper_triangle = np.triu(l1_distances)  # 获取上三角
+        l1_distance_average = np.mean(l1_distance_upper_triangle)  # 计算平均值
+        l1_distance_variance = np.var(l1_distance_upper_triangle)  # 计算方差
+        l1_distance_max_value = np.max(l1_distances)
+        l1_distance_standard_deviation = np.std(l1_distance_upper_triangle) # 计算标准差
+        print(f"这里是L1距离定义下的，第{layer_number}层的输出的距离矩阵的上三角的平均值：", l1_distance_average)
+        print(f"这里是L1距离定义下的，第{layer_number}层的输出的距离矩阵的上三角的方差：", l1_distance_variance)
+        print(f"这里是L1距离定义下的，第{layer_number}层的输出的距离矩阵的上三角的标准差：", l1_distance_standard_deviation)
+        print(f"这里是L1距离定义下的，第{layer_number}层的输出的距离矩阵的最大值，也就是两张图片之间的最远距离：", l2_distance_max_value)
+        print(f"这里是L1距离定义下的，第{layer_number}层的输出的距离矩阵的形状：", l1_distances.shape)
+        
+
+        
 
         all_l2_distances.append(l2_distances)
         all_l1_distances.append(l1_distances)

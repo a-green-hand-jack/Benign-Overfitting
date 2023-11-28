@@ -54,16 +54,18 @@ for scale in scale_list:
     print(f"\n 现在的裁切大小是{scale}.\n")
 
     save_floor = f"{scale_path}{scale}/"
+    
+    model_MLP = MLP()
+    MLP_path = f"{scale_path}/MLP/{scale}"
+    check_and_do(save_floor=MLP_path, min_pkl=min_pkl, min_png=min_png, betti_4_data=lambda: get_layer_output_betti(model=model_MLP, seed=15, save_root=MLP_path, name="MLP", debug_size=debug_number, transform=data_transform))
+    after_get_bars(base_path = MLP_path)
 
     model_LeNet = LeNet()
     LeNet_path = f"{scale_path}/LeNet/{scale}"
     check_and_do(save_floor=LeNet_path, min_pkl=min_pkl, min_png=min_png, betti_4_data=lambda: get_layer_output_betti(model=model_LeNet, seed=15, save_root=LeNet_path, name="LeNet", debug_size=debug_number, transform=data_transform))
     after_get_bars(base_path = LeNet_path)
 
-    model_MLP = MLP()
-    MLP_path = f"{scale_path}/MLP/{scale}"
-    check_and_do(save_floor=MLP_path, min_pkl=min_pkl, min_png=min_png, betti_4_data=lambda: get_layer_output_betti(model=model_MLP, seed=15, save_root=MLP_path, name="MLP", debug_size=debug_number, transform=data_transform))
-    after_get_bars(base_path = MLP_path)
+    
 
     model_ResNet18 = ResNet18()
     ResNet18_path = f"{scale_path}/ResNet18/{scale}"

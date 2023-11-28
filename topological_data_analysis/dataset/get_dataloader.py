@@ -215,7 +215,7 @@ def vec_dis(data_matrix: torch.Tensor, distance: str, root: str = "./distance", 
     # std = torch.std(data_matrix, dim=0)
     # data_matrix = (data_matrix - mean) / std
     data_matrix = data_matrix / torch.norm(data_matrix, p=2, dim=1, keepdim=True)
-
+    # print(f"这里在检查input和output的进行归一化之后的data matrix的第一行，也就是一个样本，他里面的元素应该都在0，1之间:{data_matrix[0]}\n")
 
     if use_cuda:
         data_matrix = data_matrix.to('cuda')
@@ -223,6 +223,7 @@ def vec_dis(data_matrix: torch.Tensor, distance: str, root: str = "./distance", 
     if distance == "l2":
         # 计算 L2 范数（欧氏距离）距离矩阵
         l_distances = torch.cdist(data_matrix, data_matrix, p=2)
+        
         
     elif distance == "l1":
         # 计算 L1 范数（曼哈顿距离）距离矩阵
