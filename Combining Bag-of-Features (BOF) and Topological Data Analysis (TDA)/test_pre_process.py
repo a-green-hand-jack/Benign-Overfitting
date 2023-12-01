@@ -18,7 +18,7 @@ angle_path = "./pre_process_outputs/angle"
 i = 1
 min_png = 6
 min_pkl = 1
-min_angle_list = range(0,31,1)
+min_angle_list = range(0,5,1)
 # for min_angle in tqdm(min_angle_list, unit="degree", desc="min_angle"):
 for max_angle in min_angle_list:
     min_angle = -max_angle

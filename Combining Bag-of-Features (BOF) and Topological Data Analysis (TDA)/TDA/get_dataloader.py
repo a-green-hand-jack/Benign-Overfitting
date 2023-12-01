@@ -106,11 +106,11 @@ def get_cifar10_debug_dataloader(batch_size=64,
         transform = custom_transform
 
     # 加载部分训练集和测试集，随机选择 debug_size 个样本
-    train_dataset = torchvision.datasets.CIFAR10(root=root, train=True, transform=transform, download=False)
+    train_dataset = torchvision.datasets.CIFAR10(root=root, train=True, transform=transform, download=True)
     indices = random.sample(range(len(train_dataset)), debug_size)
     train_dataset = torch.utils.data.Subset(train_dataset, indices)
 
-    test_dataset = torchvision.datasets.CIFAR10(root=root, train=False, transform=transform, download=False)
+    test_dataset = torchvision.datasets.CIFAR10(root=root, train=False, transform=transform, download=True)
     indices = random.sample(range(len(test_dataset)), debug_size)
     test_dataset = torch.utils.data.Subset(test_dataset, indices)
 
