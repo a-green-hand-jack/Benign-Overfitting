@@ -18,7 +18,7 @@ angle_path = "./pre_process_outputs/angle"
 i = 1
 min_png = 6
 min_pkl = 1
-min_angle_list = range(0,5,1)
+min_angle_list = range(0,45,1)
 # for min_angle in tqdm(min_angle_list, unit="degree", desc="min_angle"):
 for max_angle in min_angle_list:
     min_angle = -max_angle
@@ -33,6 +33,10 @@ for max_angle in min_angle_list:
 
     save_floor = f"{angle_path}/MLP/{max_angle}/"
 
-    MLP_no_aug = ModelWithOneAugmentation(model=MLP(), net_name="MLP", transform=None, augmentation_name="NO", num_repeats=2, num_epochs=10,save_path=save_floor)
+    MLP_no_aug = ModelWithOneAugmentation(model=MLP(), net_name="MLP", transform=data_transform, augmentation_name="angle", num_repeats=10, num_epochs=300,save_path=save_floor)
 
     print(MLP_no_aug.betti_features, "\n------------\n", MLP_no_aug.BOF, "\n----------\n", MLP_no_aug.best_test_acc)
+
+
+
+
