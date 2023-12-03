@@ -1,5 +1,6 @@
 from trainer.one_bof_tda import ModelWithOneAugmentation
 from nets.simple_net import MLP, LeNet
+from nets.resnet import ResNet18, ResNet34, ResNet50, ResNet101, ResNet152
 
 import torch
 import torchvision
@@ -14,7 +15,7 @@ image_size = 32
 CIFAR_MEAN = [0.49139968, 0.48215827, 0.44653124]
 CIFAR_STD = [0.2023, 0.1994, 0.2010]
 
-angle_path = "./pre_process_outputs/angle"
+angle_path = "./pre_process_outputs/angle_no_train"
 i = 1
 min_png = 6
 min_pkl = 1
@@ -31,9 +32,9 @@ for max_angle in min_angle_list:
     data_transform = data_transform["train"]
     print(f"\n 现在的最小角度是{min_angle}，最大角度是{max_angle}.\n")
 
-    save_floor = f"{angle_path}/MLP/{max_angle}/"
+    save_floor = f"{angle_path}/ResNet50/{max_angle}/"
 
-    MLP_no_aug = ModelWithOneAugmentation(model=MLP(), net_name="MLP", transform=data_transform, augmentation_name="angle", num_repeats=10, num_epochs=300,save_path=save_floor)
+    MLP_no_aug = ModelWithOneAugmentation(model=ResNet50(), net_name="ResNet50", transform=data_transform, augmentation_name="angle", num_repeats=2, num_epochs=300,save_path=save_floor)
 
     print(MLP_no_aug.betti_features, "\n------------\n", MLP_no_aug.BOF, "\n----------\n", MLP_no_aug.best_test_acc)
 

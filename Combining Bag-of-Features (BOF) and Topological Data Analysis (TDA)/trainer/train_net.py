@@ -17,7 +17,8 @@ def get_best_test_acc(
     net: Any = None,
     T_max: Union[None, int] = None,
     batch_size_train: int = 64,
-    batch_size_test: int = 64
+    batch_size_test: int = 64,
+    patience = 50
 ) -> float:
     """
     训练并返回最佳测试准确率。
@@ -42,6 +43,7 @@ def get_best_test_acc(
     optimizer = optim.SGD(net.parameters(), lr=initial_lr, momentum=momentum, weight_decay=weight_decay)
     criterion = nn.CrossEntropyLoss()
     best_test_acc = 0.0
+    no_improvement_count = 0
 
     for epoch in range(num_epochs):
         net.train()
@@ -72,6 +74,17 @@ def get_best_test_acc(
         test_acc = test_correct_num.item() / (len(test_loader) * batch_size_test)
         if test_acc > best_test_acc:
             best_test_acc = test_acc
+        
+        if test_acc > best_test_acc:
+            best_test_acc = test_acc
+            no_improvement_count = 0  # 重置计数器
+        else:
+            no_improvement_count += 1
+
+        # 判断连续未提升次数是否达到设定的耐心值，如果达到则提前停止训练
+        if no_improvement_count >= patience:
+            print(f"No improvement for {patience} epochs. Stopping early.")
+            break
 
     return best_test_acc
 

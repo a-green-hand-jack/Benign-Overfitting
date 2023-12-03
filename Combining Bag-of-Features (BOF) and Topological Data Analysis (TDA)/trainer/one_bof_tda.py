@@ -19,11 +19,12 @@ except ImportError:
 from TDA.get_dataloader import get_dataloader,loader2vec, vec_dis
 from TDA.data2betti import distance_betti, distance_betti_ripser
 from post_process.tools4draw import plt_betti_number,plot_stacked_horizontal_bars
-from TDA.after_betti import calculate_edge_length, get_min_max_columns, count_epsilon_bar_number
+from TDA.after_betti import calculate_edge_length, get_min_max_columns, count_epsilon_bar_number,get_max_death
 from ripser import Rips, ripser
 from nets.simple_net import MLP,LeNet,ModelInitializer, init_weights, mixup_data
 from BOF.get_rank_from_matrix import Effective_Ranks
 from trainer.train_net import get_best_test_acc
+# from post_process.betti_feature_compare import try_load_pkl
 
 
 # %% ## 得到一次增强下的某一个model的输出
@@ -47,7 +48,8 @@ class ModelWithOneAugmentation:
              num_repeats: int = 10,
              inner_layer: bool = False,
              save_path: str = "",
-             num_epochs: int = 5) -> None:
+             num_epochs: int = 5,
+             train_model: bool = False) -> None:
         """
             初始化函数，用于设置类的初始属性。
 
@@ -96,15 +98,20 @@ class ModelWithOneAugmentation:
         self.betti_features[f"{net_name}+{augmentation_name}+L2"] = self.get_betti_features(layer_betti_number_list=self.l2_betti)
 
         self.BOF = self.get_BOF()
-        # 得到当前model 和增强下的在test dataset上的最佳预测准确度
-        self.train_loader,self.test_loader = get_dataloader(chose="cifar10")
-        self.best_test_acc = {f"{net_name}+{augmentation_name}+best_test_acc":get_best_test_acc(train_loader=self.train_loader, test_loader=self.test_loader, net=self.model, num_epochs=num_epochs)}
+        if train_model:
+        # 得到当前model 和增强下的在test dataset上的最佳预测准确度，主要要保证增强被正确的使用
+            self.train_loader,self.test_loader = get_dataloader(chose="cifar10",transform=self.transform)
+            self.best_test_acc = {f"{net_name}+{augmentation_name}+best_test_acc":get_best_test_acc(train_loader=self.train_loader, test_loader=self.test_loader, net=self.model, num_epochs=num_epochs,patience=50)}
+        else:
+            self.best_test_acc = {f"{net_name}+{augmentation_name}+best_test_acc":0.0}
+            
 
         # 保存当前得到的特征
         self.save_all_features(save_path=save_path)
         # 绘制betti bars
         self.draw_betti_bars(save_root=save_path, distance_type="L1",layer_betti_bar=self.l1_betti)
         self.draw_betti_bars(save_root=save_path, distance_type="L2",layer_betti_bar=self.l2_betti)
+        
 
     def get_layer_output(self,
                     chose: str = "cifar10_debug",
@@ -250,7 +257,8 @@ class ModelWithOneAugmentation:
             "bar_number": [],
             "all_bars_survive_time_sum": [],
             "max_epsilon_bar_number": [],
-            "death_len": []
+            "death_len": [],
+            "max_death":[]
         }
 
         for layer_number, betti_number_list in enumerate(layer_betti_number_list):
@@ -259,11 +267,13 @@ class ModelWithOneAugmentation:
                 all_bars_survive_time_sum = np.sum(betti_number_matrix[:, 1] - betti_number_matrix[:, 0])
                 max_epsilon_bar_number = count_epsilon_bar_number(betti_number_matrix)
                 birth_len, death_len = calculate_edge_length(betti_number_matrix)
+                max_death = get_max_death(betti_number_matrix)
 
                 betti_features["bar_number"].append({f"{index_betti}th_dim": (layer_number, bar_number)})
                 betti_features["all_bars_survive_time_sum"].append({f"{index_betti}th_dim": (layer_number,all_bars_survive_time_sum)})
                 betti_features["max_epsilon_bar_number"].append({f"{index_betti}th_dim": (layer_number,max_epsilon_bar_number)})
                 betti_features["death_len"].append({f"{index_betti}th_dim": (layer_number,death_len)})
+                betti_features["max_death"].append({f"{index_betti}th_dim": (layer_number,death_len)})
 
         return betti_features
 
@@ -320,6 +330,7 @@ class ModelWithOneAugmentation:
                 pickle.dump(data_to_save['BOF'], f)
 
             print(f"3种特征被保存在{betti_features_path}，{best_test_acc_path}，{BOF_path}中！！")
+
 
             return betti_features_path, best_test_acc_path, BOF_path
 

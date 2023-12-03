@@ -128,6 +128,25 @@ def get_min_max_columns(matrix):
 
     return min_first_column, max_second_column, finite_matrix
 
+def get_max_death(matrix):
+    '''
+    获取矩阵的第一列的最小值和第二列的最大值。
+
+    参数：
+    - matrix：待处理的矩阵。
+
+    返回：
+    - min_first_column：第一列的最小值。
+    - max_second_column：第二列的最大值。
+    '''
+    # 将无穷大值替换为最大实数
+    finite_matrix = np.where(np.isfinite(matrix), matrix, np.max(matrix[np.isfinite(matrix)]))
+
+    # 计算第二列的最大值
+    max_second_column = np.max(finite_matrix[:, 1])
+
+    return max_second_column
+
 
 
 
