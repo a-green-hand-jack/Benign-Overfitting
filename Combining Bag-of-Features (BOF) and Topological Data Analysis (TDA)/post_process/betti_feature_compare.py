@@ -14,6 +14,7 @@ plt.rcParams['axes.unicode_minus'] = False   # 坐标轴负数的负号显示
 # %% 加载目标pkl文件
 
 class GetFeatureCared():
+    # 得到的是某一个pkl文件中关心的特征
 
     def __init__(self,
                 file_path: str,
@@ -41,6 +42,7 @@ class GetFeatureCared():
         Returns:
         - Union[Any, None]: 返回加载的数据，如果出现错误则返回None
         """
+        # print(file_path)
         try:
             # 使用绝对路径加载 Pickle 文件
             with open(file_path, 'rb') as file:
@@ -249,32 +251,3 @@ class CompareFeatureCared:
     #     plt.savefig(save_path)
     #     plt.show()
     #     plt.close()
-
-        
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# %%
