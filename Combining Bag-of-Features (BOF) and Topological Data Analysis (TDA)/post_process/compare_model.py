@@ -27,6 +27,7 @@ class CompareModel():
         self.folder_number = folder_number
 
         self.data = self.find_file_paths(models=models, folder_number=folder_number, pre_path=self.file_path)
+        print(self.data)
 
         self.draw_betti(save_path=save_path,data=self.data, model_list=models, aug_type=aug_type)
 
@@ -40,6 +41,7 @@ class CompareModel():
         for model in models:
             file_name = 'betti_features.pkl'
             folder_path = os.path.join(pre_path, model, str(folder_number), file_name)
+            # print(folder_path)
             temp_betti_feature = GetFeatureCared(file_path=folder_path, l_distance=self.l_distance, feature2get=self.feature2get, betti_number_dim=self.betti_number_dim, layer_care=self.layer_care)
             # print(temp_betti_feature.feature_cared)
             feature_list.append(temp_betti_feature.feature_cared)

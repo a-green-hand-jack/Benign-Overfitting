@@ -240,7 +240,9 @@ class ModelWithOneAugmentation:
                 d1 = ripser(l_distance_matrix, maxdim=1, distance_matrix=True)
                 d1 = d1["dgms"]
             d1 = [np.where(np.isinf(matrix), np.nanmax(matrix[np.isfinite(matrix)]), matrix) for matrix in d1]  # 使用推导式，betti number中的那些无限大的采用最大值代替
-            betti_number_list.append(d1)
+            normalized_d1 = [np.where(np.isinf(matrix), np.nanmax(matrix[np.isfinite(matrix)]), matrix / np.nanmax(matrix[np.isfinite(matrix)])) for matrix in d1]
+
+            betti_number_list.append(normalized_d1)
         return betti_number_list
         
     def get_betti_features(self, layer_betti_number_list: List[List[np.ndarray]]) -> Dict[str, List[Dict[int, Union[int, float]]]]:

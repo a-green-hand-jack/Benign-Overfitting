@@ -15,7 +15,7 @@ image_size = 32
 CIFAR_MEAN = [0.49139968, 0.48215827, 0.44653124]
 CIFAR_STD = [0.2023, 0.1994, 0.2010]
 
-scale_path = "./pre_process_outputs/scale_no_train"
+scale_path = "./pre_process_outputs/scale_train"
 i = 1
 min_png = 6
 min_pkl = 1
@@ -34,9 +34,9 @@ for scale in scale_list:
     data_transform = transform
     print(f"\n 裁切是{scale}.\n")
 
-    save_floor = f"{scale_path}/ResNet50/{scale*10}/"
+    save_floor = f"{scale_path}/LeNet/{scale*10}/"
 
-    MLP_no_aug = ModelWithOneAugmentation(model=ResNet50(), net_name="ResNet50", transform=data_transform, augmentation_name="scale", num_repeats=2, num_epochs=300,save_path=save_floor)
+    MLP_no_aug = ModelWithOneAugmentation(model=LeNet(), net_name="LeNet", transform=data_transform, augmentation_name="scale", num_repeats=2, num_epochs=300,save_path=save_floor, train_model=True)
 
     print(MLP_no_aug.betti_features, "\n------------\n", MLP_no_aug.BOF, "\n----------\n", MLP_no_aug.best_test_acc)
 

@@ -15,11 +15,11 @@ image_size = 32
 CIFAR_MEAN = [0.49139968, 0.48215827, 0.44653124]
 CIFAR_STD = [0.2023, 0.1994, 0.2010]
 
-angle_path = "./pre_process_outputs/angle_no_train"
+angle_path = "./test_rescale/angle_no_train"
 i = 1
 min_png = 6
 min_pkl = 1
-min_angle_list = range(0,45,1)
+min_angle_list = range(0,15,1)
 # for min_angle in tqdm(min_angle_list, unit="degree", desc="min_angle"):
 for max_angle in min_angle_list:
     min_angle = -max_angle
@@ -32,9 +32,9 @@ for max_angle in min_angle_list:
     data_transform = data_transform["train"]
     print(f"\n 现在的最小角度是{min_angle}，最大角度是{max_angle}.\n")
 
-    save_floor = f"{angle_path}/ResNet50/{max_angle}/"
+    save_floor = f"{angle_path}/LeNet/{max_angle}/"
 
-    MLP_no_aug = ModelWithOneAugmentation(model=ResNet50(), net_name="ResNet50", transform=data_transform, augmentation_name="angle", num_repeats=2, num_epochs=300,save_path=save_floor)
+    MLP_no_aug = ModelWithOneAugmentation(model=LeNet(), net_name="LeNet", transform=data_transform, augmentation_name="angle", num_repeats=2, num_epochs=300,save_path=save_floor, train_model=False)
 
     print(MLP_no_aug.betti_features, "\n------------\n", MLP_no_aug.BOF, "\n----------\n", MLP_no_aug.best_test_acc)
 
