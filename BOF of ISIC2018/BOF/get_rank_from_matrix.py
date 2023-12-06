@@ -62,12 +62,4 @@ class Effective_Ranks:
        return R_k
     
 
-def image2vector(image):
-    # 获取图像的形状信息：通道数、高度、宽度
-    channels, height, width = image.shape
-    
-    # 将图像转换为一个行向量
-    vector = image.flatten()
-    
-    return vector
 
