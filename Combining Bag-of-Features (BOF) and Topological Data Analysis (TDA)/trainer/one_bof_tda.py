@@ -97,13 +97,13 @@ class ModelWithOneAugmentation:
         self.betti_features[f"{net_name}+{augmentation_name}+L1"] = self.get_betti_features(layer_betti_number_list=self.l1_betti)
         self.betti_features[f"{net_name}+{augmentation_name}+L2"] = self.get_betti_features(layer_betti_number_list=self.l2_betti)
 
-        self.BOF = self.get_BOF()
-        if train_model:
-        # 得到当前model 和增强下的在test dataset上的最佳预测准确度，主要要保证增强被正确的使用
-            self.train_loader,self.test_loader = get_dataloader(chose="cifar10",transform=self.transform)
-            self.best_test_acc = {f"{net_name}+{augmentation_name}+best_test_acc":get_best_test_acc(train_loader=self.train_loader, test_loader=self.test_loader, net=self.model, num_epochs=num_epochs,patience=50)}
-        else:
-            self.best_test_acc = {f"{net_name}+{augmentation_name}+best_test_acc":0.0}
+        # self.BOF = self.get_BOF()
+        # if train_model:
+        # # 得到当前model 和增强下的在test dataset上的最佳预测准确度，主要要保证增强被正确的使用
+        #     self.train_loader,self.test_loader = get_dataloader(chose="cifar10",transform=self.transform)
+        #     self.best_test_acc = {f"{net_name}+{augmentation_name}+best_test_acc":get_best_test_acc(train_loader=self.train_loader, test_loader=self.test_loader, net=self.model, num_epochs=num_epochs,patience=50)}
+        # else:
+        #     self.best_test_acc = {f"{net_name}+{augmentation_name}+best_test_acc":0.0}
             
 
         # 保存当前得到的特征
@@ -240,7 +240,7 @@ class ModelWithOneAugmentation:
                 d1 = ripser(l_distance_matrix, maxdim=1, distance_matrix=True)
                 d1 = d1["dgms"]
             d1 = [np.where(np.isinf(matrix), np.nanmax(matrix[np.isfinite(matrix)]), matrix) for matrix in d1]  # 使用推导式，betti number中的那些无限大的采用最大值代替
-            normalized_d1 = [np.where(np.isinf(matrix), np.nanmax(matrix[np.isfinite(matrix)]), matrix / np.nanmax(matrix[np.isfinite(matrix)])) for matrix in d1]
+            normalized_d1 = [np.where(np.isinf(matrix), np.nanmax(matrix[np.isfinite(matrix)]), matrix / np.nanmax(matrix[np.isfinite(matrix)])) for matrix in d1]  # 实现betti number 层面上的归一化
 
             betti_number_list.append(normalized_d1)
         return betti_number_list
@@ -311,30 +311,31 @@ class ModelWithOneAugmentation:
             """
             data_to_save = {
                 'betti_features': self.betti_features,
-                'best_test_acc': self.best_test_acc,
-                'BOF': self.BOF
+                # 'best_test_acc': self.best_test_acc,
+                # 'BOF': self.BOF
             }
 
             if not os.path.exists(save_path):
                 os.makedirs(save_path)
 
             betti_features_path = os.path.join(save_path, 'betti_features.pkl')
-            best_test_acc_path = os.path.join(save_path, 'best_test_acc.pkl')
-            BOF_path = os.path.join(save_path, 'BOF.pkl')
+            # best_test_acc_path = os.path.join(save_path, 'best_test_acc.pkl')
+            # BOF_path = os.path.join(save_path, 'BOF.pkl')
 
             with open(betti_features_path, 'wb') as f:
                 pickle.dump(data_to_save['betti_features'], f)
 
-            with open(best_test_acc_path, 'wb') as f:
-                pickle.dump(data_to_save['best_test_acc'], f)
+            # with open(best_test_acc_path, 'wb') as f:
+            #     pickle.dump(data_to_save['best_test_acc'], f)
 
-            with open(BOF_path, 'wb') as f:
-                pickle.dump(data_to_save['BOF'], f)
+            # with open(BOF_path, 'wb') as f:
+            #     pickle.dump(data_to_save['BOF'], f)
 
-            print(f"3种特征被保存在{betti_features_path}，{best_test_acc_path}，{BOF_path}中！！")
+            # print(f"3种特征被保存在{betti_features_path}，{best_test_acc_path}，{BOF_path}中！！")
 
 
-            return betti_features_path, best_test_acc_path, BOF_path
+
+            return betti_features_path
 
     def draw_betti_bars(self, save_root, layer_betti_bar, distance_type):
         # 考察的self.l2_betti是一个list，这个list保存着每一层的betti bars的数据结构如下： List[List[np.ndarray]]。List[np.ndarray]代表某一层的第0阶和第1阶的betti bars，也就是里面有两个np.ndarray，这个是一个N*2的矩阵

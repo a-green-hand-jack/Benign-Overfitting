@@ -15,6 +15,7 @@ import statistics
 
 
 
+
 class ImageProcessor:
     def __init__(self, costume_transform, image_path=None, save_file_path=None, repetitions=10):
         self.train_transform = costume_transform
@@ -189,58 +190,6 @@ class CompareBOF():
             # print(temp_get_BOF)
         # self.comb_acc_matrix = np.array(self.comb_acc)
 
-    
-
-    # def plot_errorbar(self, net_name, aug_name):
-    #     # 数据示例，data是包含每个数据点的均值和标准差的列表
-    #     # data = [{'r0': (1.28, 0.0088), 'R0': (1.61, 0.020)}, {'r0': (1.48, 0.011), 'R0': (2.11, 0.030)}]
-    #     data = self.comb_BOF
-    #     # 提取字典中的键和值（包括均值和标准差）
-    #     keys = list(data[0].keys())
-    #     values = {key: [item[key][0] for item in data] for key in keys}
-    #     errors = {key: [item[key][1] for item in data] for key in keys}
-
-    #     # 创建一个新的图形和子图
-    #     fig, ax = plt.subplots()
-
-    #     # 设置点划线和实心圆点样式
-    #     line_styles = ['--', '-.', ':']
-    #     marker_styles = ['o', 's', 'D']
-
-    #     # 绘制每个键对应的折线和误差棒
-    #     for idx, key in enumerate(keys):
-    #         ax.errorbar(range(len(values[key])), values[key], yerr=errors[key],
-    #                     linestyle=line_styles[idx % len(line_styles)], marker=marker_styles[idx % len(marker_styles)],
-    #                     markersize=5, linewidth=1.5, label=key)
-
-    #     # 显示图例
-    #     ax.legend()
-    #     plt.show()
-
-    # def draw_BOF(self, net_name, aug_name):
-    #     save_path = os.path.join(self.folder_path, f'BOF_{net_name}_{aug_name}.png')
-    #     data = self.comb_BOF
-
-    #     # 创建4个子图的大图布局
-    #     fig, axs = plt.subplots(1, 4, figsize=(20, 5))  # 4个子图
-
-    #     # 遍历每个子图的索引和对应的键
-    #     keys = ['r0', 'R0', 'rk_max_index', 'rk_max']  # 四个键
-    #     for idx, subkey in enumerate(keys):
-    #         # 提取每个子图的数据
-    #         values = [item[subkey] for item in data]
-
-    #         # 绘制子图，设置点划线和大点的样式
-    #         axs[idx].plot(range(len(values)), values, linestyle=':', marker='o', markersize=4)
-    #         axs[idx].set_title(subkey)
-
-    #     # 调整布局并保存图像
-    #     plt.tight_layout()
-    #     plt.savefig(save_path)
-    #     plt.show()
-    #     plt.close()
-
-    import matplotlib.pyplot as plt
 
     def draw_BOF(self, net_name, aug_name):
         save_path = os.path.join(self.folder_path, f'BOF_{net_name}_{aug_name}.png')
