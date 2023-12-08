@@ -54,7 +54,7 @@ class ImageProcessor:
     def images_to_matrix_lists(self):
         transform = self.train_transform
         # Download CIFAR-10 dataset
-        trainset = torchvision.datasets.CIFAR10(root=self.cifar10_path, train=True, download=True)
+        trainset = torchvision.datasets.CIFAR10(root=self.cifar10_path, train=True, download=True,transform=self.train_transform)
 
         self.images_matrix_lists = []  # Storing multiple image vector matrices
 
@@ -63,9 +63,9 @@ class ImageProcessor:
             for i in range(len(trainset)):
                 image, _ = trainset[i]  # Get image and label (which is not used in this case)
                 # transformed_image = self.train_transform(image=image)['image']
-                transformed_image = self.train_transform(image=np.array(image))['image']
+                # transformed_image = self.train_transform(image=np.array(image))['image']
 
-                image_vector = transformed_image.flatten()  # 转换为向量
+                image_vector = image.flatten()  # 转换为向量
                 image_vectors.append(image_vector)
 
             image_matrix = np.vstack(image_vectors)  # Stack image vectors to form a matrix
