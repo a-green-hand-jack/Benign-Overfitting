@@ -1,10 +1,12 @@
 # 这里需要定义通用的训练函数，最后返回的就是val上的最大准确率
 import torch
 import os
+import csv
 from torch.optim.lr_scheduler import CosineAnnealingLR  # 实现cos函数式的变化
 from typing import Union, List, Tuple, Any
 from torch import optim, nn
 from torch.utils.data import DataLoader
+from tqdm import tqdm
 
 def get_best_test_acc(
     device: torch.device = torch.device("cuda" if torch.cuda.is_available() else "cpu"),
@@ -18,7 +20,9 @@ def get_best_test_acc(
     T_max: Union[None, int] = None,
     batch_size_train: int = 64,
     batch_size_test: int = 64,
-    patience = 50
+    patience = 50,
+    folder_path:str = 'your_folder_path',
+    net_name:str = 'ResNet'
 ) -> float:
     """
     训练并返回最佳测试准确率。
@@ -39,52 +43,88 @@ def get_best_test_acc(
     Returns:
         float: 最佳测试准确率
     """
+    pth_file_path = os.path.join(folder_path, f'{net_name}.pth')
+    if os.path.exists(pth_file_path):
+        net.load_state_dict(torch.load(pth_file_path))
+        print("Loaded trained weights from {}".format(pth_file_path))
+    else:
+        print("No pre-trained weights found. Starting training from scratch.")
+    
     net.to(device)
     optimizer = optim.SGD(net.parameters(), lr=initial_lr, momentum=momentum, weight_decay=weight_decay)
     criterion = nn.CrossEntropyLoss()
     best_test_acc = 0.0
     no_improvement_count = 0
 
-    for epoch in range(num_epochs):
-        net.train()
-        run_loss = 0
-        correct_num = 0
-        for batch_idx, (data, target) in enumerate(train_loader):
-            data, target = data.to(device), target.to(device)
-            out = net(data)[-1]  # 获取最后一层输出
-            _, pred = torch.max(out, dim=1)
-            optimizer.zero_grad()
-            loss = criterion(out, target)
-            loss.backward()
-            run_loss += loss
-            optimizer.step()
-            correct_num += torch.sum(pred == target)
+    # 准备保存训练和验证过程中的指标
+    # Create the folder if it doesn't exist
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
 
-        net.eval()
-        test_loss = 0
-        test_correct_num = 0
-        for batch_idx, (data, target) in enumerate(test_loader):
-            data, target = data.to(device), target.to(device)
-            out = net(data)[-1]  # 获取最后一层输出
-            _, pred = torch.max(out, dim=1)
-            test_loss += criterion(out, target)
-            test_correct_num += torch.sum(pred == target)
+    # Create a CSV file in the specified folder to save the train, val loss, and accuracy
+    csv_file_path = os.path.join(folder_path, f'{net_name}.csv')
+    with open(csv_file_path, 'w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(['Epoch', 'Train Loss', 'Train Accuracy', 'Val Loss', 'Val Accuracy'])
+        with tqdm(total=num_epochs) as pbar:
+            for epoch in range(num_epochs):
+                # 训练部分
+                net.train()
+                run_loss = 0
+                correct_num = 0
+                for batch_idx, (data, target) in enumerate(train_loader):
+                    data, target = data.to(device), target.to(device)
+                    out = net(data)[-1]  # 获取最后一层输出
+                    _, pred = torch.max(out, dim=1)
+                    optimizer.zero_grad()
+                    loss = criterion(out, target)
+                    loss.backward()
+                    run_loss += loss
+                    optimizer.step()
+                    correct_num += torch.sum(pred == target)
 
-        test_loss = test_loss.item() / len(test_loader)
-        test_acc = test_correct_num.item() / (len(test_loader) * batch_size_test)
-        if test_acc > best_test_acc:
-            best_test_acc = test_acc
-        
-        if test_acc > best_test_acc:
-            best_test_acc = test_acc
-            no_improvement_count = 0  # 重置计数器
-        else:
-            no_improvement_count += 1
+                run_loss = run_loss.item() / len(train_loader)
+                train_acc = correct_num.item() / (len(train_loader) * batch_size_test)
 
-        # 判断连续未提升次数是否达到设定的耐心值，如果达到则提前停止训练
-        if no_improvement_count >= patience:
-            print(f"No improvement for {patience} epochs. Stopping early.")
-            break
+                # 验证部分
+                net.eval()
+                test_loss = 0
+                test_correct_num = 0
+                for batch_idx, (data, target) in enumerate(test_loader):
+                    data, target = data.to(device), target.to(device)
+                    out = net(data)[-1]  # 获取最后一层输出
+                    _, pred = torch.max(out, dim=1)
+                    test_loss += criterion(out, target)
+                    test_correct_num += torch.sum(pred == target)
+
+                test_loss = test_loss.item() / len(test_loader)
+                test_acc = test_correct_num.item() / (len(test_loader) * batch_size_test)
+
+                # Save train and val loss and accuracy in the CSV file
+                with open(csv_file_path, 'a', newline='') as file:
+                    writer = csv.writer(file)
+                    writer.writerow([epoch+1, run_loss, train_acc, test_loss, test_acc])
+
+                # 更新进度条
+                pbar.set_description(f'Epoch {epoch+1}')
+                pbar.set_postfix({'Train Loss': run_loss, 'Train Accuracy': train_acc, 'Val Loss': test_loss, 'Val Accuracy': test_acc})
+                pbar.update(1)
+
+                # 比较，确定要不要保留数据和参数
+                if test_acc > best_test_acc:
+                    best_test_acc = test_acc
+                    no_improvement_count = 0  # 重置计数器
+                    # Save the trained parameters in a .pth file in the specified folder
+                    # 只用当训练真的提高的时候才会记录参数
+                    pth_file_path = os.path.join(folder_path, f'{net_name}.pth')
+                    torch.save(net.state_dict(), pth_file_path)
+                else:
+                    no_improvement_count += 1
+
+                # 判断连续未提升次数是否达到设定的耐心值，如果达到则提前停止训练
+                if no_improvement_count >= patience:
+                    print(f"No improvement for {patience} epochs. Stopping early.")
+                    break
 
     return best_test_acc
 

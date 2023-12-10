@@ -6,10 +6,12 @@ import os
 import torch.nn.functional as F
 import random
 
-def get_dataloader(chose,batch_size=64, 
+def get_dataloader(chose="cifar10_debug",
+                   batch_size=64, 
                            root='./data', 
                            transform=None,
-                           debug_size=20):
+                           debug_size=20,
+                           torch_aug=True):
     """
     获取指定数据集的数据加载器。
 
@@ -27,18 +29,19 @@ def get_dataloader(chose,batch_size=64,
     if chose == "cifar10":
         CIFAR_MEAN = [0.49139968, 0.48215827, 0.44653124]
         CIFAR_STD = [0.2023, 0.1994, 0.2010]
-        return get_cifar10_dataloader(batch_size=batch_size, root=root, CIFAR_MEAN=CIFAR_MEAN, CIFAR_STD=CIFAR_STD,custom_transform=transform)
+        return get_cifar10_dataloader(batch_size=batch_size, root=root, CIFAR_MEAN=CIFAR_MEAN, CIFAR_STD=CIFAR_STD,custom_transform=transform, torch_aug=torch_aug)
     if chose == "cifar10_debug":
         CIFAR_MEAN = [0.49139968, 0.48215827, 0.44653124]
         CIFAR_STD = [0.2023, 0.1994, 0.2010]
-        return get_cifar10_debug_dataloader(batch_size=batch_size, root=root, CIFAR_MEAN=CIFAR_MEAN, CIFAR_STD=CIFAR_STD,custom_transform=transform,debug_size=debug_size)
+        return get_cifar10_debug_dataloader(batch_size=batch_size, root=root, CIFAR_MEAN=CIFAR_MEAN, CIFAR_STD=CIFAR_STD,custom_transform=transform,debug_size=debug_size, torch_aug=torch_aug)
 
 
 def get_cifar10_dataloader(batch_size=64, 
                            root='./data', 
                            CIFAR_MEAN = [0.49139968, 0.48215827, 0.44653124], 
                            CIFAR_STD = [0.2023, 0.1994, 0.2010],
-                           custom_transform=None):
+                           custom_transform=None,
+                           torch_aug=True):
     """
     获取 CIFAR-10 数据集的训练和测试数据加载器。
 
@@ -64,8 +67,17 @@ def get_cifar10_dataloader(batch_size=64,
 
 
     # 加载训练集和测试集
-    train_dataset = torchvision.datasets.CIFAR10(root=root, train=True, transform=transform, download=True)
-    test_dataset = torchvision.datasets.CIFAR10(root=root, train=False, transform=transform, download=True)
+    if torch_aug:
+        train_dataset = torchvision.datasets.CIFAR10(root=root, train=True, transform=transform, download=True)
+        test_dataset = torchvision.datasets.CIFAR10(root=root, train=False, transform=transform, download=True)
+    else:
+        train_dataset = torchvision.datasets.CIFAR10(root=root, train=True, transform=transforms.Compose([
+                                            lambda img: transform(image=np.array(img))['image']
+                                        ]), download=True)
+        test_dataset = torchvision.datasets.CIFAR10(root=root, train=False,  transform=transforms.Compose([
+                                            lambda img: transform(image=np.array(img))['image']
+                                        ]), download=True)
+
 
     # 创建数据加载器
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
@@ -79,7 +91,8 @@ def get_cifar10_debug_dataloader(batch_size=64,
                                 CIFAR_MEAN=[0.49139968, 0.48215827, 0.44653124], 
                                 CIFAR_STD=[0.2023, 0.1994, 0.2010],
                                 custom_transform=None,
-                                debug_size=20):
+                                debug_size=20,
+                                torch_aug=True):
     """
     获取 CIFAR-10 数据集的用于调试的训练和测试数据加载器，仅加载指定数量的样本。
 
@@ -106,11 +119,22 @@ def get_cifar10_debug_dataloader(batch_size=64,
         transform = custom_transform
 
     # 加载部分训练集和测试集，随机选择 debug_size 个样本
-    train_dataset = torchvision.datasets.CIFAR10(root=root, train=True, transform=transform, download=True)
+
+    # 加载训练集和测试集
+    if torch_aug:
+        train_dataset = torchvision.datasets.CIFAR10(root=root, train=True, transform=transform, download=True)
+        test_dataset = torchvision.datasets.CIFAR10(root=root, train=False, transform=transform, download=True)
+    else:
+        train_dataset = torchvision.datasets.CIFAR10(root=root, train=True, transform=transforms.Compose([
+                                            lambda img: transform(image=np.array(img))['image']
+                                        ]), download=True)
+        test_dataset = torchvision.datasets.CIFAR10(root=root, train=False,  transform=transforms.Compose([
+                                            lambda img: transform(image=np.array(img))['image']
+                                        ]), download=True)
+        
     indices = random.sample(range(len(train_dataset)), debug_size)
     train_dataset = torch.utils.data.Subset(train_dataset, indices)
 
-    test_dataset = torchvision.datasets.CIFAR10(root=root, train=False, transform=transform, download=True)
     indices = random.sample(range(len(test_dataset)), debug_size)
     test_dataset = torch.utils.data.Subset(test_dataset, indices)
 

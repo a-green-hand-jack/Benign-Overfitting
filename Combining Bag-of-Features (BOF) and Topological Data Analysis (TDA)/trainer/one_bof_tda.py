@@ -49,7 +49,8 @@ class ModelWithOneAugmentation:
              inner_layer: bool = False,
              save_path: str = "",
              num_epochs: int = 5,
-             train_model: bool = False) -> None:
+             train_model: bool = False,
+             torch_aug: bool = False) -> None:
         """
             初始化函数，用于设置类的初始属性。
 
@@ -81,6 +82,7 @@ class ModelWithOneAugmentation:
         self.transform = transform
         self.train_loader = None
         self.test_loader = None
+        self.torch_aug = torch_aug
 
         # 输出的部分
         self.averaged_tensors_list = []     # 所有特征图的平均值
@@ -140,9 +142,8 @@ class ModelWithOneAugmentation:
         self.model.apply(init_weights)
         self.model.eval()
 
-        train_loader, test_loader = get_dataloader(chose=chose, debug_size=self.debug_size, transform=self.transform)
+        train_loader, test_loader = get_dataloader(chose=chose, debug_size=self.debug_size, transform=self.transform, torch_aug=self.torch_aug)
 
-        
         # self.test_loader = test_loader
         
         all_layers_output = []
