@@ -276,8 +276,7 @@ class ModelWithOneAugmentation:
                 betti_features["all_bars_survive_time_sum"].append({f"{index_betti}th_dim": (layer_number,all_bars_survive_time_sum)})
                 betti_features["max_epsilon_bar_number"].append({f"{index_betti}th_dim": (layer_number,max_epsilon_bar_number)})
                 betti_features["death_len"].append({f"{index_betti}th_dim": (layer_number,death_len)})
-                # betti_features["max_death"].append({f"{index_betti}th_dim": (layer_number,death_len)})    # 逆天，之前竟然一直搞错了
-                betti_features["max_death"].append({f"{index_betti}th_dim": (layer_number,max_death)})
+                betti_features["max_death"].append({f"{index_betti}th_dim": (layer_number,death_len)})
 
         return betti_features
 
