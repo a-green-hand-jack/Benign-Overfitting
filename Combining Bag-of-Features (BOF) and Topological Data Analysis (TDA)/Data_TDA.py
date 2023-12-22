@@ -10,7 +10,7 @@ import torchvision.transforms as transforms
 
 # 首先考虑scale作为增强
 
-def scale_data_tda(scale_path = "./Result/DataTDA", aug_name="scale"):
+def scale_data_tda(scale_path = "./Result/DataTDA_still", aug_name="scale"):
     # 这里我希望得到的是在某一个model下的在scale增强下的情况
     image_size = 32
     CIFAR_MEAN = [0.49139968, 0.48215827, 0.44653124]
@@ -34,7 +34,7 @@ def scale_data_tda(scale_path = "./Result/DataTDA", aug_name="scale"):
 
         temp_img = Image2TDA(costume_transform=train_transform, repetitions=10, save_file_path = save_floor)
 
-def angle_data_tda(scale_path = "./Result/DataTDA", aug_name="angle"):
+def angle_data_tda(scale_path = "./Result/DataTDA_still", aug_name="angle"):
     # 这里我希望得到的是在某一个model下的在scale增强下的情况
     image_size = 32
     CIFAR_MEAN = [0.49139968, 0.48215827, 0.44653124]
@@ -66,8 +66,8 @@ if __name__ == '__main__':
     # angle_data_tda()
     
 
-    folder = ".\\Result\\DataTDA\\angle"
-    test_BOF = CompareTDA(file_path=folder, target_pkl="L2_betti_features.pkl")
+    folder = ".\\Result\\DataTDA_still\\angle"
+    test_BOF = CompareTDA(file_path=folder, target_pkl="L2_betti_features_1th.pkl")
 
     print(test_BOF.comb_BOF)
     test_BOF.draw_BOF(net_name="data", aug_name="angle")

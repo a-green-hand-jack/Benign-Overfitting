@@ -107,7 +107,7 @@ class Image2TDA:
 
         for betti_number_matrix in betti_number_list:
             
-            betti_number_matrix = betti_number_matrix[0]
+            betti_number_matrix = betti_number_matrix[1]
             # print(betti_number_matrix)
             # 现在只关心all_bars_survive_time_sum和death_len
             all_bars_survive_time_sum = np.sum(betti_number_matrix[:, 1] - betti_number_matrix[:, 0])
@@ -124,7 +124,7 @@ class Image2TDA:
     
     def save_stats_to_file(self, file_path, chose="L1"):
         # self.BOF_mean_stddev = self.calculate_stats()
-        betti_features_path = os.path.join(file_path, f'{chose}_betti_features.pkl')
+        betti_features_path = os.path.join(file_path, f'{chose}_betti_features_1th.pkl')
         # folder_path = os.path.dirname(file_path)
         if not os.path.exists(file_path):
             os.makedirs(file_path)
@@ -238,13 +238,20 @@ class CompareTDA():
             if aug_name == 'scale':
                 values = [item[subkey][0] for item in data[::-1]]  # 提取mean值
                 errors = [item[subkey][1] for item in data[::-1]]  # 提取标准差
+                
+                # 绘制子图带误差棒
+                # axs[idx].errorbar(range(len(values)), values, yerr=errors, linestyle=':', marker='o', markersize=4)
+                axs[idx].errorbar(np.arange(len(values)) / (len(values) - 1), values, yerr=errors, linestyle=':', marker='o', markersize=4, color='lightblue', markerfacecolor='red')
+                axs[idx].set_title(subkey)
+
             else:
                 values = [item[subkey][0] for item in data]  # 提取mean值
                 errors = [item[subkey][1] for item in data]  # 提取标准差
 
-            # 绘制子图带误差棒
-            axs[idx].errorbar(range(len(values)), values, yerr=errors, linestyle=':', marker='o', markersize=4)
-            axs[idx].set_title(subkey)
+                # 绘制子图带误差棒
+                # axs[idx].errorbar(range(len(values)), values, yerr=errors, linestyle=':', marker='o', markersize=4)
+                axs[idx].errorbar(range(len(values)), values, yerr=errors, linestyle=':', marker='o', markersize=4, color='lightblue', markerfacecolor='red')
+                axs[idx].set_title(subkey)
 
         # 调整布局并保存图像
         plt.tight_layout()

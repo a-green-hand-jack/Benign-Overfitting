@@ -223,12 +223,24 @@ class CompareBOF():
         keys = ['r0', 'R0', 'rk_max_index', 'rk_max']  # 四个键
         for idx, subkey in enumerate(keys):
             # 提取每个子图的数据
-            values = [item[subkey][0] for item in data]  # 提取mean值
-            errors = [item[subkey][1] for item in data]  # 提取标准差
+            # values = [item[subkey][0] for item in data]  # 提取mean值
+            # errors = [item[subkey][1] for item in data]  # 提取标准差
+            if aug_name == 'scale':
+                values = [item[subkey][0] for item in data[::-1]]  # 提取mean值
+                errors = [item[subkey][1] for item in data[::-1]]  # 提取标准差
+                # # 绘制子图带误差棒
+                # axs[idx].errorbar(range(len(values)), values, yerr=errors, linestyle=':', marker='o', markersize=4)
+                # axs[idx].set_title(subkey)
+                # 绘制子图带误差棒
+                axs[idx].errorbar(np.arange(len(values)) / (len(values) - 1), values, yerr=errors, linestyle=':', marker='o', markersize=4)
+                axs[idx].set_title(subkey)
+            else:
+                values = [item[subkey][0] for item in data]  # 提取mean值
+                errors = [item[subkey][1] for item in data]  # 提取标准差
 
-            # 绘制子图带误差棒
-            axs[idx].errorbar(range(len(values)), values, yerr=errors, linestyle=':', marker='o', markersize=4)
-            axs[idx].set_title(subkey)
+                # 绘制子图带误差棒
+                axs[idx].errorbar(range(len(values)), values, yerr=errors, linestyle=':', marker='o', markersize=4)
+                axs[idx].set_title(subkey)
 
         # 调整布局并保存图像
         plt.tight_layout()

@@ -17,6 +17,7 @@ class LeNet(nn.Module):
         out = F.relu(self.conv1(x))
         out = F.max_pool2d(out, 2)
         out1 = out
+        
 
         out = F.relu(self.conv2(out))
         out = F.max_pool2d(out, 2)
@@ -24,12 +25,14 @@ class LeNet(nn.Module):
         
         out = out.view(out.size(0), -1)
         out = self.fc1(out)
-        out3 = out
         out = F.relu(out)
+        out3 = out
+        
         
         out = self.fc2(out)
-        out4 = out
         out = F.relu(out)
+        out4 = out
+        
         
         out = self.fc3(out)
         out5 = out
@@ -39,7 +42,6 @@ class LeNet(nn.Module):
         # Return an iterator over child modules
         return iter([self.conv1, self.conv2, self.fc1, self.fc2, self.fc3])
     
-
 ''' MLP '''
 class MLP(nn.Module):
     def __init__(self, channel=3, num_classes=10, im_size=(32, 32)):
@@ -199,6 +201,7 @@ class ModelInitializer:
 from torch.nn.parameter import Parameter
 from torch.nn.modules.conv import _ConvNd
 from torch.nn.modules.linear import Linear
+import numpy as np
 
 def init_weights(m: nn.Module) -> None:
     """
