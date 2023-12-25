@@ -1,6 +1,6 @@
 # 在ISIC2108上发现了奇怪的现象，我决定在cifar10上验证一下
 
-from BOF.get_rank_from_matrix import Effective_Ranks
+from BOF.get_rank_from_matrix import Effective_Ranks, Effective_Ranks_GPU
 
 import pickle
 from typing import Any, List, Union, Dict
@@ -13,6 +13,9 @@ plt.rcParams['axes.unicode_minus'] = False   # 坐标轴负数的负号显示
 import albumentations as A
 from PIL import Image
 import statistics
+import torch
+from typing import List, Tuple, Dict, Any, Union
+from glob import glob
 
 
 
@@ -27,7 +30,7 @@ class ImageProcessor:
 
         self.BOF_feature_list = self.get_BOF()
 
-        self.BOF_mean_stddev = self.calculate_stats()
+        self.BOF_mean_stddev = self.calculate_stats_tensor()
 
         self.save_stats_to_file(file_path=save_file_path)
 
@@ -37,20 +40,6 @@ class ImageProcessor:
         image_vector = augmented_image.flatten()  # 转换为向量
         return image_vector
 
-    # def images_to_matrix_lists(self, folder_path):
-    #     self.images_matrix_lists = []  # 存储多个图片向量矩阵
-
-    #     for _ in range(self.repetitions):
-    #         image_vectors = []  # 存储单次迭代的图片向量
-    #         for filename in os.listdir(folder_path):
-    #             if filename.endswith(".jpg") or filename.endswith(".png"):
-    #                 image_path = os.path.join(folder_path, filename)
-    #                 image = Image.open(image_path)
-    #                 image_vector = self.image_to_vector(image)
-    #                 image_vectors.append(image_vector)
-
-    #         image_matrix = np.vstack(image_vectors)  # 将图片向量堆叠成矩阵
-    #         self.images_matrix_lists.append(image_matrix)  # 将矩阵添加到列表中
     def images_to_matrix_lists(self):
         transform = self.train_transform
         # Download CIFAR-10 dataset
@@ -71,13 +60,31 @@ class ImageProcessor:
             image_matrix = np.vstack(image_vectors)  # Stack image vectors to form a matrix
             self.images_matrix_lists.append(image_matrix)  # Append the matrix to the list
 
+    def images_to_matrix_lists_gpu(self):
+        transform = self.train_transform
+        # Download CIFAR-10 dataset
+        trainset = torchvision.datasets.CIFAR10(root=self.cifar10_path, train=True, download=True,transform=self.train_transform)
+
+        self.images_matrix_lists = []  # Storing multiple image vector matrices
+
+        for _ in range(self.repetitions):
+            image_vectors = []  # Storing image vectors for each iteration
+            for i in range(len(trainset)):
+                image, _ = trainset[i]  # Get image and label (which is not used in this case)
+                image_gpu = image.cuda() if torch.cuda.is_available() else image  # Move tensor to GPU if available
+                image_vector = image_gpu.view(-1)  # Flatten the image tensor
+                image_vectors.append(image_vector)
+            
+            image_matrix = torch.stack(image_vectors).cuda() if torch.cuda.is_available() else torch.stack(image_vectors)  # Convert to PyTorch tensor and move to GPU if available
+            self.images_matrix_lists.append(image_matrix)  # Append the matrix to the list
+
     def get_BOF(self):
-        self.images_to_matrix_lists()  # 转换图像到矩阵列表
+        self.images_to_matrix_lists_gpu()  # 转换图像到矩阵列表
 
         results = []
         for image_matrix in self.images_matrix_lists:
             # 使用每个矩阵进行操作，例如 Effective_Ranks
-            get_rank = Effective_Ranks(image_matrix)
+            get_rank = Effective_Ranks_GPU(image_matrix)
             r0 = get_rank.r0
             R0 = get_rank.R0
             rk_max_index = get_rank.rk_max_index
@@ -97,6 +104,26 @@ class ImageProcessor:
             mean = statistics.mean(values)  # 计算均值
             std_dev = statistics.stdev(values)  # 计算标准差
             results[key] = (mean, std_dev)  # 存储均值和标准差为元组形式
+
+        return results
+    def calculate_stats_tensor(self) -> Dict[str, Tuple[float, float]]:
+        """
+        计算 BOF 特征的均值和标准差。
+        返回：
+        - 包含每个特征计算的均值和标准差的字典。
+        """
+        data_list = self.BOF_feature_list
+        keys = data_list[0]['isic'].keys()
+
+        results = {}
+        for key in keys:
+            values = [item['isic'][key] for item in data_list]
+            values_tensor = torch.tensor(values, dtype=torch.float32)  # 转换为浮点数张量
+
+            mean = torch.mean(values_tensor).item()  # 计算均值并转换为 Python 标量
+            std_dev = torch.std(values_tensor).item()  # 计算标准差并转换为 Python 标量
+
+            results[key] = (mean, std_dev)
 
         return results
     

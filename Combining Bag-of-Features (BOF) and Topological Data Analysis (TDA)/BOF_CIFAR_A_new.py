@@ -2,6 +2,12 @@ from BOF.cifar10_BOF import ImageProcessor
 import albumentations as A
 import numpy as np
 import torchvision.transforms as transforms
+import torch
+# import os
+# os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'max_split_size_mb=512'
+# import os
+# os.environ['CUDA_LAUNCH_BLOCKING'] = '512'
+
 
 from BOF.cifar10_BOF import ImageProcessor, CompareBOF
 image_size = 32
@@ -12,7 +18,7 @@ CIFAR_STD = [0.2023, 0.1994, 0.2010]
 
 def process_with_scale(scale_list=np.arange(0.1, 1.02, 0.02), input_height=32, input_width=32):
     for scale in scale_list:
-        save_pkl_path = f".\\cifar10_A\\data_torch\\scale\\{scale}\\bof.pkl"
+        save_pkl_path = f".\\cifar10_A\\data_torch_gup\\scale\\{scale}\\bof.pkl"
         # height = int(scale * input_height)
         # width = int(scale * input_width)
         # train_transform = A.Compose([
@@ -28,8 +34,10 @@ def process_with_scale(scale_list=np.arange(0.1, 1.02, 0.02), input_height=32, i
                                   
         
         temp_image_processor = ImageProcessor(save_file_path=save_pkl_path, costume_transform=train_transform, repetitions=10)
+        # 清空GPU显存
+        torch.cuda.empty_cache()
 
-    folder = ".\\cifar10_A\\data\\scale"
+    folder = ".\\cifar10_A\\data_torch_gup\\scale"
     test_BOF = CompareBOF(file_path=folder, target_pkl="bof.pkl", aug_name='scale')
 
     print(test_BOF.comb_BOF)
@@ -40,7 +48,7 @@ def process_with_scale(scale_list=np.arange(0.1, 1.02, 0.02), input_height=32, i
 
 def process_with_angle(min_angle_list=range(1, 150, 1)):
     for max_angle in min_angle_list:
-        save_pkl_path = f".\\cifar10_A\\data_torch\\angle\\{max_angle}\\bof.pkl"
+        save_pkl_path = f".\\cifar10_A\\data_torch_gpu\\angle\\{max_angle}\\bof.pkl"
         # train_transform = A.Compose([
         #     # A.RandomCrop(height=height, width=width, p=1.0),  # 随机裁剪
         #     A.Rotate(limit=max_angle),  # 角度旋转增强，可设置旋转角度的限制
@@ -57,8 +65,10 @@ def process_with_angle(min_angle_list=range(1, 150, 1)):
         train_transform = train_transform["train"]
 
         temp_image_processor = ImageProcessor(save_file_path=save_pkl_path, costume_transform=train_transform, repetitions=10)
+        # 清空GPU显存
+        torch.cuda.empty_cache()
 
-    folder = ".\\cifar10_A\\data_torch\\angle"
+    folder = ".\\cifar10_A\\data_torch_gup\\angle"
     test_BOF = CompareBOF(file_path=folder, target_pkl="bof.pkl", aug_name='scale')
 
     print(test_BOF.comb_BOF)

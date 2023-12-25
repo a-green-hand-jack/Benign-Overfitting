@@ -17,9 +17,10 @@ import statistics
 
 
 class ImageProcessor:
-    def __init__(self, costume_transform, image_path=None, save_file_path=None, repetitions=10):
+    def __init__(self, costume_transform, image_path=None, save_file_path=None, repetitions=10, albu_fator = True):
         self.train_transform = costume_transform
         self.repetitions = repetitions
+        self.albu_fator = albu_fator
 
         self.images_matrix = None  # 初始化为 None
 
@@ -30,9 +31,13 @@ class ImageProcessor:
         self.save_stats_to_file(file_path=save_file_path)
 
     def image_to_vector(self, image):
-        image_array = np.array(image)
-        augmented_image = self.train_transform(image=image_array)['image']
-        image_vector = augmented_image.flatten()  # 转换为向量
+        if self.albu_fator:
+            image_array = np.array(image)
+            augmented_image = self.train_transform(image=image_array)['image']
+            image_vector = augmented_image.flatten()  # 转换为向量
+        else:
+            # Apply transforms
+            transformed_image = self.trian_transform(image)
         return image_vector
 
     def images_to_matrix_lists(self, folder_path):
