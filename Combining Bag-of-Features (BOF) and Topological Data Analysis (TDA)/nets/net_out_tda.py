@@ -81,15 +81,15 @@ class ImageNetTDA:
 
         # 保存0th的betti number的情况
         betti_dim = 0
-        # self.feature2save = self.betti_number_feature(chose='L1', betti_dim=betti_dim)
-        # self.save_stats_to_file(file_path=save_file_path, betti_dim=betti_dim)    # 这里为了应付LeNet的麻烦，我直接不再计算LeNet下L1的情况，因为会出现坏点
+        self.feature2save = self.betti_number_feature(chose='L1', betti_dim=betti_dim)
+        self.save_stats_to_file(file_path=save_file_path, betti_dim=betti_dim)    # 这里为了应付LeNet的麻烦，我直接不再计算LeNet下L1的情况，因为会出现坏点
         self.feature2save = self.betti_number_feature(chose='L2', betti_dim=betti_dim)
         self.save_stats_to_file(file_path=save_file_path ,chose="L2", betti_dim=betti_dim)
 
         # 保存1th的betti number的情况
         betti_dim = 1
-        # self.feature2save = self.betti_number_feature(chose='L1', betti_dim=betti_dim)
-        # self.save_stats_to_file(file_path=save_file_path, betti_dim=betti_dim)
+        self.feature2save = self.betti_number_feature(chose='L1', betti_dim=betti_dim)
+        self.save_stats_to_file(file_path=save_file_path, betti_dim=betti_dim)
         self.feature2save = self.betti_number_feature(chose='L2', betti_dim=betti_dim)
         self.save_stats_to_file(file_path=save_file_path ,chose="L2", betti_dim=betti_dim)
 
@@ -158,16 +158,20 @@ class ImageNetTDA:
                 d2 = d2["dgms"]
             
             # --------- 这里是为了应付LeNet的麻烦，就没有计算L1下的情况    
-            # d1 = [np.where(np.isinf(matrix), np.nanmax(matrix[np.isfinite(matrix)]), matrix) for matrix in d1]  # 使用推导式，betti number中的那些无限大的采用最大值代替
-            # d1 = [np.where(np.isinf(matrix), np.nanmax(matrix[np.isfinite(matrix)]), matrix) if matrix.size > 0 else matrix for matrix in d1]
-            # normalized_d1 = [np.where(np.isinf(matrix), np.nanmax(matrix[np.isfinite(matrix)]), matrix / np.nanmax(matrix[np.isfinite(matrix)])) for matrix in d1]  # 实现betti number 层面上的归一化
+            # d1 = [matrix + 1 for matrix in d1]
+            try:
+                d1 = [np.where(np.isinf(matrix), np.nanmax(matrix[np.isfinite(matrix)]), matrix) for matrix in d1]  # 使用推导式，betti number中的那些无限大的采用最大值代替
+                d1 = [np.where(np.isinf(matrix), np.nanmax(matrix[np.isfinite(matrix)]), matrix) if matrix.size > 0 else matrix for matrix in d1]
+                normalized_d1 = [np.where(np.isinf(matrix), np.nanmax(matrix[np.isfinite(matrix)]), matrix / np.nanmax(matrix[np.isfinite(matrix)])) for matrix in d1]  # 实现betti number 层面上的归一化
+            except ValueError:
+                pprint(d1)
 
             d2 = [np.where(np.isinf(matrix), np.nanmax(matrix[np.isfinite(matrix)]), matrix) for matrix in d2]  # 使用推导式，betti number中的那些无限大的采用最大值代替
             d2 = [np.nan_to_num(matrix, nan=0.0) for matrix in d2]  # 将NaN值替换为0
             # d2 = [np.where(np.isinf(matrix), np.nanmax(matrix[np.isfinite(matrix)]), matrix) if matrix.size > 0 else matrix for matrix in d2]
             normalized_d2 = [np.where(np.isinf(matrix), np.nanmax(matrix[np.isfinite(matrix)]), matrix / np.nanmax(matrix[np.isfinite(matrix)])) for matrix in d2]  # 实现betti number 层面上的归一化
 
-            # self.l1_betti_number_list.append(normalized_d1)
+            self.l1_betti_number_list.append(normalized_d1)
             self.l2_betti_number_list.append(normalized_d2)
         return {"L1_betti_number_list":self.l1_betti_number_list, "L2_betti_number_list":self.l2_betti_number_list}    # 这个list中的每一个元素，矩阵，都代表了一个数据集
 

@@ -244,10 +244,10 @@ class CompareBOF():
         data = self.comb_BOF
 
         # 创建4个子图的大图布局
-        fig, axs = plt.subplots(1, 4, figsize=(20, 5))  # 4个子图
+        fig, axs = plt.subplots(1, 5, figsize=(20, 5))  # 4个子图
 
         # 遍历每个子图的索引和对应的键
-        keys = ['r0', 'R0', 'rk_max_index', 'rk_max']  # 四个键
+        keys = ['r0', 'R0', 'rk_max_index', 'rk_max', 'Rk_max']  # 四个键
         for idx, subkey in enumerate(keys):
             # 提取每个子图的数据
             # values = [item[subkey][0] for item in data]  # 提取mean值
@@ -266,7 +266,7 @@ class CompareBOF():
                 errors = [item[subkey][1] for item in data]  # 提取标准差
 
                 # 绘制子图带误差棒
-                axs[idx].errorbar(range(len(values)), values, yerr=errors, linestyle=':', marker='o', markersize=4)
+                axs[idx].errorbar(np.arange(len(values)) / (len(values) - 1), values, yerr=errors, linestyle=':', marker='o', markersize=4)
                 axs[idx].set_title(subkey)
 
         # 调整布局并保存图像

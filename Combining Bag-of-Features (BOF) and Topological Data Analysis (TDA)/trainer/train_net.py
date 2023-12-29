@@ -20,7 +20,7 @@ def get_best_test_acc(
     T_max: Union[None, int] = None,
     batch_size_train: int = 64,
     batch_size_test: int = 64,
-    patience = 50,
+    patience = 100,
     folder_path:str = 'your_folder_path',
     net_name:str = 'ResNet'
 ) -> float:

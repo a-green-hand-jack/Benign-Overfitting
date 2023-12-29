@@ -156,6 +156,7 @@ class CompareTDA():
 
 
         # self.draw_acc(net_name=net_name, aug_name=aug_name/)
+        # self.get_all_bars_survive_time_sum = None
         
     def try_load_pkl(self, file_path: str) -> Union[Any, None]:
         """
@@ -215,6 +216,7 @@ class CompareTDA():
 
     def compare_BOF(self):
         for pkl_path in self.matching_paths:
+            # print(pkl_path)
             temp_get_BOF = self.try_load_pkl(file_path=pkl_path)
             # print(temp_get_acc.feature_cared)
             # value = list(temp_get_acc.values())[0]
@@ -225,7 +227,7 @@ class CompareTDA():
 
 
     def draw_BOF(self, net_name, aug_name):
-        save_path = os.path.join(self.folder_path, f'TDA_Data_{self.target_pkl.split(".")[0]}.png')
+        save_path = os.path.join(self.folder_path, f'TDA_{net_name}_{self.target_pkl.split(".")[0]}.png')
         data = self.comb_BOF
 
         # 创建4个子图的大图布局
@@ -235,13 +237,13 @@ class CompareTDA():
         keys = ['all_bars_survive_time_sum', 'death_len']  # 四个键
         for idx, subkey in enumerate(keys):
             # 提取每个子图的数据
-            if aug_name == 'scale':
+            if aug_name == 'scale'or 'crop':
                 values = [item[subkey][0] for item in data[::-1]]  # 提取mean值
                 errors = [item[subkey][1] for item in data[::-1]]  # 提取标准差
                 
                 # 绘制子图带误差棒
                 # axs[idx].errorbar(range(len(values)), values, yerr=errors, linestyle=':', marker='o', markersize=4)
-                axs[idx].errorbar(np.arange(len(values)) / (len(values) - 1), values, yerr=errors, linestyle=':', marker='o', markersize=4, color='lightblue', markerfacecolor='red')
+                axs[idx].errorbar(np.arange(len(values)) / (len(values) - 1), values, yerr=errors, linestyle=':', marker='o', markersize=10, color='lightblue', markerfacecolor='red')
                 axs[idx].set_title(subkey)
 
             else:
@@ -250,7 +252,7 @@ class CompareTDA():
 
                 # 绘制子图带误差棒
                 # axs[idx].errorbar(range(len(values)), values, yerr=errors, linestyle=':', marker='o', markersize=4)
-                axs[idx].errorbar(range(len(values)), values, yerr=errors, linestyle=':', marker='o', markersize=4, color='lightblue', markerfacecolor='red')
+                axs[idx].errorbar(range(len(values)) / (len(values) - 1), values, yerr=errors, linestyle=':', marker='o', markersize=10, color='lightblue', markerfacecolor='red')
                 axs[idx].set_title(subkey)
 
         # 调整布局并保存图像
@@ -258,3 +260,23 @@ class CompareTDA():
         plt.savefig(save_path)
         plt.show()
         plt.close()
+
+    def get_all_bars_survive_time_sum(self, aug_name):
+        data = self.comb_BOF
+        if aug_name == 'angle':
+            values = [item['all_bars_survive_time_sum'][0] for item in data]
+        else:
+            values = [item['all_bars_survive_time_sum'][0] for item in data[::-1]]  # 提取mean值
+
+        return values
+
+
+
+
+
+
+
+
+
+
+

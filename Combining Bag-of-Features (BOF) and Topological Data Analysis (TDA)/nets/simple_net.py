@@ -3,15 +3,51 @@ import torch.nn.functional as F
 import torch
 import torch.nn.init as init
 
+class MyLargeCNN(nn.Module):
+    def __init__(self):
+        super(MyLargeCNN, self).__init__()
+        device=torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.conv1 = nn.Conv2d(3, 16, 3, padding=1).to(device=device)  # 保持特征图尺寸不变
+        self.conv2 = nn.Conv2d(16, 32, 3, padding=1).to(device=device)  # 保持特征图尺寸不变
+        self.conv3 = nn.Conv2d(32, 64, 3, padding=1).to(device=device)  # 保持特征图尺寸不变
+        self.fc1 = nn.Linear(1024, 512).to(device=device)  # 增加全连接层神经元数
+        self.fc2 = nn.Linear(512, 256).to(device=device)  # 增加全连接层神经元数
+        self.fc3 = nn.Linear(256, 10).to(device=device)
+
+    def forward(self, x):
+        out = F.relu(self.conv1(x))
+        out = F.max_pool2d(out, 2)
+        out1 = out
+
+        out = F.relu(self.conv2(out))
+        out = F.max_pool2d(out, 2)
+        out2 = out
+
+        out = F.relu(self.conv3(out))
+        out = F.max_pool2d(out, 2)
+        out3 = out
+
+        out = out.view(out.size(0), -1)
+        # print(out.shape)
+        out = F.relu(self.fc1(out))
+        out = F.relu(self.fc2(out))
+        out = self.fc3(out)
+        return [x, out1, out2, out3, out]
+    
+    def children(self):
+        # Return an iterator over child modules
+        return iter([self.conv1, self.conv2, self.fc1, self.fc2, self.fc3])
+
 "LeNet"
 class LeNet(nn.Module):
     def __init__(self):
         super(LeNet, self).__init__()
-        self.conv1 = nn.Conv2d(3, 6, 5)
-        self.conv2 = nn.Conv2d(6, 16, 5)
-        self.fc1   = nn.Linear(16*5*5, 120)
-        self.fc2   = nn.Linear(120, 84)
-        self.fc3   = nn.Linear(84, 10)
+        # 输入图像大小是 32x32，使用填充为 2 的 5x5 卷积核可以保持特征图尺寸不变
+        self.conv1 = nn.Conv2d(3, 6, 5, padding=2)
+        self.conv2 = nn.Conv2d(6, 16, 5, padding=2)
+        self.fc1 = nn.Linear(1024, 120)  # 输入尺寸保持不变，计算方式为 16*32*32
+        self.fc2 = nn.Linear(120, 84)
+        self.fc3 = nn.Linear(84, 10)
 
     def forward(self, x):
         out = F.relu(self.conv1(x))
@@ -30,8 +66,9 @@ class LeNet(nn.Module):
         
         
         out = self.fc2(out)
-        out = F.relu(out)
         out4 = out
+        out = F.relu(out)
+        
         
         
         out = self.fc3(out)

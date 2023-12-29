@@ -3,7 +3,7 @@
 # 加载自己的包
 # from TDA.data_tda import Image2TDA, CompareTDA
 from nets.net_out_tda import ImageNetTDA, CompareNetTDA
-from nets.simple_net import MLP, LeNet
+from nets.simple_net import MLP, LeNet, MyLargeCNN
 from nets.resnet import ResNet18, ResNet34, ResNet50, ResNet101, ResNet152
 
 # 加载其他库
@@ -108,11 +108,11 @@ if __name__ == '__main__':
         torch.cuda.manual_seed(seed)  # 设置cuda的随机数种子
         torch.cuda.manual_seed_all(seed)  # 设置所有cuda设备的随机数种子
 
-    scale_path = "./Result/20231222_d2"
+    scale_path = "./Result/20231227_new_LeNet"
     model = LeNet()
-    model_name = "LeNet"
+    model_name = "LeNet_new"
     betti_dim = 1
     care_layer = -2
 
-    # angle_data_tda(scale_path=scale_path, model=model, model_name=model_name, aug_name="angle", betti_dim=betti_dim, care_layer=-2)
-    scale_data_tda(scale_path=scale_path, model=model, model_name=model_name, aug_name="scale", betti_dim=betti_dim, care_layer=-1)
+    angle_data_tda(scale_path=scale_path, model=model, model_name=model_name, aug_name="angle", betti_dim=betti_dim, care_layer=-2)
+    # scale_data_tda(scale_path=scale_path, model=model, model_name=model_name, aug_name="scale", betti_dim=betti_dim, care_layer=care_layer)
