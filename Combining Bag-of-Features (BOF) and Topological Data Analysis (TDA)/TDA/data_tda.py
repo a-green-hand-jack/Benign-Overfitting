@@ -203,7 +203,9 @@ class CompareTDA():
         def get_number_from_path(path):
             # 从路径中提取数字部分
             try:
+                # print(path)
                 number = float(path.split('\\')[-2])
+                # print(number)
                 if number.is_integer():
                     return int(number)
                 else:
@@ -237,23 +239,35 @@ class CompareTDA():
         keys = ['all_bars_survive_time_sum', 'death_len']  # 四个键
         for idx, subkey in enumerate(keys):
             # 提取每个子图的数据
-            if aug_name == 'scale'or 'crop':
+            if aug_name == 'scale':
+                # print(aug_name)
                 values = [item[subkey][0] for item in data[::-1]]  # 提取mean值
                 errors = [item[subkey][1] for item in data[::-1]]  # 提取标准差
-                
+
                 # 绘制子图带误差棒
                 # axs[idx].errorbar(range(len(values)), values, yerr=errors, linestyle=':', marker='o', markersize=4)
-                axs[idx].errorbar(np.arange(len(values)) / (len(values) - 1), values, yerr=errors, linestyle=':', marker='o', markersize=10, color='lightblue', markerfacecolor='red')
+                axs[idx].errorbar(np.arange(len(values)) / (len(values) - 1), values, yerr=errors, linestyle=':', marker='o', markersize=5, color='lightblue', markerfacecolor='red')
                 axs[idx].set_title(subkey)
+                #设置坐标轴刻度
+                my_x_ticks = np.arange(0, 1, 0.05)
+                axs[idx].set_xticks(my_x_ticks)
+                # my_y_ticks = np.arange(int(min(values)*0.9), int(max(values)*1.1), 10)
+                # axs[idx].set_yticks(my_y_ticks)
 
             else:
+                # print("="*20)
                 values = [item[subkey][0] for item in data]  # 提取mean值
                 errors = [item[subkey][1] for item in data]  # 提取标准差
 
                 # 绘制子图带误差棒
                 # axs[idx].errorbar(range(len(values)), values, yerr=errors, linestyle=':', marker='o', markersize=4)
-                axs[idx].errorbar(range(len(values)) / (len(values) - 1), values, yerr=errors, linestyle=':', marker='o', markersize=10, color='lightblue', markerfacecolor='red')
+                axs[idx].errorbar(np.arange(len(values)) / (len(values) - 1), values, yerr=errors, linestyle=':', marker='o', markersize=5, color='lightblue', markerfacecolor='red')
                 axs[idx].set_title(subkey)
+                #设置坐标轴刻度
+                my_x_ticks = np.arange(0, 1, 0.05)
+                axs[idx].set_xticks(my_x_ticks)
+                # my_y_ticks = np.arange(int(min(values)*0.9), int(max(values)*1.1), 10)
+                # axs[idx].set_yticks(my_y_ticks)
 
         # 调整布局并保存图像
         plt.tight_layout()

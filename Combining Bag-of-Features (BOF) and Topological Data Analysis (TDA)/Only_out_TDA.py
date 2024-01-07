@@ -97,10 +97,43 @@ def all_resnet(aug_name):
         # 等待所有任务完成
         concurrent.futures.wait(futures)
 
+def without_aug(save_path = "./Result/model_DTA", aug_name="None", model_list = [], betti_dim=1, care_layer=-2):
+    # 这里我希望得到的是在某一个model下的在scale增强下的情况
+    image_size = 32
+    CIFAR_MEAN = [0.49139968, 0.48215827, 0.44653124]
+    CIFAR_STD = [0.2023, 0.1994, 0.2010]
+    save_path = f"{save_path}/"
+
+    
+    for i, model in enumerate(model_list):
+        
+        train_transform=transforms.Compose([
+                                    transforms.ToTensor(),
+                                    transforms.Normalize(CIFAR_MEAN, CIFAR_STD)
+                                ])
+
+        print(f"{type(model).__name__}")
+
+        save_floor = f"{save_path}/{i}/"
+
+        temp_img = ImageNetTDA(costume_transform=train_transform, repetitions=20, save_file_path = save_floor, model=model, betti_dim=betti_dim, care_layer=care_layer)
+
+
+def count_parameters(models):
+    parameters_count = []
+
+    for model in models:
+        # print(type(model).__name__)
+        parameters_count.append(sum(p.numel() for p in model.parameters()))
+
+    return parameters_count
+
+
+
 if __name__ == '__main__':
 
     # 设置随机数种子
-    seed = 0
+    seed = 42
     torch.manual_seed(seed)  # 设置torch的随机数种子
     random.seed(seed)  # 设置python的随机数种子
     np.random.seed(seed)  # 设置numpy的随机数种子
@@ -108,11 +141,26 @@ if __name__ == '__main__':
         torch.cuda.manual_seed(seed)  # 设置cuda的随机数种子
         torch.cuda.manual_seed_all(seed)  # 设置所有cuda设备的随机数种子
 
-    scale_path = "./Result/20231227_new_LeNet"
-    model = LeNet()
-    model_name = "LeNet_new"
+    scale_path = "./Result/20240105_new_ResNet_5w"
+    model = ResNet18()
+    model_name = "ResNet18"
     betti_dim = 1
     care_layer = -2
 
-    angle_data_tda(scale_path=scale_path, model=model, model_name=model_name, aug_name="angle", betti_dim=betti_dim, care_layer=-2)
+    # angle_data_tda(scale_path=scale_path, model=model, model_name=model_name, aug_name="angle", betti_dim=betti_dim, care_layer=-2)
     # scale_data_tda(scale_path=scale_path, model=model, model_name=model_name, aug_name="scale", betti_dim=betti_dim, care_layer=care_layer)
+
+    # ==========================只关注model，没有增强======================
+    # model_list = [MLP(), LeNet(), ResNet18(), ResNet34(), ResNet50(), ResNet101(), ResNet152()]
+    # without_aug(model_list=model_list,save_path="./Result/old_Resnet/care_layer_2_20", care_layer=-2)
+
+    # 关注model和scale
+    # scale_data_tda(scale_path=scale_path, model=model, model_name=model_name, aug_name="scale", betti_dim=betti_dim, care_layer=care_layer)
+
+    # ====================这里是关注model在两种增强下的TDA的变化情况===============
+    # model_list = [model]
+    # para_list = count_parameters(model_list)
+    # print(model_name,":",para_list)
+
+    scale_data_tda(scale_path=scale_path, model=model, model_name=model_name, aug_name="scale", betti_dim=betti_dim, care_layer=care_layer)
+    angle_data_tda(scale_path=scale_path, model=model, model_name=model_name, aug_name="angle", betti_dim=betti_dim, care_layer=care_layer)

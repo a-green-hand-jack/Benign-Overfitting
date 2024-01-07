@@ -42,22 +42,24 @@ class ImageProcessor:
 
     def images_to_matrix_lists(self):
         transform = self.train_transform
+
         # Download CIFAR-10 dataset
-        trainset = torchvision.datasets.CIFAR10(root=self.cifar10_path, train=True, download=True,transform=self.train_transform)
+        trainset = torchvision.datasets.CIFAR10(root=self.cifar10_path, train=True, download=True, transform=self.train_transform)
+
+        # 创建一个包含随机选取样本的子数据集
+        indices = np.random.choice(len(trainset), 5000, replace=False)  # 随机选取 5000 个索引
+        sub_trainset = torch.utils.data.Subset(trainset, indices)
 
         self.images_matrix_lists = []  # Storing multiple image vector matrices
 
         for _ in range(self.repetitions):
             image_vectors = []  # Storing image vectors for each iteration
-            for i in range(len(trainset)):
-                image, _ = trainset[i]  # Get image and label (which is not used in this case)
-                # transformed_image = self.train_transform(image=image)['image']
-                # transformed_image = self.train_transform(image=np.array(image))['image']
-
-                image_vector = image.flatten()  # 转换为向量
+            for i in range(len(sub_trainset)):
+                image, _ = sub_trainset[i]  # Get image and label (which is not used in this case)
+                image_vector = image.view(-1)
                 image_vectors.append(image_vector)
 
-            image_matrix = np.vstack(image_vectors)  # Stack image vectors to form a matrix
+            image_matrix = np.stack(image_vectors)
             self.images_matrix_lists.append(image_matrix)  # Append the matrix to the list
 
     def images_to_matrix_lists_gpu(self):
@@ -69,7 +71,7 @@ class ImageProcessor:
 
         for _ in range(self.repetitions):
             image_vectors = []  # Storing image vectors for each iteration
-            for i in range(len(trainset)):
+            for i in range(5000):
                 image, _ = trainset[i]  # Get image and label (which is not used in this case)
                 image_gpu = image.cuda() if torch.cuda.is_available() else image  # Move tensor to GPU if available
                 image_vector = image_gpu.view(-1)  # Flatten the image tensor
@@ -79,12 +81,14 @@ class ImageProcessor:
             self.images_matrix_lists.append(image_matrix)  # Append the matrix to the list
 
     def get_BOF(self):
-        self.images_to_matrix_lists_gpu()  # 转换图像到矩阵列表
+        self.images_to_matrix_lists()  # 转换图像到矩阵列表
 
         results = []
         for image_matrix in self.images_matrix_lists:
             # 使用每个矩阵进行操作，例如 Effective_Ranks
-            get_rank = Effective_Ranks_GPU(image_matrix)
+            print(image_matrix.T.shape)
+            # get_rank = Effective_Ranks_GPU(image_matrix)
+            get_rank = Effective_Ranks(image_matrix)
             r0 = get_rank.r0
             R0 = get_rank.R0
             rk_max_index = get_rank.rk_max_index
@@ -106,6 +110,7 @@ class ImageProcessor:
             results[key] = (mean, std_dev)  # 存储均值和标准差为元组形式
 
         return results
+    
     def calculate_stats_tensor(self) -> Dict[str, Tuple[float, float]]:
         """
         计算 BOF 特征的均值和标准差。

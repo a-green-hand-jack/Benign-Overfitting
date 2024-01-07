@@ -57,6 +57,8 @@ class ISICBOF:
         - Dataset object.
         """
         img_ids = glob(os.path.join(self.imgpath, 'images', '*' + '.png'))
+        print(self.imgpath)
+        # print(img_ids)
         img_ids = [os.path.splitext(os.path.basename(p))[0] for p in img_ids]
         train_img_ids, val_img_ids = train_test_split(img_ids, test_size=0.2, random_state=41)
         tf_train = JointTransform2D(crop=(crop,crop), p_flip=0, color_jitter_params=None, long_mask=True)
@@ -84,9 +86,9 @@ class ISICBOF:
         for i in range(len(trainset)):
             image, _, _ = trainset[i]  
             image_numpy = image.detach().cpu().numpy()  # 将PyTorch张量转换为NumPy数组
-            image_vector = image_numpy.flatten().astype(np.float16)  # 转换为float32
+            image_vector = image_numpy.flatten()  # 转换为float32
             image_vectors.append(image_vector)
-        image_matrix = np.vstack(image_vectors).astype(np.float16)
+        image_matrix = np.vstack(image_vectors)
         return image_matrix
 
     def images2matrix_gpu(self, trainset: Any) -> torch.Tensor:
@@ -113,7 +115,7 @@ class ISICBOF:
         Convert images in the dataset to matrix lists.
         """
         for _ in range(self.repetitions):
-            image_matrix = self.images2matrix_gpu(self.dataset)
+            image_matrix = self.images2matrix(self.dataset)
             self.images_matrix_lists.append(image_matrix)  # Append the matrix to the list
             
         # print(self.images_matrix_lists)
@@ -126,9 +128,9 @@ class ISICBOF:
         """
         results = []
         for image_matrix in self.images_matrix_lists:
-            print(image_matrix.shape)
+            # print(image_matrix.shape)
             # Perform operations using each matrix, such as Effective_Ranks
-            get_rank = Effective_Ranks_GPU(image_matrix)
+            get_rank = Effective_Ranks(image_matrix)
             r0 = get_rank.r0
             R0 = get_rank.R0
             rk_max_index = get_rank.rk_max_index
@@ -298,10 +300,10 @@ class CompareBOF():
         data = self.comb_BOF
 
         # 创建4个子图的大图布局
-        fig, axs = plt.subplots(1, 4, figsize=(20, 5))  # 4个子图
+        fig, axs = plt.subplots(1, 5, figsize=(20, 5))  # 4个子图
 
         # 遍历每个子图的索引和对应的键
-        keys = ['r0', 'R0', 'rk_max_index', 'rk_max']  # 四个键
+        keys = ['r0', 'R0', 'rk_max_index', 'rk_max', 'Rk_max']  # 四个键
         for idx, subkey in enumerate(keys):
             # 提取每个子图的数据
             # values = [item[subkey][0] for item in data]  # 提取mean值

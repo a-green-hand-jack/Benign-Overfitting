@@ -57,7 +57,48 @@ class Effective_Ranks:
         """
         Computes the covariance operator of the input matrix.
         """
-        self.cov_operator = np.cov(self.x, rowvar=False)
+        x = self.x
+        print(x.shape, x.dtype)
+        self.cov_operator = np.cov(x, rowvar=True)
+        print(self.cov_operator.shape, self.cov_operator.dtype)
+
+
+    def get_cov_operator_my1(self) -> None:
+        """
+        Computes the covariance operator of the input matrix.
+        """
+        # Transpose the matrix and convert to np.float16
+        x = self.x.astype(np.float16)
+        
+        # Subtract the mean from the data
+        x_mean = x - np.mean(x, axis=1, keepdims=True)
+        
+        # Compute the covariance matrix X * X^T
+        print(x_mean.shape)
+        self.cov_operator = np.dot(x_mean, x_mean.T)
+    def get_cov_operator_my(self) -> None:
+        """
+        Computes the covariance operator of the input matrix.
+        """
+        # Transpose the matrix and convert to np.float16
+        x_mean = self.x.astype(np.float16)
+        print(x_mean.shape)
+        # Subtract the mean from the data
+        # x_mean = x
+        
+        # Compute the covariance matrix X * X^T using @ operator
+        rows, cols = x_mean.shape
+        block_size = 100  # Adjust the block size as needed
+        
+        result = np.zeros((rows, rows), dtype=np.float16)
+        for i in range(0, cols, block_size):
+            x_block = x_mean[:, i:i + block_size]
+            result += x_block @ x_block.T
+        
+        self.cov_operator = result
+        print(result.shape)
+
+
       
     def get_eigenvalues(self) -> None:
         """
@@ -115,17 +156,30 @@ class Effective_Ranks_GPU:
 
     def get_cov_operator(self) -> None:
         """
-        Computes the covariance operator of the input matrix.
+        计算输入矩阵的协方差算子。
+        
+        协方差算子定义为：
+        协方差算子 = \frac{X^T \cdot X}{n}
+        其中，X^T 表示矩阵 X 的转置，n 是数据点的数量。
         """
         self.cov_operator = torch.matmul(self.x.t(), self.x) / self.x.size(0)
 
     def get_eigenvalues(self) -> None:
         """
-        Computes the eigenvalues of the covariance operator.
+        计算协方差算子的特征值。
+        
+        通过 torch.linalg.eigh 函数计算协方差算子的特征值。
+        特征值满足以下方程：
+        C v = \lambda v
+        其中，C 是协方差算子，v 是特征向量，\lambda 表示特征值。
+
+        这两行代码使用 PyTorch 中的函数 `torch.linalg.eigh()` 计算了给定协方差算子的特征值，并将结果按照降序排列后赋值给了 `self.eigenvalues`。
+
+        具体来说：
+        - `torch.linalg.eigh()` 函数用于计算 Hermitian（或实对称）矩阵的特征值和特征向量。在这里，`self.cov_operator` 应该是一个实对称矩阵（协方差矩阵），该函数返回特征值和特征向量。
+        - 由于只关心特征值，所以使用 `_` 接收了函数返回的特征向量，而特征值则被赋值给了 `eigenvalues` 变量。
+        - `self.eigenvalues = eigenvalues.flip(0)` 通过 `flip(0)` 将特征值按照维度 0（即第一个维度，通常是行）进行翻转，实现了将特征值按降序排列的操作。最终结果被赋值给了 `self.eigenvalues` 属性。
         """
-        # eigenvalues = torch.symeig(self.cov_operator, eigenvectors=False).eigenvalues
-        # self.eigenvalues = eigenvalues.flip(0)
-        # 上面的版本太老了，没法用
         eigenvalues, _ = torch.linalg.eigh(self.cov_operator)
         self.eigenvalues = eigenvalues.flip(0)
 

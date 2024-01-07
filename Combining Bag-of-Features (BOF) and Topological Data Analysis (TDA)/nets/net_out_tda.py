@@ -96,17 +96,20 @@ class ImageNetTDA:
 
     def images_to_matrix_lists(self):
         transform = self.train_transform
-        # Download CIFAR-10 dataset
-        trainset = torchvision.datasets.CIFAR10(root=self.cifar10_path, train=True, download=True,transform=self.train_transform)
-        
-        # 创建一个包含前1000个样本的子集
-        subset_indices = range(1000)
+        # 假设已经定义了self.cifar10_path和self.train_transform
+        trainset = torchvision.datasets.CIFAR10(root=self.cifar10_path, train=True, download=True, transform=self.train_transform)
+
+        # 创建一个包含1000个随机样本的子集
+        # 获取训练集的长度
+        total_samples = len(trainset)
+        subset_indices = random.sample(range(total_samples), 1000)
         subset_dataset = Subset(trainset, subset_indices)
         # ----------------------------------这里其实不是很好，但是先这样选吧，后期应该做出修正--------------------------------
         # 不过后来固定了所有的随机数，倒也无所谓了
 
         self.images_matrix_lists = []  # Storing multiple image vector matrices
-
+        # 设置随机数生成器的种子值
+        random.seed(42)
         for _ in range(self.repetitions):
             image_vectors = []  # Storing image vectors for each iteration
             for i in range(len(subset_dataset)):
@@ -214,7 +217,8 @@ class ImageNetTDA:
             #     print(betti_number_matrix.shape, "\n")
             # print(len(average_array_list))
             # print(average_array_list)
-            average_arry = np.mean(np.array(average_array_list), axis=0)
+            # average_arry = np.mean(np.array(average_array_list), axis=0)
+            average_arry = average_array_list[0]
             
 
         results = {}

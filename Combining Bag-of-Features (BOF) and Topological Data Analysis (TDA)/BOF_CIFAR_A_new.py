@@ -18,7 +18,8 @@ CIFAR_STD = [0.2023, 0.1994, 0.2010]
 
 def process_with_scale(scale_list=np.arange(0.1, 1.02, 0.02), input_height=32, input_width=32):
     for scale in scale_list:
-        save_pkl_path = f".\\cifar10_A\\data_torch_gup\\scale\\{scale}\\bof.pkl"
+        print("="*10, scale, "="*10, "\n")
+        save_pkl_path = f".\\Result\\cifar10_5w\\data_torch\\scale\\{scale}\\bof.pkl"
         # height = int(scale * input_height)
         # width = int(scale * input_width)
         # train_transform = A.Compose([
@@ -36,8 +37,9 @@ def process_with_scale(scale_list=np.arange(0.1, 1.02, 0.02), input_height=32, i
         temp_image_processor = ImageProcessor(save_file_path=save_pkl_path, costume_transform=train_transform, repetitions=10)
         # 清空GPU显存
         torch.cuda.empty_cache()
+        print(temp_image_processor.BOF_mean_stddev)
 
-    folder = ".\\cifar10_A\\data_torch_gup\\scale"
+    folder = ".\\Result\\cifar10_5w\\data_torch\\scale"
     test_BOF = CompareBOF(file_path=folder, target_pkl="bof.pkl", aug_name='scale')
 
     print(test_BOF.comb_BOF)
@@ -46,15 +48,10 @@ def process_with_scale(scale_list=np.arange(0.1, 1.02, 0.02), input_height=32, i
 
 
 
-def process_with_angle(min_angle_list=range(1, 150, 1)):
+def process_with_angle(min_angle_list=range(0, 180, 1)):
     for max_angle in min_angle_list:
-        save_pkl_path = f".\\cifar10_A\\data_torch_gpu\\angle\\{max_angle}\\bof.pkl"
-        # train_transform = A.Compose([
-        #     # A.RandomCrop(height=height, width=width, p=1.0),  # 随机裁剪
-        #     A.Rotate(limit=max_angle),  # 角度旋转增强，可设置旋转角度的限制
-        #     A.Resize(32, 32),  # 调整大小
-        #     A.Normalize(),  # 标准化
-        # ])
+        save_pkl_path = f".\\Result\\cifar10_5k\\data_torch\\angle\\{max_angle}\\bof.pkl"
+        print("="*10, max_angle, "="*10)
         min_angle = -max_angle
 
         train_transform={'train':transforms.Compose([
@@ -68,8 +65,8 @@ def process_with_angle(min_angle_list=range(1, 150, 1)):
         # 清空GPU显存
         torch.cuda.empty_cache()
 
-    folder = ".\\cifar10_A\\data_torch_gup\\angle"
-    test_BOF = CompareBOF(file_path=folder, target_pkl="bof.pkl", aug_name='scale')
+    folder = f".\\Result\\cifar10_5w\\data_torch\\angle"
+    test_BOF = CompareBOF(file_path=folder, target_pkl="bof.pkl", aug_name='angle')
 
     print(test_BOF.comb_BOF)
     test_BOF.draw_BOF(net_name="data", aug_name="angle")
