@@ -1,0 +1,44 @@
+def get_betti_number(self):
+           
+        self.l1_betti_number_list = []  # 吸收每一个特征图的的距离矩阵的betti numer
+        self.l2_betti_number_list = []
+        for l1_distance_matrix, l2_distance_matrix in zip(*self.img_matrix2distance_matrix()):    # 运行函数得到了L1，L2距离矩阵list
+            # 判断是否安装了 ripser++，如果安装了就使用 ripserplusplus，否则使用 ripser
+            if 'rpp_py' in globals():
+                d1 = rpp_py.run("--format distance --dim 1", l1_distance_matrix.cpu().detach().numpy())
+                d2 = rpp_py.run("--format distance --dim 1", l2_distance_matrix.cpu().detach().numpy())
+                # 假设 d1 和 d2 是包含元组的字典
+                # 转化为3维矩阵的过程
+                d1_matrix = []
+                for key in d1:
+                    d1_matrix.append(np.array([list(item) for item in d1[key]]))
+                d2_matrix = []
+                for key in d1:
+                    d2_matrix.append(np.array([list(item) for item in d1[key]]))
+                d1 = d1_matrix
+                d2 = d2_matrix
+
+            else:
+
+                d1 = ripser(l1_distance_matrix, maxdim=1, distance_matrix=True)
+                d1 = d1["dgms"]
+                d2 = ripser(l2_distance_matrix, maxdim=1, distance_matrix=True)
+                d2 = d2["dgms"]
+            
+            # --------- 这里是为了应付LeNet的麻烦，就没有计算L1下的情况    
+            # d1 = [matrix + 1 for matrix in d1]
+            try:
+                d1 = [np.where(np.isinf(matrix), np.nanmax(matrix[np.isfinite(matrix)]), matrix) for matrix in d1]  # 使用推导式，betti number中的那些无限大的采用最大值代替
+                d1 = [np.where(np.isinf(matrix), np.nanmax(matrix[np.isfinite(matrix)]), matrix) if matrix.size > 0 else matrix for matrix in d1]
+                normalized_d1 = [np.where(np.isinf(matrix), np.nanmax(matrix[np.isfinite(matrix)]), matrix / np.nanmax(matrix[np.isfinite(matrix)])) for matrix in d1]  # 实现betti number 层面上的归一化
+            except ValueError:
+                pprint(d1)
+
+            d2 = [np.where(np.isinf(matrix), np.nanmax(matrix[np.isfinite(matrix)]), matrix) for matrix in d2]  # 使用推导式，betti number中的那些无限大的采用最大值代替
+            d2 = [np.nan_to_num(matrix, nan=0.0) for matrix in d2]  # 将NaN值替换为0
+            # d2 = [np.where(np.isinf(matrix), np.nanmax(matrix[np.isfinite(matrix)]), matrix) if matrix.size > 0 else matrix for matrix in d2]
+            normalized_d2 = [np.where(np.isinf(matrix), np.nanmax(matrix[np.isfinite(matrix)]), matrix / np.nanmax(matrix[np.isfinite(matrix)])) for matrix in d2]  # 实现betti number 层面上的归一化
+
+            self.l1_betti_number_list.append(normalized_d1)
+            self.l2_betti_number_list.append(normalized_d2)
+        return {"L1_betti_number_list":self.l1_betti_number_list, "L2_betti_number_list":self.l2_betti_number_list}    # 这个list中的每一个元素，矩阵，都代表了一个数据集
