@@ -78,7 +78,8 @@ class ImageNetTDA:
         
 
         self.images_matrix = None  # 初始化为 None
-        self.L_12_betti_numbers_list = self.get_betti_number()
+        
+        L_12_betti_bars = self.get_betti_number()
         # print(self.L_12_betti_numbers_list)
 
         # 保存0th的betti number的情况
@@ -95,8 +96,13 @@ class ImageNetTDA:
         self.feature2save = self.betti_number_feature(chose='L2', betti_dim=betti_dim)
         self.save_stats_to_file(file_path=save_file_path ,chose="L2", betti_dim=betti_dim)
 
+        # 保存betti bars 的数据，以便后期进行其他处理
+        self.feature2save = L_12_betti_bars
+        self.save_stats_to_file(file_path=save_file_path ,chose="bars", betti_dim=12)
+
 
     def images_to_matrix_lists(self):
+        random.seed(42)
         transform = self.train_transform
         # Download CIFAR-10 dataset
         trainset = torchvision.datasets.CIFAR10(root=self.cifar10_path, train=True, download=True,transform=self.train_transform)
@@ -104,13 +110,12 @@ class ImageNetTDA:
         # 创建一个包含1000个随机样本的子集
         # 获取训练集的长度
         total_samples = len(trainset)
-        subset_indices = random.sample(range(total_samples), 1000)
+        subset_indices = random.sample(range(total_samples), self.subset_size)
         subset_dataset = Subset(trainset, subset_indices)
         # ----------------------------------这里其实不是很好，但是先这样选吧，后期应该做出修正--------------------------------
         # 不过后来固定了所有的随机数，倒也无所谓了
 
         self.images_matrix_lists = []  # Storing multiple image vector matrices
-
         for _ in range(self.repetitions):
             image_vectors = []  # Storing image vectors for each iteration
             for i in range(len(subset_dataset)):
@@ -122,10 +127,10 @@ class ImageNetTDA:
                 # print(image.shape)
                 # bp()
                 image_vector = image.flatten()  # 转换为向量
-                image_vector_array = image_vector
+                image_vector_array = image_vector.cpu().detach().numpy()
                 image_vectors.append(image_vector_array)
             
-            image_matrix = torch.stack(image_vectors)  # Stack image vectors to form a matrix
+            image_matrix = np.vstack(image_vectors)  # Stack image vectors to form a matrix
             self.images_matrix_lists.append(image_matrix)  # Append the matrix to the list
         # print([v.shape for v in t])
         return self.images_matrix_lists # 这个list中的每一个元素，矩阵，都代表了整个数据集
@@ -149,9 +154,9 @@ class ImageNetTDA:
                 batch_output = self.model(batch_images)[self.care_layer]
                 for image_output in batch_output:
                     image_vector = image_output.flatten()
-                    image_vectors.append(image_vector)
+                    image_vectors.append(image_vector.cpu().detach().numpy())
             
-            image_matrix = torch.stack(image_vectors)
+            image_matrix = np.vstack(image_vectors)
             images_matrix_lists.append(image_matrix)
 
         return images_matrix_lists
@@ -164,8 +169,8 @@ class ImageNetTDA:
 
         for imgmatrix in images_matrix_list:
             
-            l2_distances = vec_dis(data_matrix=imgmatrix, distance="l2")
-            l1_distances = vec_dis(data_matrix=imgmatrix, distance="l1")
+            l2_distances = vec_dis(data_matrix=torch.from_numpy(imgmatrix).to(device), distance="l2")
+            l1_distances = vec_dis(data_matrix=torch.from_numpy(imgmatrix).to(device), distance="l1")
             self.all_l2_distances.append(l2_distances)
             self.all_l1_distances.append(l1_distances)
         return self.all_l1_distances, self.all_l2_distances
@@ -193,9 +198,9 @@ class ImageNetTDA:
 
             else:
 
-                d1 = ripser(l1_distance_matrix, maxdim=1, distance_matrix=True)
+                d1 = ripser(l1_distance_matrix.cpu().detach().numpy(), maxdim=1, distance_matrix=True)
                 d1 = d1["dgms"]
-                d2 = ripser(l2_distance_matrix, maxdim=1, distance_matrix=True)
+                d2 = ripser(l2_distance_matrix.cpu().detach().numpy(), maxdim=1, distance_matrix=True)
                 d2 = d2["dgms"]
             
             # --------- 这里是为了应付LeNet的麻烦，就没有计算L1下的情况    
@@ -255,13 +260,13 @@ class ImageNetTDA:
             #     print(betti_number_matrix.shape, "\n")
             # print(len(average_array_list))
             # print(average_array_list)
-            average_arry = np.mean(np.array(average_array_list), axis=0)
+            # average_arry = np.mean(np.array(average_array_list), axis=0)
             
 
         results = {}
         results["all_bars_survive_time_sum"] = (statistics.mean(all_bars_survive_time_sum_list), statistics.stdev(all_bars_survive_time_sum_list))  # 存储均值和标准差为元组形式
         results["death_len"] = (statistics.mean(death_len_list), statistics.stdev(death_len_list))
-        results["average_betti_number_matrix"] = average_arry
+        # results["average_betti_number_matrix"] = average_arry
         return results
 
     
