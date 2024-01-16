@@ -4,6 +4,7 @@ from TDA.after_betti import calculate_edge_length, get_min_max_columns, count_ep
 
 # 然后加载其他库
 import numpy as np
+from MLclf import MLclf
 import torch
 import torch.nn as nn
 import torch.nn.init as init
@@ -61,10 +62,11 @@ def init_weights(m: nn.Module) -> None:
             init.constant_(m.bias.data, 0)  # 如果是线性层且有偏置项，初始化偏置为常数0
 
 class ImageNetTDA:
-    def __init__(self, costume_transform, cifar_path='./data', save_file_path=None, repetitions=1, model=None,device=torch.device("cuda" if torch.cuda.is_available() else "cpu"), betti_dim = 1, care_layer = -2, batch_size = 16, subset_size=1000):
+    def __init__(self, costume_transform, cifar_path='./data', save_file_path=None, repetitions=1, model=None,device=torch.device("cuda" if torch.cuda.is_available() else "cpu"), betti_dim = 1, care_layer = -2, batch_size = 16, subset_size=1000, chose_dataset='cifar10'):
         self.train_transform = costume_transform
         self.repetitions = repetitions
         self.cifar10_path = cifar_path
+        self.chose_dataset = chose_dataset
         self.device = device
         self.model = model
         self.model.to(device)
@@ -105,7 +107,20 @@ class ImageNetTDA:
         random.seed(42)
         transform = self.train_transform
         # Download CIFAR-10 dataset
-        trainset = torchvision.datasets.CIFAR10(root=self.cifar10_path, train=True, download=True,transform=self.train_transform)
+        if self.chose_dataset == "cifar10":
+            trainset = torchvision.datasets.CIFAR10(root=self.cifar10_path, train=True, download=True,transform=self.train_transform)
+        # 使用MLclf，https://github.com/tiger2017/MLclf
+        elif self.chose_dataset == 'tiny-imagenet':
+            MLclf.tinyimagenet_download(Download=False) 
+            trainset, validation_dataset, test_dataset = MLclf.tinyimagenet_clf_dataset(ratio_train=0.6, ratio_val=0.2,
+                                                                                                seed_value=None, shuffle=True,
+                                                                                                transform=self.train_transform,
+                                                                                                save_clf_data=True,
+                                                                                                few_shot=False)
+        elif self.chose_dataset == 'mini-imagenet':
+            # Download the original mini-imagenet data:
+            MLclf.miniimagenet_download(Download=False)
+            trainset, validation_dataset, test_dataset = MLclf.miniimagenet_clf_dataset(ratio_train=0.6, ratio_val=0.2, seed_value=None, shuffle=True, transform=self.train_transform, save_clf_data=True)
         
         # 创建一个包含1000个随机样本的子集
         # 获取训练集的长度

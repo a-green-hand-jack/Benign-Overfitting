@@ -16,7 +16,7 @@ import statistics
 import torch
 from typing import List, Tuple, Dict, Any, Union
 from glob import glob
-
+import pandas as pd
 
 
 
@@ -87,7 +87,7 @@ class ImageProcessor:
         results = []
         for image_matrix in self.images_matrix_lists:
             # 使用每个矩阵进行操作，例如 Effective_Ranks
-            print(image_matrix.T.shape)
+            print(image_matrix.shape)
             # get_rank = Effective_Ranks_GPU(image_matrix)
             get_rank = Effective_Ranks(image_matrix)
             r0 = get_rank.r0
@@ -244,36 +244,41 @@ class CompareBOF():
             # print(temp_get_BOF)
         # self.comb_acc_matrix = np.array(self.comb_acc)
 
-
     def draw_BOF(self, net_name, aug_name):
         save_path = os.path.join(self.folder_path, f'BOF_{net_name}_{aug_name}.png')
+        excel_path = os.path.join(self.folder_path, f'BOF_{net_name}_{aug_name}.xlsx')
         data = self.comb_BOF
 
         # 创建4个子图的大图布局
-        fig, axs = plt.subplots(1, 5, figsize=(20, 5))  # 4个子图
+        fig, axs = plt.subplots(1, 5, figsize=(20, 5))  # 5个子图
 
         # 遍历每个子图的索引和对应的键
-        keys = ['r0', 'R0', 'rk_max_index', 'rk_max', 'Rk_max']  # 四个键
-        for idx, subkey in enumerate(keys):
-            # 提取每个子图的数据
-            # values = [item[subkey][0] for item in data]  # 提取mean值
-            # errors = [item[subkey][1] for item in data]  # 提取标准差
-            if aug_name == 'scale':
-                values = [item[subkey][0] for item in data[::-1]]  # 提取mean值
-                errors = [item[subkey][1] for item in data[::-1]]  # 提取标准差
-                # # 绘制子图带误差棒
-                # axs[idx].errorbar(range(len(values)), values, yerr=errors, linestyle=':', marker='o', markersize=4)
-                # axs[idx].set_title(subkey)
-                # 绘制子图带误差棒
-                axs[idx].errorbar(np.arange(len(values)) / (len(values) - 1), values, yerr=errors, linestyle=':', marker='o', markersize=4)
-                axs[idx].set_title(subkey)
-            else:
-                values = [item[subkey][0] for item in data]  # 提取mean值
-                errors = [item[subkey][1] for item in data]  # 提取标准差
+        keys = ['r0', 'R0', 'rk_max_index', 'rk_max', 'Rk_max']  # 五个键
 
-                # 绘制子图带误差棒
-                axs[idx].errorbar(np.arange(len(values)) / (len(values) - 1), values, yerr=errors, linestyle=':', marker='o', markersize=4)
-                axs[idx].set_title(subkey)
+        # Create DataFrames to store mean and error values
+        mean_df = pd.DataFrame()
+        error_df = pd.DataFrame()
+
+        for idx, subkey in enumerate(keys):
+            if aug_name == 'scale' or aug_name == 'crop':
+                values = [item[subkey][0] for item in data[::-1]]
+                errors = [item[subkey][1] for item in data[::-1]]
+            else:
+                values = [item[subkey][0] for item in data]
+                errors = [item[subkey][1] for item in data]
+
+            # Store data in DataFrames
+            mean_df[subkey] = values
+            error_df[subkey] = errors
+
+            # 绘制子图带误差棒
+            axs[idx].errorbar(np.arange(len(values)) / (len(values) - 1), values, yerr=errors, linestyle=':', marker='o', markersize=4)
+            axs[idx].set_title(subkey)
+
+        # 保存数据到Excel文件
+        with pd.ExcelWriter(excel_path) as writer:
+            mean_df.to_excel(writer, sheet_name='Mean', index=False)
+            error_df.to_excel(writer, sheet_name='Error', index=False)
 
         # 调整布局并保存图像
         plt.tight_layout()

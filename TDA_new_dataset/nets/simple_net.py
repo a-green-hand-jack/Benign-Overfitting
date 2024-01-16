@@ -40,12 +40,14 @@ class MyLargeCNN(nn.Module):
 
 "LeNet"
 class LeNet(nn.Module):
-    def __init__(self):
+    def __init__(self, in_channels=3, input_height=64, input_width=64):
         super(LeNet, self).__init__()
-        # 输入图像大小是 32x32，使用填充为 2 的 5x5 卷积核可以保持特征图尺寸不变
-        self.conv1 = nn.Conv2d(3, 6, 5, padding=2)
+        self.conv1 = nn.Conv2d(in_channels, 6, 5, padding=2)
         self.conv2 = nn.Conv2d(6, 16, 5, padding=2)
-        self.fc1 = nn.Linear(1024, 120)  # 输入尺寸保持不变，计算方式为 16*32*32
+        
+        # 计算线性层的输入尺寸
+        self.fc1_input_size = 16 * (input_height // 4) * (input_width // 4)
+        self.fc1 = nn.Linear(self.fc1_input_size, 120)
         self.fc2 = nn.Linear(120, 84)
         self.fc3 = nn.Linear(84, 10)
 
@@ -53,35 +55,31 @@ class LeNet(nn.Module):
         out = F.relu(self.conv1(x))
         out = F.max_pool2d(out, 2)
         out1 = out
-        
 
         out = F.relu(self.conv2(out))
         out = F.max_pool2d(out, 2)
         out2 = out
-        
+
         out = out.view(out.size(0), -1)
         out = self.fc1(out)
         out = F.relu(out)
         out3 = out
-        
-        
+
         out = self.fc2(out)
         out4 = out
         out = F.relu(out)
-        
-        
-        
+
         out = self.fc3(out)
         out5 = out
         return [x, out1, out2, out3, out4, out5]
-    
+
     def children(self):
-        # Return an iterator over child modules
         return iter([self.conv1, self.conv2, self.fc1, self.fc2, self.fc3])
+
     
 ''' MLP '''
 class MLP(nn.Module):
-    def __init__(self, channel=3, num_classes=10, im_size=(32, 32)):
+    def __init__(self, channel=3, num_classes=10, im_size=(84, 84)):
         super(MLP, self).__init__()
         # print(im_size)
         self.fc_1 = nn.Linear(im_size[0] * im_size[1]*channel, 512)

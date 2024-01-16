@@ -76,4 +76,4 @@ def process_with_angle(min_angle_list=range(0, 180, 1)):
 if __name__ == '__main__':
     # main()
     process_with_angle()
-    # process_with_scale()
+    process_with_scale()

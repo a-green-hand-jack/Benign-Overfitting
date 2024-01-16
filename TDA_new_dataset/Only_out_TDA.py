@@ -13,6 +13,20 @@ import concurrent.futures
 import torch
 import random
 
+# 定义一个辅助funcation或者class
+from torchvision import transforms
+from PIL import Image
+
+class ResizeCustom(transforms.Resize):
+    def __init__(self, size, interpolation=Image.BILINEAR):
+        super(ResizeCustom, self).__init__(size, interpolation)
+
+    def __call__(self, img):
+        if isinstance(img, np.ndarray):
+            img = Image.fromarray(img)
+
+        return super(ResizeCustom, self).__call__(img)
+
 
 # 首先考虑scale作为增强
 
@@ -97,7 +111,7 @@ def all_resnet(aug_name):
         # 等待所有任务完成
         concurrent.futures.wait(futures)
 
-def without_aug(save_path = "./Result/model_DTA", aug_name="None", model_list = [], betti_dim=1, care_layer=-2):
+def without_aug(save_path = "./Result/model_DTA_tiny_imagenet_2_big", aug_name="None", model_list = [], betti_dim=1, care_layer=-2):
     # 这里我希望得到的是在某一个model下的在scale增强下的情况
     image_size = 32
     CIFAR_MEAN = [0.49139968, 0.48215827, 0.44653124]
@@ -106,17 +120,20 @@ def without_aug(save_path = "./Result/model_DTA", aug_name="None", model_list = 
 
     
     for i, model in enumerate(model_list):
+        # https://zhuanlan.zhihu.com/p/404319167;这个帖子讲了如何处理np类型的图片的增强
+        train_transform = transforms.Compose([
+            # ResizeCustom((32, 32)),
+            transforms.ToTensor(),
+            # transforms.Resize((32, 32), antialias=True),
+            transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+            ])
         
-        train_transform=transforms.Compose([
-                                    transforms.ToTensor(),
-                                    transforms.Normalize(CIFAR_MEAN, CIFAR_STD)
-                                ])
 
         print(f"{type(model).__name__}")
 
         save_floor = f"{save_path}/{i}/"
 
-        temp_img = ImageNetTDA(costume_transform=train_transform, repetitions=10, save_file_path = save_floor, model=model, betti_dim=betti_dim, care_layer=care_layer)
+        temp_img = ImageNetTDA(costume_transform=train_transform, repetitions=10, save_file_path = save_floor, model=model, betti_dim=betti_dim, care_layer=care_layer, chose_dataset='tiny-imagenet')
 
 
 def count_parameters(models):
@@ -133,7 +150,7 @@ def count_parameters(models):
 if __name__ == '__main__':
 
     # 设置随机数种子
-    seed = 0
+    seed = 42
     torch.manual_seed(seed)  # 设置torch的随机数种子
     random.seed(seed)  # 设置python的随机数种子
     np.random.seed(seed)  # 设置numpy的随机数种子
@@ -145,20 +162,20 @@ if __name__ == '__main__':
     model = ResNet152()
     model_name = "ResNet152"
     betti_dim = 1
-    care_layer = -1
+    care_layer = -2
+    model_list = [model]
+    para_list = count_parameters(model_list)
+    print(model_name,":",para_list)
 
     # angle_data_tda(scale_path=scale_path, model=model, model_name=model_name, aug_name="angle", betti_dim=betti_dim, care_layer=-2)
     # scale_data_tda(scale_path=scale_path, model=model, model_name=model_name, aug_name="scale", betti_dim=betti_dim, care_layer=care_layer)
 
     # 只关注model，没有增强
-    # model_list = [MLP(), LeNet(), ResNet18(), ResNet34(), ResNet50(), ResNet101(), ResNet152()]
-    # without_aug(model_list=model_list)
+    model_list_mini = [MLP(im_size=(84, 84)), LeNet(input_height=84, input_width=84), ResNet18(), ResNet34(), ResNet50(), ResNet101(), ResNet152()]
+    model_list_tiny = [MLP(im_size=(64, 64)), LeNet(input_height=64, input_width=64), ResNet18(), ResNet34(), ResNet50(), ResNet101(), ResNet152()]
+    without_aug(model_list=model_list_tiny)
 
-    # 关注model和scale
+    # 关注angle和scale,也即是关注增强
+
     # scale_data_tda(scale_path=scale_path, model=model, model_name=model_name, aug_name="scale", betti_dim=betti_dim, care_layer=care_layer)
-    model_list = [model]
-    para_list = count_parameters(model_list)
-    print(model_name,":",para_list)
-
-    scale_data_tda(scale_path=scale_path, model=model, model_name=model_name, aug_name="scale", betti_dim=betti_dim, care_layer=care_layer)
-    angle_data_tda(scale_path=scale_path, model=model, model_name=model_name, aug_name="angle", betti_dim=betti_dim, care_layer=care_layer)
+    # angle_data_tda(scale_path=scale_path, model=model, model_name=model_name, aug_name="angle", betti_dim=betti_dim, care_layer=care_layer)
