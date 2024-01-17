@@ -141,11 +141,11 @@ if __name__ == '__main__':
         torch.cuda.manual_seed(seed)  # 设置cuda的随机数种子
         torch.cuda.manual_seed_all(seed)  # 设置所有cuda设备的随机数种子
 
-    scale_path = "./Result/20240113_new_ResNet_1k_output"
+    scale_path = "./Result/20240116_kaiming_5k_2"
     model = ResNet152()
     model_name = "ResNet152"
     betti_dim = 1
-    care_layer = -1
+    care_layer = -2
 
     # angle_data_tda(scale_path=scale_path, model=model, model_name=model_name, aug_name="angle", betti_dim=betti_dim, care_layer=-2)
     # scale_data_tda(scale_path=scale_path, model=model, model_name=model_name, aug_name="scale", betti_dim=betti_dim, care_layer=care_layer)

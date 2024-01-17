@@ -146,9 +146,11 @@ def all_resnet(aug_name):
 
 if __name__ == '__main__':
     save_path = './Result'
-    model = LeNet()
-    model_name = 'LeNet'
-    scale_resnet_pre(scale_path=save_path, model=model, model_name=model_name, aug_name="scale")
-    angle_resnet_pre(scale_path=save_path, model=model, model_name=model_name, aug_name="angle")
+    model = ResNet50()
+    model_name = 'ResNet50'
+    # scale_resnet_pre(scale_path=save_path, model=model, model_name=model_name, aug_name="scale")
+    # angle_resnet_pre(scale_path=save_path, model=model, model_name=model_name, aug_name="angle")
+    angle_resnet_pre_parallel(model=model, model_name=model_name, aug_name='angle')
+    scale_resnet_pre_parallel(model=model, model_name=model_name, aug_name='scale')
 
 

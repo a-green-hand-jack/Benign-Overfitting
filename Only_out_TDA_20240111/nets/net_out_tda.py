@@ -45,24 +45,21 @@ import pandas as pd
 
 def init_weights(m: nn.Module) -> None:
     """
-    初始化神经网络模型的权重和偏置（如果存在）。
+    初始化神经网络模型的权重。
 
     Args:
-    - m (nn.Module): 需要初始化权重和偏置的神经网络模型
+    - m (nn.Module): 需要初始化权重的神经网络模型
 
     Returns:
     - None
     """
-    torch.manual_seed(0)  # 设置随机数种子为0
+    torch.manual_seed(42)  # 设置随机数种子为42
     if isinstance(m, (_ConvNd, Linear)):  # 检查是否是卷积层或线性层
-        init.normal_(m.weight.data, mean=0, std=0.01)  # 初始化权重为均值为0，标准差为0.01的正态分布
-        if isinstance(m, _ConvNd) and m.bias is not None:
-            init.constant_(m.bias.data, 0)  # 如果是卷积层且有偏置项，初始化偏置为常数0
-        elif isinstance(m, Linear) and hasattr(m, 'bias') and m.bias is not None:
-            init.constant_(m.bias.data, 0)  # 如果是线性层且有偏置项，初始化偏置为常数0
+        init.kaiming_normal_(m.weight.data, mode='fan_in', nonlinearity='relu')  # 使用Kaiming初始化方法初始化权重
+
 
 class ImageNetTDA:
-    def __init__(self, costume_transform, cifar_path='./data', save_file_path=None, repetitions=1, model=None,device=torch.device("cuda" if torch.cuda.is_available() else "cpu"), betti_dim = 1, care_layer = -2, batch_size = 16, subset_size=1000):
+    def __init__(self, costume_transform, cifar_path='./data', save_file_path=None, repetitions=1, model=None,device=torch.device("cuda" if torch.cuda.is_available() else "cpu"), betti_dim = 1, care_layer = -2, batch_size = 16, subset_size=5000):
         self.train_transform = costume_transform
         self.repetitions = repetitions
         self.cifar10_path = cifar_path

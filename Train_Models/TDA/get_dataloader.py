@@ -37,7 +37,7 @@ def get_dataloader(chose="cifar10_debug",
 
 
 def get_cifar10_dataloader(batch_size=64, 
-                           root='./data', 
+                           root='./cifar-10', 
                            CIFAR_MEAN = [0.49139968, 0.48215827, 0.44653124], 
                            CIFAR_STD = [0.2023, 0.1994, 0.2010],
                            custom_transform=None,
