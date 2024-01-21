@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 import numpy as np
 import torch
+from torchvision import transforms
 import matplotlib.pyplot as plt
 plt.rcParams['font.sans-serif'] = ['SimHei'] # 设置字体，中文显示
 plt.rcParams['axes.unicode_minus'] = False   # 坐标轴负数的负号显示
@@ -20,16 +21,25 @@ plt.rcParams['axes.unicode_minus'] = False   # 坐标轴负数的负号显示
 from ISIC2018.isicdataset import Dataset, ImageToImage2D, JointTransform2D
 from BOF.get_rank_from_matrix import Effective_Ranks, Effective_Ranks_GPU
 
+class DynamicNormalize(transforms.Normalize):
+    def __call__(self, tensor):
+        # 动态计算平均值和方差
+        mean = tensor.mean(dim=[1, 2], keepdim=True)
+        std = tensor.std(dim=[1, 2], keepdim=True)
+        
+        # 使用动态计算得到的平均值和方差进行归一化
+        return super().__call__(tensor, mean, std)
 
 
 
 class ISICBOF:
     def __init__(
         self,
-        costume_transform: Any,  # Type hint for the transformation object
         save_file_path: str = None,
         repetitions: int = 2,
-        crop: int = 256,
+        costume_transform = [
+                        transforms.RandomRotation(degrees=(0, 0))
+                        ],
         imgpath: str = r'..\..\others_work\dataset\ISIC2018\train_folder'
     ) -> None:
         """
@@ -44,18 +54,16 @@ class ISICBOF:
         self.train_transform = costume_transform
         self.repetitions = repetitions
         self.imgpath = imgpath
-        self.dataset = self.create_dataset(crop)
+        self.dataset = self.create_dataset()
         self.images_matrix_lists: List[np.ndarray] = []
         self.images_to_matrix_lists()  # Convert images to matrix lists
         self.BOF_feature_list = self.get_BOF()
         self.BOF_mean_stddev = self.calculate_stats_tensor()
         self.save_stats_to_file(file_path=save_file_path)
 
-    def create_dataset(self, crop: int) -> Any:
+    def create_dataset(self) -> Any:
         """
         Create the dataset for image processing.
-        Args:
-        - crop: Crop size for the images.
         Returns:
         - Dataset object.
         """
@@ -64,7 +72,15 @@ class ISICBOF:
         # print(img_ids)
         img_ids = [os.path.splitext(os.path.basename(p))[0] for p in img_ids]
         train_img_ids, val_img_ids = train_test_split(img_ids, test_size=0.2, random_state=41)
-        tf_train = JointTransform2D(crop=(crop,crop), p_flip=0, color_jitter_params=None, long_mask=True)
+        # tf_train = JointTransform2D(crop=(crop,crop), p_flip=0, color_jitter_params=None, long_mask=True)
+        # 定义增强方法
+        # augmentations = [
+        #     transforms.RandomHorizontalFlip(),
+        #     transforms.ColorJitter(0.1, 0.1, 0.1, 0.1),
+        #     transforms.RandomAffine(degrees=180),
+        # ]
+        
+        tf_train = JointTransform2D(augmentations=self.train_transform)
 
         train_dataset = Dataset(
             img_ids=train_img_ids,
