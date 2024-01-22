@@ -7,6 +7,7 @@ import cv2
 from pprint import pprint
 import numpy as np
 import torch
+from torchvision import transforms
 import torch.backends.cudnn as cudnn
 from sklearn.model_selection import train_test_split
 from tqdm import tqdm
@@ -30,9 +31,10 @@ from TDA.after_betti import calculate_edge_length
 from dataset.data2betti import distance_betti, distance_betti_ripser, plt_betti_number,plot_betti_number_bars
 
 
-def init_weights(m: nn.Module) -> None:
+def init_weights_my(m: nn.Module) -> None:
     """
     初始化神经网络模型的权重和偏置（如果存在）。
+    自己随便定义的，也就是保证均值是0，方差是0.01的高斯分布
 
     Args:
     - m (nn.Module): 需要初始化权重和偏置的神经网络模型
@@ -54,7 +56,22 @@ def init_weights(m: nn.Module) -> None:
         if isinstance(m, _ConvNd) and m.bias is not None:
             init.constant_(m.bias.data, 0)  # 如果是卷积层且有偏置项，初始化偏置为常数0
         elif isinstance(m, Linear) and hasattr(m, 'bias') and m.bias is not None:
-            init.constant_(m.bias.data, 0)  # 如果是线性层且有偏置项，初始化偏置为常数0
+            init.constant_(m.bias.data, 0)  # 如果是线性层且有偏置项，初始化偏置为常数0\
+
+def init_weights(m: nn.Module) -> None:
+    """
+    初始化神经网络模型的权重。
+    这里采用的是kaiming normal
+
+    Args:
+    - m (nn.Module): 需要初始化权重的神经网络模型
+
+    Returns:
+    - None
+    """
+    torch.manual_seed(42)  # 设置随机数种子为42
+    if isinstance(m, (_ConvNd, Linear)):  # 检查是否是卷积层或线性层
+        init.kaiming_normal_(m.weight.data, mode='fan_in', nonlinearity='relu')  # 使用Kaiming初始化方法初始化权重
 
 
     
@@ -67,13 +84,14 @@ class UNeXtTDA:
         model_name = 'UNeXt',
         input_images_path = '..\\..\\others_work\\dataset\\ISIC2018\\train_folder\\images',
         input_masks_path = '..\\..\\others_work\\dataset\\ISIC2018\\train_folder\\masks',
-        # output_path = os.path.join('outputs', 'isic_crop_512'),
-        crop = 512,
+        costume_transform = [
+                        transforms.RandomRotation(degrees=(0, 0))
+                        ],
         img_ext = '.png',
         mask_ext = '.png'):
         # init_weights()
         # 设置随机数种子
-        seed = 0
+        seed = 42
         torch.manual_seed(seed)  # 设置torch的随机数种子
         random.seed(seed)  # 设置python的随机数种子
         np.random.seed(seed)  # 设置numpy的随机数种子
@@ -89,7 +107,7 @@ class UNeXtTDA:
         self.input_images_path = input_images_path
         self.input_masks_path = input_masks_path
         # self.output_path = output_path
-        self.crop = crop
+        self.train_transform = costume_transform
         self.img_ext = img_ext
         self.mask_ext = mask_ext
 
@@ -130,16 +148,16 @@ class UNeXtTDA:
         
         img_ids =  glob(os.path.join(self.input_images_path, '*' + self.img_ext))
         img_ids = [os.path.splitext(os.path.basename(p))[0] for p in img_ids]
-        _, val_img_ids = train_test_split(img_ids, test_size=0.2, random_state=41)
-        tf_val = JointTransform2D(crop=(self.crop, self.crop), p_flip=0, color_jitter_params=None, long_mask=True)
+        train_img_ids, val_img_ids = train_test_split(img_ids, test_size=0.9, random_state=41)
+        tf_train = JointTransform2D(augmentations=self.train_transform)
         val_dataset = Dataset(
-            img_ids=val_img_ids,
+            img_ids=train_img_ids,
             img_dir=self.input_images_path,
             mask_dir=self.input_masks_path,
             img_ext=self.img_ext,
             mask_ext=self.mask_ext,
             num_classes=1,
-            transform=tf_val)
+            transform=tf_train)
         val_loader = torch.utils.data.DataLoader(
             val_dataset,
             batch_size=1,
@@ -156,8 +174,8 @@ class UNeXtTDA:
                     input = input.cuda()
                     model = model.cuda()
                     # compute output
-                    # image = model(input)
-                    image = input
+                    image = model(input)
+                    # image = input
                     # image = torch.sigmoid(image).cpu().numpy()
                     image_vector = image.flatten()  # 转换为向量
                     image_vector_array = image_vector.cpu().detach().numpy()
@@ -165,6 +183,7 @@ class UNeXtTDA:
                 
                 image_matrix = np.vstack(image_vectors)  # Stack image vectors to form a matrix
                 images_matrix_lists.append(image_matrix)  # Append the matrix to the list
+        # print(image.shape)
         return images_matrix_lists
     
     def img_matrix2distance_matrix(self):
@@ -209,6 +228,7 @@ class UNeXtTDA:
                 d2 = d2["dgms"]
             
             # 对两种定义下的距离矩阵进行后处理
+            # print(d1, '\n', d2)
             d1 = [np.where(np.isinf(matrix), np.nanmax(matrix[np.isfinite(matrix)]), matrix) for matrix in d1]  # 使用推导式，betti number中的那些无限大的采用最大值代替
             d1 = [np.nan_to_num(matrix, nan=0.0) for matrix in d1]  # 将NaN值替换为0
             d1 = [np.where(np.isinf(matrix), np.nanmax(matrix[np.isfinite(matrix)]), matrix) if matrix.size > 0 else matrix for matrix in d1]

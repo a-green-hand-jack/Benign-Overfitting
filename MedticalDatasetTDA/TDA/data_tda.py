@@ -4,6 +4,7 @@ from TDA.after_betti import calculate_edge_length, get_min_max_columns, count_ep
 
 # 然后加载其他库
 import numpy as np
+import pandas as pd
 import torch
 import torchvision.transforms as transforms
 from torch.utils.data import Subset
@@ -227,53 +228,52 @@ class CompareTDA():
             # print(temp_get_BOF)
         # self.comb_acc_matrix = np.array(self.comb_acc)
 
-
     def draw_BOF(self, net_name, aug_name):
         save_path = os.path.join(self.folder_path, f'TDA_{net_name}_{self.target_pkl.split(".")[0]}.png')
+        excel_path = os.path.join(self.folder_path, f'TDA_{net_name}_{self.target_pkl.split(".")[0]}.xlsx')
         data = self.comb_BOF
 
-        # 创建4个子图的大图布局
+        # 创建2个子图的大图布局
         fig, axs = plt.subplots(1, 2, figsize=(20, 5))  # 2个子图
 
         # 遍历每个子图的索引和对应的键
-        keys = ['all_bars_survive_time_sum', 'death_len']  # 四个键
+        keys = ['all_bars_survive_time_sum', 'death_len']  # 两个键
+
+        # Create DataFrames to store mean and error values
+        mean_df = pd.DataFrame()
+        error_df = pd.DataFrame()
+
         for idx, subkey in enumerate(keys):
-            # 提取每个子图的数据
             if aug_name == 'scale':
-                # print(aug_name)
-                values = [item[subkey][0] for item in data[::-1]]  # 提取mean值
-                errors = [item[subkey][1] for item in data[::-1]]  # 提取标准差
-
-                # 绘制子图带误差棒
-                # axs[idx].errorbar(range(len(values)), values, yerr=errors, linestyle=':', marker='o', markersize=4)
-                axs[idx].errorbar(np.arange(len(values)) / (len(values) - 1), values, yerr=errors, linestyle=':', marker='o', markersize=5, color='lightblue', markerfacecolor='red')
-                axs[idx].set_title(subkey)
-                #设置坐标轴刻度
-                my_x_ticks = np.arange(0, 1, 0.05)
-                axs[idx].set_xticks(my_x_ticks)
-                # my_y_ticks = np.arange(int(min(values)*0.9), int(max(values)*1.1), 10)
-                # axs[idx].set_yticks(my_y_ticks)
-
+                values = [item[subkey][0] for item in data[::-1]]
+                errors = [item[subkey][1] for item in data[::-1]]
             else:
-                # print("="*20)
-                values = [item[subkey][0] for item in data]  # 提取mean值
-                errors = [item[subkey][1] for item in data]  # 提取标准差
+                values = [item[subkey][0] for item in data]
+                errors = [item[subkey][1] for item in data]
 
-                # 绘制子图带误差棒
-                # axs[idx].errorbar(range(len(values)), values, yerr=errors, linestyle=':', marker='o', markersize=4)
-                axs[idx].errorbar(np.arange(len(values)) / (len(values) - 1), values, yerr=errors, linestyle=':', marker='o', markersize=5, color='lightblue', markerfacecolor='red')
-                axs[idx].set_title(subkey)
-                #设置坐标轴刻度
-                my_x_ticks = np.arange(0, 1, 0.05)
-                axs[idx].set_xticks(my_x_ticks)
-                # my_y_ticks = np.arange(int(min(values)*0.9), int(max(values)*1.1), 10)
-                # axs[idx].set_yticks(my_y_ticks)
+            # Store data in DataFrames
+            mean_df[subkey] = values
+            error_df[subkey] = errors
 
+            # 绘制子图带误差棒
+            axs[idx].errorbar(np.arange(len(values)) / (len(values) - 1), values, yerr=errors, linestyle=':', marker='o', markersize=5, color='lightblue', markerfacecolor='red')
+            axs[idx].set_title(subkey)
+            #设置坐标轴刻度
+            my_x_ticks = np.arange(0, 1, 0.05)
+            axs[idx].set_xticks(my_x_ticks)
+        
+        # 保存数据到Excel文件
+        with pd.ExcelWriter(excel_path) as writer:
+            mean_df.to_excel(writer, sheet_name='Mean', index=False)
+            error_df.to_excel(writer, sheet_name='Error', index=False)
+
+        self.values = [item['all_bars_survive_time_sum'] for item in data] 
         # 调整布局并保存图像
         plt.tight_layout()
         plt.savefig(save_path)
         plt.show()
         plt.close()
+
 
     def get_all_bars_survive_time_sum(self, aug_name):
         data = self.comb_BOF
@@ -283,8 +283,6 @@ class CompareTDA():
             values = [item['all_bars_survive_time_sum'][0] for item in data[::-1]]  # 提取mean值
 
         return values
-
-
 
 
 

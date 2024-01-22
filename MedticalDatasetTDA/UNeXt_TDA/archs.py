@@ -306,7 +306,9 @@ class UNext(nn.Module):
         ### Stage 4
 
         out = F.relu(F.interpolate(self.dbn1(self.decoder1(out)),scale_factor=(2,2),mode ='bilinear'))
-        
+        if out.shape != t4.shape:
+            # 使用 interpolate 对 t 进行插值，使其形状与 out 相同
+            t4 = F.interpolate(t4, size=out.shape[-2:], mode='bilinear', align_corners=False)
         out = torch.add(out,t4)
         _,_,H,W = out.shape
         out = out.flatten(2).transpose(1,2)
@@ -318,6 +320,9 @@ class UNext(nn.Module):
         out = self.dnorm3(out)
         out = out.reshape(B, H, W, -1).permute(0, 3, 1, 2).contiguous()
         out = F.relu(F.interpolate(self.dbn2(self.decoder2(out)),scale_factor=(2,2),mode ='bilinear'))
+        if out.shape != t3.shape:
+            # 使用 interpolate 对 t 进行插值，使其形状与 out 相同
+            t3 = F.interpolate(t3, size=out.shape[-2:], mode='bilinear', align_corners=False)
         out = torch.add(out,t3)
         _,_,H,W = out.shape
         out = out.flatten(2).transpose(1,2)
@@ -329,8 +334,16 @@ class UNext(nn.Module):
         out = out.reshape(B, H, W, -1).permute(0, 3, 1, 2).contiguous()
 
         out = F.relu(F.interpolate(self.dbn3(self.decoder3(out)),scale_factor=(2,2),mode ='bilinear'))
+
+        if out.shape != t2.shape:
+            # 使用 interpolate 对 t 进行插值，使其形状与 out 相同
+            t2 = F.interpolate(t2, size=out.shape[-2:], mode='bilinear', align_corners=False)
         out = torch.add(out,t2)
         out = F.relu(F.interpolate(self.dbn4(self.decoder4(out)),scale_factor=(2,2),mode ='bilinear'))
+
+        if out.shape != t1.shape:
+            # 使用 interpolate 对 t 进行插值，使其形状与 out 相同
+            t1 = F.interpolate(t1, size=out.shape[-2:], mode='bilinear', align_corners=False)
         out = torch.add(out,t1)
         out = F.relu(F.interpolate(self.decoder5(out),scale_factor=(2,2),mode ='bilinear'))
 
@@ -440,7 +453,9 @@ class UNext_S(nn.Module):
         ### Stage 4
 
         out = F.relu(F.interpolate(self.dbn1(self.decoder1(out)),scale_factor=(2,2),mode ='bilinear'))
-        
+        if out.shape != t4.shape:
+            # 使用 interpolate 对 t 进行插值，使其形状与 out 相同
+            t4 = F.interpolate(t4, size=out.shape[-2:], mode='bilinear', align_corners=False)
         out = torch.add(out,t4)
         _,_,H,W = out.shape
         out = out.flatten(2).transpose(1,2)
@@ -452,6 +467,9 @@ class UNext_S(nn.Module):
         out = self.dnorm3(out)
         out = out.reshape(B, H, W, -1).permute(0, 3, 1, 2).contiguous()
         out = F.relu(F.interpolate(self.dbn2(self.decoder2(out)),scale_factor=(2,2),mode ='bilinear'))
+        if out.shape != t3.shape:
+            # 使用 interpolate 对 t 进行插值，使其形状与 out 相同
+            t3 = F.interpolate(t3, size=out.shape[-2:], mode='bilinear', align_corners=False)
         out = torch.add(out,t3)
         _,_,H,W = out.shape
         out = out.flatten(2).transpose(1,2)
@@ -463,8 +481,14 @@ class UNext_S(nn.Module):
         out = out.reshape(B, H, W, -1).permute(0, 3, 1, 2).contiguous()
 
         out = F.relu(F.interpolate(self.dbn3(self.decoder3(out)),scale_factor=(2,2),mode ='bilinear'))
+        if out.shape != t2.shape:
+            # 使用 interpolate 对 t 进行插值，使其形状与 out 相同
+            t2 = F.interpolate(t2, size=out.shape[-2:], mode='bilinear', align_corners=False)
         out = torch.add(out,t2)
         out = F.relu(F.interpolate(self.dbn4(self.decoder4(out)),scale_factor=(2,2),mode ='bilinear'))
+        if out.shape != t1.shape:
+            # 使用 interpolate 对 t 进行插值，使其形状与 out 相同
+            t1 = F.interpolate(t1, size=out.shape[-2:], mode='bilinear', align_corners=False)
         out = torch.add(out,t1)
         out = F.relu(F.interpolate(self.decoder5(out),scale_factor=(2,2),mode ='bilinear'))
 
