@@ -48,7 +48,7 @@ def process_with_angle(dataset_name="MONU" , repetitions=10, aug_name="crop"):
         costume_transform = [transforms.RandomRotation(degrees=(min_angle, max_angle))]
 
         temp_image_processor = UNeXtTDA(repetitions=repetitions, 
-                                        save_file_path = f'.\\Result\\UNext_input_TDA\\output_{dataset_name}{aug_name}\\{max_angle}', betti_dim=1,  img_ext='.png',
+                                        save_file_path = f'.\\Result\\UNext_output_TDA\\output_{dataset_name}{aug_name}\\{max_angle}', betti_dim=1,  img_ext='.png',
                                         costume_transform=costume_transform,
                                         input_images_path = f'..\\..\\others_work\\dataset\\{dataset_name}\\train_folder\\images',input_masks_path = f'..\\..\\others_work\\dataset\\{dataset_name}\\train_folder\\masks')
 
@@ -56,5 +56,5 @@ if __name__ == "__main__":
     # crop_Unext_parallel(dataset_name="busi", repetitions=10, aug_name="crop")
     # crop_Unext(dataset_name="BUSI", aug_name="crop", repetitions=10)
     # crop_Unext(dataset_name="ISIC2018", aug_name="crop", repetitions=2)
-    process_with_angle(dataset_name='BUSI', aug_name='Angle')
-    # process_with_angle(dataset_name='ISIC2018', aug_name='Angle')
+    # process_with_angle(dataset_name='BUSI', aug_name='Angle')
+    process_with_angle(dataset_name='ISIC2018', aug_name='Angle')
