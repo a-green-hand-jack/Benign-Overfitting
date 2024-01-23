@@ -5,6 +5,7 @@ import numpy as np
 import os
 import torch.nn.functional as F
 import random
+from MLclf import MLclf
 
 def get_dataloader(chose="cifar10_debug",
                    batch_size=64, 
@@ -267,3 +268,49 @@ def vec_dis(data_matrix: torch.Tensor, distance: str, root: str = "./distance", 
     return l_distances.cpu().detach().numpy()  # 转换为 NumPy 数组并返回
 
 
+from typing import Tuple,Union, Optional
+import torchvision
+from torch.utils.data import DataLoader
+
+def get_imagenet_loader(chose_dataset: str = 'tiny-imagenet',
+                        cifar10_path: str = './data',
+                        train_transform: Optional[callable] = None,
+                        val_transform: Optional[callable] = transforms.ToTensor(),
+                        batch_size: int = 64) -> Tuple[DataLoader, DataLoader]:
+    """
+    获取指定数据集的 PyTorch DataLoader。
+
+    参数:
+    - chose_dataset (字符串): 选择的数据集，可选值为 'cifar10'、'tiny-imagenet' 或 'mini-imagenet'。
+    - cifar10_path (字符串): CIFAR-10 数据集存储路径（仅当 chose_dataset 为 'cifar10' 时有效）。
+    - train_transform (可调用对象): 训练数据集的变换函数。
+    - val_transform (可调用对象): 验证数据集的变换函数。
+    - batch_size (整数): DataLoader 中的批量大小。
+
+    返回:
+    - Tuple[DataLoader, DataLoader]: 包含训练集 DataLoader 和验证集 DataLoader 的元组。
+    """
+    if chose_dataset == "cifar10":
+        trainset = torchvision.datasets.CIFAR10(root=cifar10_path, train=True, download=True, transform=train_transform)
+        valset = torchvision.datasets.CIFAR10(root=cifar10_path, train=False, download=True, transform=val_transform)
+        trainloader = DataLoader(trainset, batch_size=batch_size, shuffle=True, num_workers=2)
+        valloader = DataLoader(valset, batch_size=batch_size, shuffle=False, num_workers=2)
+        return trainloader, valloader
+    elif chose_dataset == 'tiny-imagenet':
+        # 下载原始 tiny-imagenet 数据集
+        MLclf.tinyimagenet_download(Download=False) 
+        trainset, valset, _ = MLclf.tinyimagenet_clf_dataset(ratio_train=0.6, ratio_val=0.2, seed_value=None, shuffle=True, transform=train_transform,  save_clf_data=False, few_shot=False)
+        trainloader = DataLoader(trainset, batch_size=batch_size, shuffle=True, num_workers=2)
+        valloader = DataLoader(valset, batch_size=batch_size, shuffle=False, num_workers=2)
+        return trainloader, valloader
+    elif chose_dataset == 'mini-imagenet':
+        # 下载原始 mini-imagenet 数据集
+        MLclf.miniimagenet_download(Download=False)
+        trainset, valset, _ = MLclf.miniimagenet_clf_dataset(ratio_train=0.6, ratio_val=0.2, seed_value=None, shuffle=True, transform=train_transform,  save_clf_data=False)
+        trainloader = DataLoader(trainset, batch_size=batch_size, shuffle=True, num_workers=2)
+        valloader = DataLoader(valset, batch_size=batch_size, shuffle=False, num_workers=2)
+        return trainloader, valloader
+    else:
+        raise ValueError("无效的数据集选择。请选择 'cifar10'、'tiny-imagenet' 或 'mini-imagenet'。")
+
+  

@@ -111,6 +111,7 @@ class ImageNetTDA:
             trainset = torchvision.datasets.CIFAR10(root=self.cifar10_path, train=True, download=True,transform=self.train_transform)
         # 使用MLclf，https://github.com/tiger2017/MLclf
         elif self.chose_dataset == 'tiny-imagenet':
+            # print(self.chose_dataset)
             MLclf.tinyimagenet_download(Download=False) 
             trainset, validation_dataset, test_dataset = MLclf.tinyimagenet_clf_dataset(ratio_train=0.6, ratio_val=0.2,
                                                                                                 seed_value=None, shuffle=True,

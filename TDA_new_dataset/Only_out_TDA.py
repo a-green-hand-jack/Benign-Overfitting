@@ -30,9 +30,15 @@ class ResizeCustom(transforms.Resize):
 
 # 首先考虑scale作为增强
 
-def scale_data_tda(scale_path = "./Result/DataTDA", aug_name="scale", model=MLP(), model_name="MLP", betti_dim=1, care_layer=-2):
+def scale_data_tda(scale_path = "./Result/DataTDA", aug_name="scale", model=MLP(), model_name="MLP", betti_dim=1, care_layer=-2, chose_dataset='tiny-imagenet'):
     # 这里我希望得到的是在某一个model下的在scale增强下的情况
-    image_size = 32
+    if chose_dataset == 'tiny-imagenet':
+        image_size = 64
+    elif chose_dataset == 'mini-imagenet':
+        image_size = 84
+    elif chose_dataset == 'cifar10':
+        image_size = 32
+
     CIFAR_MEAN = [0.49139968, 0.48215827, 0.44653124]
     CIFAR_STD = [0.2023, 0.1994, 0.2010]
     scale_path = f"{scale_path}/{model_name}/{aug_name}"
@@ -42,8 +48,9 @@ def scale_data_tda(scale_path = "./Result/DataTDA", aug_name="scale", model=MLP(
     for scale in scale_list:
         
         train_transform=transforms.Compose([
-                                    transforms.RandomResizedCrop(size=(32,32), scale=(scale, scale)),
-                                    transforms.ToTensor(),
+            transforms.ToTensor(),
+                                    transforms.RandomResizedCrop(size=(image_size,image_size), scale=(scale, scale)),
+                                    
                                     transforms.Normalize(CIFAR_MEAN, CIFAR_STD)
                                 ])
         # train_loader, test_loader = get_cifar10_dataloader(batch_size=64, custom_transform=train_transform)
@@ -52,11 +59,16 @@ def scale_data_tda(scale_path = "./Result/DataTDA", aug_name="scale", model=MLP(
 
         save_floor = f"{scale_path}/{scale*10}/"
 
-        temp_img = ImageNetTDA(costume_transform=train_transform, repetitions=10, save_file_path = save_floor, model=model, betti_dim=betti_dim, care_layer=care_layer)
+        temp_img = ImageNetTDA(costume_transform=train_transform, repetitions=10, save_file_path = save_floor, model=model, betti_dim=betti_dim, care_layer=care_layer, chose_dataset='tiny-imagenet')
 
-def angle_data_tda(scale_path = "./Result/DataTDA", aug_name="angle", model=MLP(), model_name="MLP", betti_dim=1, care_layer=-2):
+def angle_data_tda(scale_path = "./Result/DataTDA", aug_name="angle", model=MLP(), model_name="MLP", betti_dim=1, care_layer=-2,        chose_dataset='tiny-imagenet'):
     # 这里我希望得到的是在某一个model下的在scale增强下的情况
-    image_size = 32
+    if chose_dataset == 'tiny-imagenet':
+        image_size = 64
+    elif chose_dataset == 'mini-imagenet':
+        image_size = 84
+    elif chose_dataset == 'cifar10':
+        image_size = 32
     CIFAR_MEAN = [0.49139968, 0.48215827, 0.44653124]
     CIFAR_STD = [0.2023, 0.1994, 0.2010]
     scale_path = f"{scale_path}/{model_name}/{aug_name}"
@@ -68,8 +80,9 @@ def angle_data_tda(scale_path = "./Result/DataTDA", aug_name="angle", model=MLP(
         min_angle = -max_angle
 
         train_transform=transforms.Compose([
+            transforms.ToTensor(),
                             transforms.RandomRotation(degrees=(min_angle, max_angle)),
-                            transforms.ToTensor(),
+                            
                             transforms.Normalize(CIFAR_MEAN, CIFAR_STD)
                             ])
         # train_loader, test_loader = get_cifar10_dataloader(batch_size=64, custom_transform=train_transform)
@@ -78,7 +91,7 @@ def angle_data_tda(scale_path = "./Result/DataTDA", aug_name="angle", model=MLP(
 
         save_floor = f"{scale_path}/{max_angle}/"
 
-        temp_img = ImageNetTDA(costume_transform=train_transform, repetitions=10, save_file_path = save_floor, model=model, betti_dim=betti_dim, care_layer=care_layer)
+        temp_img = ImageNetTDA(costume_transform=train_transform, repetitions=10, save_file_path = save_floor, model=model, betti_dim=betti_dim, care_layer=care_layer, chose_dataset='tiny-imagenet')
 
 # 新的处理单个模型的函数
 def process_model(model, model_name, scale_path, aug_name):
@@ -158,9 +171,9 @@ if __name__ == '__main__':
         torch.cuda.manual_seed(seed)  # 设置cuda的随机数种子
         torch.cuda.manual_seed_all(seed)  # 设置所有cuda设备的随机数种子
 
-    scale_path = "./Result/20240113_new_ResNet_1k_output"
-    model = ResNet152()
-    model_name = "ResNet152"
+    scale_path = "./Result/2024012361k_output/tiny"
+    model = LeNet(input_height=84, input_width=84)
+    model_name = "LeNet"
     betti_dim = 1
     care_layer = -2
     model_list = [model]
@@ -171,11 +184,11 @@ if __name__ == '__main__':
     # scale_data_tda(scale_path=scale_path, model=model, model_name=model_name, aug_name="scale", betti_dim=betti_dim, care_layer=care_layer)
 
     # 只关注model，没有增强
-    model_list_mini = [MLP(im_size=(84, 84)), LeNet(input_height=84, input_width=84), ResNet18(), ResNet34(), ResNet50(), ResNet101(), ResNet152()]
-    model_list_tiny = [MLP(im_size=(64, 64)), LeNet(input_height=64, input_width=64), ResNet18(), ResNet34(), ResNet50(), ResNet101(), ResNet152()]
-    without_aug(model_list=model_list_tiny)
+    # model_list_mini = [MLP(im_size=(84, 84)), LeNet(input_height=84, input_width=84), ResNet18(), ResNet34(), ResNet50(), ResNet101(), ResNet152()]
+    # model_list_tiny = [MLP(im_size=(64, 64)), LeNet(input_height=64, input_width=64), ResNet18(), ResNet34(), ResNet50(), ResNet101(), ResNet152()]
+    # without_aug(model_list=model_list_tiny)
 
     # 关注angle和scale,也即是关注增强
 
-    # scale_data_tda(scale_path=scale_path, model=model, model_name=model_name, aug_name="scale", betti_dim=betti_dim, care_layer=care_layer)
+    scale_data_tda(scale_path=scale_path, model=model, model_name=model_name, aug_name="scale", betti_dim=betti_dim, care_layer=care_layer)
     # angle_data_tda(scale_path=scale_path, model=model, model_name=model_name, aug_name="angle", betti_dim=betti_dim, care_layer=care_layer)
